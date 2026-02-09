@@ -123,10 +123,6 @@
                         <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
                         <sourceDir>${project.basedir}/src/main/java</sourceDir>
                     </sourceDirs>
-                    <testSourceDirs>
-                        <testSourceDir>${project.basedir}/src/test/kotlin</testSourceDir>
-                        <testSourceDir>${project.basedir}/src/test/java</testSourceDir>
-                    </testSourceDirs>
                 </configuration>
             </plugin>
 
