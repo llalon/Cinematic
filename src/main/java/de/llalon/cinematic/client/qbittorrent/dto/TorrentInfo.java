@@ -1,5 +1,6 @@
 package de.llalon.cinematic.client.qbittorrent.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
@@ -10,6 +11,7 @@ import lombok.Data;
  * Contains comprehensive information about a torrent's state, progress, and transfer statistics.
  */
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TorrentInfo {
 
     /** Time (Unix Epoch) when the torrent was added to the client */
