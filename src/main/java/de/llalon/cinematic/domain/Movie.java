@@ -30,6 +30,10 @@ public class Movie {
                 .toList();
     }
 
+    public static Movie fetchOne(String id) {
+        return new Movie(ClientContextHolder.getRadarrClient().getMovie(Integer.parseInt(id)));
+    }
+
     public List<TagResource> getTags() {
         return movieResource.getTags().stream()
                 .map(t -> ClientContextHolder.getRadarrClient().getTag(t))
