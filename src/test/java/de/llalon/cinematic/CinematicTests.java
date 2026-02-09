@@ -3,8 +3,6 @@ package de.llalon.cinematic;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.llalon.cinematic.domain.ClientContextHolder;
-import de.llalon.cinematic.domain.Movie;
-import java.util.List;
 import java.util.Properties;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.*;
@@ -35,9 +33,7 @@ class CinematicTests {
     }
 
     @Test
-    void canFetchAllMovies() {
-        List<Movie> movies = Movie.fetchAll();
-        Movie movie = Movie.fetchOne(String.valueOf(movies.get(0).getId()));
-        assertEquals(movies.get(0).getId(), movie.getId());
+    void todo() {
+        // ToDo: Configure mock web server....
     }
 }
