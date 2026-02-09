@@ -4,6 +4,7 @@ import de.llalon.cinematic.client.qbittorrent.dto.TorrentInfo;
 import de.llalon.cinematic.client.radarr.dto.MovieResource;
 import de.llalon.cinematic.client.radarr.dto.QueueResource;
 import de.llalon.cinematic.client.radarr.dto.QueueResourcePagingResource;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Delegate;
 
@@ -18,6 +19,12 @@ public class Torrent {
 
     @Delegate
     private final TorrentInfo torrentInfo;
+
+    public static List<Torrent> fetchAll() {
+        return ClientContextHolder.getQbittorrentClient().getTorrents().stream()
+                .map(Torrent::new)
+                .toList();
+    }
 
     /**
      * Attempt to find the Radarr movie associated with this torrent by scanning

@@ -12,3 +12,18 @@ It integrates:
 - Sonarr
 - Radarr
 - qBittorrent
+
+These APIs:
+
+- Do not follow REST conventions
+- Have inconsistent schemas
+- Use different identifiers for the same media
+- Require orchestration across systems
+
+The domain model must hide this complexity completely.
+
+## Project Architecture Patterns
+
+- ActiveRecord
+- Rich Domain Model
+- Thin HTTP clients
