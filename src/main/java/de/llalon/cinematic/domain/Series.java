@@ -21,7 +21,7 @@ public class Series {
     @Delegate
     private final SeriesResource seriesResource;
 
-    public List<TagResource> getTags() {
+    public List<TagResource> fetchTags() {
         return seriesResource.getTags().stream()
                 .map(t -> getInstance().getSonarrClient().getTag(t))
                 .toList();
@@ -36,7 +36,7 @@ public class Series {
      *
      * @return list of associated Torrent domain objects (empty if none)
      */
-    public List<Torrent> getTorrents() {
+    public List<Torrent> fetchTorrents() {
         List<de.llalon.cinematic.client.sonarr.dto.QueueResource> queueItems =
                 getInstance().getSonarrClient().getQueueForSeries(this.getId());
         if (queueItems == null || queueItems.isEmpty()) {

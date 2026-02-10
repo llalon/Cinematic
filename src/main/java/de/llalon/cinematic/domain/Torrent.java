@@ -10,12 +10,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Delegate;
 
-/**
- * Rich domain model representing a Torrent composed from qBittorrent data.
- *
- * Provides convenience method to resolve the Radarr Movie associated with
- * a given torrent by consulting Radarr's download queue.
- */
 @RequiredArgsConstructor
 public class Torrent {
 
@@ -28,15 +22,7 @@ public class Torrent {
                 .toList();
     }
 
-    /**
-     * Attempt to find the Radarr movie associated with this torrent by scanning
-     * Radarr's queue and correlating the downloadId field with the torrent hash.
-     *
-     * Uses injected RadarrClient; returns null if not available.
-     *
-     * @return Movie domain object if found, otherwise null
-     */
-    public Movie getMovie() {
+    public Movie fetchMovie() {
         // Radarr returns a paginated queue; fetch it and scan for matching downloadId
         QueueResourcePagingResource page = getInstance().getRadarrClient().getQueue();
         if (page == null || page.getRecords() == null) {
@@ -60,7 +46,7 @@ public class Torrent {
         return null;
     }
 
-    public Series getSeries() {
+    public Series fetchSeries() {
         // Radarr returns a paginated queue; fetch it and scan for matching downloadId
         var page = getInstance().getSonarrClient().getQueue();
         if (page == null || page.getRecords() == null) {

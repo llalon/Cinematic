@@ -21,9 +21,9 @@ class CinematicIntegrationsTests {
     void canFetchTorrentsFromMovie() {
         List<Movie> movies = Movie.fetchAll();
         Movie movie1 = movies.get(0);
-        var torrents = movie1.getTorrents();
+        var torrents = movie1.fetchTorrents();
         var torrent1 = torrents.get(0);
-        Movie movie2 = torrent1.getMovie();
+        Movie movie2 = torrent1.fetchMovie();
         assertEquals(movie1.getId(), movie2.getId());
     }
 

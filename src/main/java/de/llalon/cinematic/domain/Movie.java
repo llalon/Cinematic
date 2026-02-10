@@ -36,21 +36,13 @@ public class Movie {
         return new Movie(getInstance().getRadarrClient().getMovie(Integer.parseInt(id)));
     }
 
-    public List<TagResource> getTags() {
+    public List<TagResource> fetchTags() {
         return movieResource.getTags().stream()
                 .map(t -> getInstance().getRadarrClient().getTag(t))
                 .toList();
     }
 
-    /**
-     * Fetch torrents associated with this movie by consulting Radarr's queue
-     * and correlating download IDs with qBittorrent torrents.
-     *
-     * This method performs on-demand API calls using injected clients.
-     *
-     * @return list of associated Torrent domain objects (empty if none)
-     */
-    public List<Torrent> getTorrents() {
+    public List<Torrent> fetchTorrents() {
         List<QueueResource> queueItems = getInstance().getRadarrClient().getQueueForMovie(this.getId());
         if (queueItems == null || queueItems.isEmpty()) {
             return Collections.emptyList();
