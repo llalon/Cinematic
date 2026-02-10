@@ -16,7 +16,9 @@ applyTo: '**/*.java, **/*.kt'
 - Methods should return typed DTO Response with response body
 - Method should accept typed DTO requests with request parameters and/or body
 - DTOs should use appropriate Jackson annotations for field mapping
-- DTOs should use lombok `@Data`
+- DTOs should use lombok `@Data` and `@JsonIgnoreProperties(ignoreUnknown = true)`
+- DTOs should be final classes
+- DTOs should not use primitives
 
 # Logging
 
