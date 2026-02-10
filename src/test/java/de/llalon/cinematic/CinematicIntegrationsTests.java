@@ -2,7 +2,7 @@ package de.llalon.cinematic;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.llalon.cinematic.domain.ClientContextHolder;
+import de.llalon.cinematic.domain.ClientContext;
 import de.llalon.cinematic.domain.Movie;
 import java.util.List;
 import org.junit.jupiter.api.*;
@@ -11,11 +11,10 @@ class CinematicIntegrationsTests {
 
     @BeforeAll
     static void setUp() {
-        ClientContextHolder.configure();
+        ClientContext.builder().build().register();
 
-        Assumptions.assumeFalse(ClientContextHolder.getQbittorrentClient() == null);
-        Assumptions.assumeFalse(ClientContextHolder.getSonarrClient() == null);
-        Assumptions.assumeFalse(ClientContextHolder.getRadarrClient() == null);
+        Assumptions.assumeFalse(ClientContext.getInstance().getRadarrClient() == null);
+        Assumptions.assumeFalse(ClientContext.getInstance().getRadarrClient() == null);
     }
 
     @Test

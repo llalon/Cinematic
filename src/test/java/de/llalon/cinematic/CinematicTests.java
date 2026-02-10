@@ -1,9 +1,11 @@
 package de.llalon.cinematic;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import de.llalon.cinematic.domain.ClientContextHolder;
-import java.util.Properties;
+import de.llalon.cinematic.client.overseerr.config.OverseerrProperties;
+import de.llalon.cinematic.client.qbittorrent.config.QBittorrentProperties;
+import de.llalon.cinematic.client.radarr.config.RadarrProperties;
+import de.llalon.cinematic.client.sonarr.config.SonarrProperties;
+import de.llalon.cinematic.client.tautulli.config.TautulliProperties;
+import de.llalon.cinematic.domain.ClientContext;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.*;
 
@@ -13,23 +15,19 @@ class CinematicTests {
 
     @BeforeAll
     static void setUp() {
-        Properties properties = new Properties();
+        ClientContext.builder()
+                .sonarrProperties(SonarrProperties.builder()
+                        .url("http://localhost:8080")
+                        .apiKey("test")
+                        .build())
+                .radarrProperties(RadarrProperties.fromEnvironment())
+                .qbittorrentProperties(QBittorrentProperties.fromEnvironment())
+                .tautulliProperties(TautulliProperties.fromEnvironment())
+                .overseerrProperties(OverseerrProperties.fromEnvironment())
+                .build()
+                .register();
 
-        properties.setProperty("qbittorrent.url", "http://localhost:8080");
-        properties.setProperty("qbittorrent.username", "test");
-        properties.setProperty("qbittorrent.password", "test");
-
-        properties.setProperty("radarr.url", "http://localhost:7878");
-        properties.setProperty("radarr.api_key", "test");
-
-        properties.setProperty("sonarr.url", "http://localhost:8989");
-        properties.setProperty("sonarr.api_key", "test");
-
-        ClientContextHolder.configure(properties);
-
-        Assumptions.assumeFalse(ClientContextHolder.getQbittorrentClient() == null);
-        Assumptions.assumeFalse(ClientContextHolder.getSonarrClient() == null);
-        Assumptions.assumeFalse(ClientContextHolder.getRadarrClient() == null);
+        Assumptions.assumeFalse(ClientContext.getInstance() == null);
     }
 
     @Test

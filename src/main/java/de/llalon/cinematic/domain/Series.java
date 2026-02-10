@@ -1,5 +1,7 @@
 package de.llalon.cinematic.domain;
 
+import static de.llalon.cinematic.domain.ClientContext.getInstance;
+
 import de.llalon.cinematic.client.qbittorrent.dto.TorrentInfo;
 import de.llalon.cinematic.client.sonarr.dto.SeriesResource;
 import de.llalon.cinematic.client.sonarr.dto.TagResource;
@@ -21,7 +23,7 @@ public class Series {
 
     public List<TagResource> getTags() {
         return seriesResource.getTags().stream()
-                .map(t -> ClientContextHolder.getSonarrClient().getTag(t))
+                .map(t -> getInstance().getSonarrClient().getTag(t))
                 .toList();
     }
 
@@ -36,14 +38,13 @@ public class Series {
      */
     public List<Torrent> getTorrents() {
         List<de.llalon.cinematic.client.sonarr.dto.QueueResource> queueItems =
-                ClientContextHolder.getSonarrClient().getQueueForSeries(this.getId());
+                getInstance().getSonarrClient().getQueueForSeries(this.getId());
         if (queueItems == null || queueItems.isEmpty()) {
             return Collections.emptyList();
         }
 
         // Build a lookup of qBittorrent torrents by hash for fast correlation
-        List<TorrentInfo> allTorrents =
-                ClientContextHolder.getQbittorrentClient().getTorrents();
+        List<TorrentInfo> allTorrents = getInstance().getQbittorrentClient().getTorrents();
         Map<String, TorrentInfo> byHash = new HashMap<>();
         if (allTorrents != null) {
             for (TorrentInfo t : allTorrents) {

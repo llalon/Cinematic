@@ -1,5 +1,7 @@
 package de.llalon.cinematic.domain;
 
+import static de.llalon.cinematic.domain.ClientContext.getInstance;
+
 import de.llalon.cinematic.client.qbittorrent.dto.TorrentInfo;
 import de.llalon.cinematic.client.radarr.dto.MovieResource;
 import de.llalon.cinematic.client.radarr.dto.QueueResource;
@@ -21,7 +23,7 @@ public class Torrent {
     private final TorrentInfo torrentInfo;
 
     public static List<Torrent> fetchAll() {
-        return ClientContextHolder.getQbittorrentClient().getTorrents().stream()
+        return getInstance().getQbittorrentClient().getTorrents().stream()
                 .map(Torrent::new)
                 .toList();
     }
@@ -36,7 +38,7 @@ public class Torrent {
      */
     public Movie getMovie() {
         // Radarr returns a paginated queue; fetch it and scan for matching downloadId
-        QueueResourcePagingResource page = ClientContextHolder.getRadarrClient().getQueue();
+        QueueResourcePagingResource page = getInstance().getRadarrClient().getQueue();
         if (page == null || page.getRecords() == null) {
             return null;
         }
@@ -47,7 +49,7 @@ public class Torrent {
             if (target.equals(q.getDownloadId().toUpperCase())) {
                 MovieResource mr = q.getMovie();
                 if (mr == null && q.getMovieId() != null) {
-                    mr = ClientContextHolder.getRadarrClient().getMovie(q.getMovieId());
+                    mr = getInstance().getRadarrClient().getMovie(q.getMovieId());
                 }
                 if (mr != null) {
                     return new Movie(mr);
@@ -60,7 +62,7 @@ public class Torrent {
 
     public Series getSeries() {
         // Radarr returns a paginated queue; fetch it and scan for matching downloadId
-        var page = ClientContextHolder.getSonarrClient().getQueue();
+        var page = getInstance().getSonarrClient().getQueue();
         if (page == null || page.getRecords() == null) {
             return null;
         }
@@ -71,7 +73,7 @@ public class Torrent {
             if (target.equals(q.getDownloadId().toUpperCase())) {
                 var mr = q.getSeries();
                 if (mr == null && q.getSeriesId() != null) {
-                    mr = ClientContextHolder.getSonarrClient().getSeries(q.getSeriesId());
+                    mr = getInstance().getSonarrClient().getSeries(q.getSeriesId());
                 }
                 if (mr != null) {
                     return new Series(mr);

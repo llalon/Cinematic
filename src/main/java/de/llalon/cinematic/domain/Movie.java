@@ -1,5 +1,7 @@
 package de.llalon.cinematic.domain;
 
+import static de.llalon.cinematic.domain.ClientContext.getInstance;
+
 import de.llalon.cinematic.client.qbittorrent.dto.TorrentInfo;
 import de.llalon.cinematic.client.radarr.dto.MovieResource;
 import de.llalon.cinematic.client.radarr.dto.QueueResource;
@@ -25,18 +27,18 @@ public class Movie {
     private final MovieResource movieResource;
 
     public static List<Movie> fetchAll() {
-        return ClientContextHolder.getRadarrClient().getAllMovies().stream()
+        return getInstance().getRadarrClient().getAllMovies().stream()
                 .map(Movie::new)
                 .toList();
     }
 
     public static Movie fetchOne(String id) {
-        return new Movie(ClientContextHolder.getRadarrClient().getMovie(Integer.parseInt(id)));
+        return new Movie(getInstance().getRadarrClient().getMovie(Integer.parseInt(id)));
     }
 
     public List<TagResource> getTags() {
         return movieResource.getTags().stream()
-                .map(t -> ClientContextHolder.getRadarrClient().getTag(t))
+                .map(t -> getInstance().getRadarrClient().getTag(t))
                 .toList();
     }
 
@@ -49,14 +51,13 @@ public class Movie {
      * @return list of associated Torrent domain objects (empty if none)
      */
     public List<Torrent> getTorrents() {
-        List<QueueResource> queueItems = ClientContextHolder.getRadarrClient().getQueueForMovie(this.getId());
+        List<QueueResource> queueItems = getInstance().getRadarrClient().getQueueForMovie(this.getId());
         if (queueItems == null || queueItems.isEmpty()) {
             return Collections.emptyList();
         }
 
         // Build a lookup of qBittorrent torrents by hash for fast correlation
-        List<TorrentInfo> allTorrents =
-                ClientContextHolder.getQbittorrentClient().getTorrents();
+        List<TorrentInfo> allTorrents = getInstance().getQbittorrentClient().getTorrents();
         Map<String, TorrentInfo> byHash = new HashMap<>();
         if (allTorrents != null) {
             for (TorrentInfo t : allTorrents) {

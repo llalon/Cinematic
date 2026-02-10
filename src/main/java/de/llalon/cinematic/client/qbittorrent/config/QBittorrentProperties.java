@@ -1,5 +1,7 @@
 package de.llalon.cinematic.client.qbittorrent.config;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -9,21 +11,19 @@ import lombok.Data;
  * Values can be overridden via environment variables.
  */
 @Data
+@Builder
+@AllArgsConstructor
 public class QBittorrentProperties {
 
-    /**
-     * Base URL of the qBittorrent WebUI.
-     * Example: http://localhost:8080
-     */
-    private String url;
+    private final String url;
+    private final String username;
+    private final String password;
 
-    /**
-     * Username for WebUI authentication.
-     */
-    private String username;
-
-    /**
-     * Password for WebUI authentication.
-     */
-    private String password;
+    public static QBittorrentProperties fromEnvironment() {
+        return QBittorrentProperties.builder()
+                .url(System.getenv("QBITTORRENT_URL"))
+                .username(System.getenv("QBITTORRENT_USERNAME"))
+                .password(System.getenv("QBITTORRENT_PASSWORD"))
+                .build();
+    }
 }
