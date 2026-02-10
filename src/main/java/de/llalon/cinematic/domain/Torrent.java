@@ -2,7 +2,6 @@ package de.llalon.cinematic.domain;
 
 import static de.llalon.cinematic.domain.ClientContext.getInstance;
 
-import de.llalon.cinematic.client.qbittorrent.dto.TorrentFile;
 import de.llalon.cinematic.client.qbittorrent.dto.TorrentInfo;
 import de.llalon.cinematic.client.radarr.dto.MovieResource;
 import de.llalon.cinematic.client.radarr.dto.QueueResource;
@@ -101,6 +100,8 @@ public class Torrent {
     }
 
     public List<TorrentFile> fetchFiles() {
-        return getInstance().getQbittorrentClient().getTorrentFiles(getHash());
+        return getInstance().getQbittorrentClient().getTorrentFiles(getHash()).stream()
+                .map(TorrentFile::new)
+                .toList();
     }
 }

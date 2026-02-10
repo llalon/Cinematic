@@ -11,7 +11,7 @@ import lombok.Data;
  */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TorrentFile {
+public class TorrentFileDTO {
 
     /** File name (including relative path) */
     private String name;

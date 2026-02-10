@@ -13,13 +13,14 @@ applyTo: '**/*.java, **/*.kt'
 
 - Use Jackson for JSON serialization/deserialization
 - Use typed DTOs for responses and requests including typed enums where appropriate
-- Methods should return typed DTO Response with response body
-- Method should accept typed DTO requests with request parameters and/or body
-- DTOs should use appropriate Jackson annotations for field mapping
-- DTOs should use lombok `@Data` and `@JsonIgnoreProperties(ignoreUnknown = true)`
-- DTOs should contain all final members
-- DTOs should use collection objects instead of arrays
-- DTOs should boxed objects instead of primitives
+- Methods must return typed DTO Response with response body
+- Method must accept typed DTO requests with request parameters and/or body
+- DTOs must use appropriate Jackson annotations for field mapping
+- DTOs must use lombok `@Data` and `@JsonIgnoreProperties(ignoreUnknown = true)`
+- DTOs must contain all final members
+- DTOs must use collection objects instead of arrays
+- DTOs must boxed objects instead of primitives
+- DTO class names must end with DTO
 
 # Logging
 
@@ -30,7 +31,7 @@ applyTo: '**/*.java, **/*.kt'
 
 # Constructor Requirements
 
-- Constructors should accept an OkHttpClient along with the url and any api token credentials or config required
+- Constructors must accept an OkHttpClient along with the url and any api token credentials or config required
 - Validate all required parameters (URL, API keys, credentials)
 - Throw `IllegalArgumentException` for invalid configuration
 - Fail fast - don't defer validation to first API call
@@ -148,7 +149,7 @@ All exceptions must include:
 
 ## Retry Guidance
 
-API exceptions should implement logic to determine retryability:
+API exceptions must implement logic to determine retryability:
 
 - **Retryable**: 429 (rate limit), 503 (service unavailable), 504 (gateway timeout), network errors
 - **Non-retryable**: 400 (bad request), 401 (unauthorized), 403 (forbidden), 404 (not found)

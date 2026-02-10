@@ -3,7 +3,7 @@ package de.llalon.cinematic.client.qbittorrent;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.llalon.cinematic.client.qbittorrent.config.QBittorrentProperties;
-import de.llalon.cinematic.client.qbittorrent.dto.TorrentFile;
+import de.llalon.cinematic.client.qbittorrent.dto.TorrentFileDTO;
 import de.llalon.cinematic.client.qbittorrent.dto.TorrentInfo;
 import de.llalon.cinematic.client.qbittorrent.dto.TorrentProperties;
 import de.llalon.cinematic.client.qbittorrent.exception.QBittorrentApiException;
@@ -211,9 +211,9 @@ public class QBittorrentClient {
      * @param hash Torrent hash
      * @return list of torrent files
      */
-    public List<TorrentFile> getTorrentFiles(String hash) {
+    public List<TorrentFileDTO> getTorrentFiles(String hash) {
         log.debug("Fetching files for torrent: {}", hash);
-        return get("/api/v2/torrents/files", Map.of("hash", hash), new TypeReference<List<TorrentFile>>() {});
+        return get("/api/v2/torrents/files", Map.of("hash", hash), new TypeReference<List<TorrentFileDTO>>() {});
     }
 
     /**

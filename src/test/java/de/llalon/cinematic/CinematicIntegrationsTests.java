@@ -1,9 +1,10 @@
 package de.llalon.cinematic;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import de.llalon.cinematic.domain.ClientContext;
 import de.llalon.cinematic.domain.Movie;
+import de.llalon.cinematic.domain.Torrent;
 import java.util.List;
 import org.junit.jupiter.api.*;
 
@@ -33,5 +34,17 @@ class CinematicIntegrationsTests {
         Movie movie1 = movies.get(0);
         Movie movie2 = Movie.fetchOne(String.valueOf(movie1.getId()));
         assertEquals(movie1.getId(), movie2.getId());
+    }
+
+    @Test
+    void canFindTorrentFilesWithViruses() {
+        var virusFiles = Torrent.fetchAll().stream()
+                .peek(a -> System.out.println("Checking torrent: " + a))
+                .filter(x -> x.fetchFiles().stream()
+                        .peek(b -> System.out.println("Checking file: " + b))
+                        .anyMatch(y -> y.getName().endsWith(".exe")))
+                .toList();
+
+        assertNotNull(virusFiles);
     }
 }
