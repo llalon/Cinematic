@@ -6,7 +6,10 @@ import de.llalon.cinematic.client.qbittorrent.dto.TorrentInfo;
 import de.llalon.cinematic.client.radarr.dto.MovieResource;
 import de.llalon.cinematic.client.radarr.dto.QueueResource;
 import de.llalon.cinematic.client.radarr.dto.QueueResourcePagingResource;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Delegate;
 
@@ -68,5 +71,31 @@ public class Torrent {
         }
 
         return null;
+    }
+
+    public void addTag(String tag) {
+        if (tag == null || tag.isBlank()) {
+            throw new IllegalArgumentException("tag must not be null or blank");
+        }
+        getInstance().getQbittorrentClient().addTorrentTags(List.of(getHash()), List.of(tag));
+    }
+
+    public boolean hasTag(String tag) {
+        if (tag == null || tag.isBlank()) {
+            return false;
+        }
+        return getTags().contains(tag);
+    }
+
+    public Set<String> getTags() {
+        if (this.torrentInfo.getTags() == null || this.torrentInfo.getTags().isBlank()) {
+            return Set.of();
+        } else {
+            return Arrays.stream(this.torrentInfo.getTags().split(",")).collect(Collectors.toSet());
+        }
+    }
+
+    public void setTopPriority() {
+        getInstance().getQbittorrentClient().setTopPriority(List.of(getHash()));
     }
 }
