@@ -14,7 +14,7 @@ class CinematicIntegrationsTests {
         ClientContext.builder().build().register();
 
         Assumptions.assumeFalse(ClientContext.getInstance().getRadarrClient() == null);
-        Assumptions.assumeFalse(ClientContext.getInstance().getRadarrClient() == null);
+        Assumptions.assumeFalse(ClientContext.getInstance().getQbittorrentClient() == null);
     }
 
     @Test

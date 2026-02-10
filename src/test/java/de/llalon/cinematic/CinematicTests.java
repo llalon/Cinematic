@@ -17,17 +17,28 @@ class CinematicTests {
     static void setUp() {
         ClientContext.builder()
                 .sonarrProperties(SonarrProperties.builder()
-                        .url("http://localhost:8080")
+                        .url("http://localhost:8989")
                         .apiKey("test")
                         .build())
-                .radarrProperties(RadarrProperties.fromEnvironment())
-                .qbittorrentProperties(QBittorrentProperties.fromEnvironment())
-                .tautulliProperties(TautulliProperties.fromEnvironment())
-                .overseerrProperties(OverseerrProperties.fromEnvironment())
+                .radarrProperties(RadarrProperties.builder()
+                        .url("http://localhost:7878")
+                        .apiKey("test")
+                        .build())
+                .qbittorrentProperties(QBittorrentProperties.builder()
+                        .url("http://localhost:7878")
+                        .username("user")
+                        .password("pass")
+                        .build())
+                .tautulliProperties(TautulliProperties.builder()
+                        .url("http://localhost:8181")
+                        .apiKey("test")
+                        .build())
+                .overseerrProperties(OverseerrProperties.builder()
+                        .url("http://localhost:5055")
+                        .apiKey("test")
+                        .build())
                 .build()
                 .register();
-
-        Assumptions.assumeFalse(ClientContext.getInstance() == null);
     }
 
     @Test
