@@ -1,6 +1,6 @@
 package de.llalon.cinematic.client.overseerr.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.squareup.moshi.Json;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,13 +11,13 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class CreateRequestBody {
-    @JsonProperty("mediaType")
+    @Json(name = "mediaType")
     private final String mediaType; // "movie" or "tv"
 
-    @JsonProperty("mediaId")
+    @Json(name = "mediaId")
     private final Integer mediaId;
 
-    @JsonProperty("tvdbId")
+    @Json(name = "tvdbId")
     private final String tvdbId;
 
     /**
@@ -26,21 +26,21 @@ public class CreateRequestBody {
      */
     private final List<String> seasons; // or "all" string
 
-    @JsonProperty("is4k")
+    @Json(name = "is4k")
     private final Boolean is4k;
 
-    @JsonProperty("serverId")
+    @Json(name = "serverId")
     private final String serverId;
 
-    @JsonProperty("profileId")
+    @Json(name = "profileId")
     private final String profileId;
 
-    @JsonProperty("rootFolder")
+    @Json(name = "rootFolder")
     private final String rootFolder;
 
-    @JsonProperty("languageProfileId")
+    @Json(name = "languageProfileId")
     private final String languageProfileId;
 
-    @JsonProperty("userId")
+    @Json(name = "userId")
     private final String userId;
 }

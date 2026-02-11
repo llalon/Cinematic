@@ -1,7 +1,6 @@
 package de.llalon.cinematic.client.overseerr.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.squareup.moshi.Json;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -10,11 +9,10 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Season {
     private final Integer id;
 
-    @JsonProperty("seasonNumber")
+    @Json(name = "seasonNumber")
     private final Integer seasonNumber;
 
     private final Integer status;

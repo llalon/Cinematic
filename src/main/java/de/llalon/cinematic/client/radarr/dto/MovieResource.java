@@ -1,7 +1,6 @@
 package de.llalon.cinematic.client.radarr.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.squareup.moshi.Json;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -12,120 +11,119 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class MovieResource {
 
-    @JsonProperty("id")
+    @Json(name = "id")
     private final Integer id;
 
-    @JsonProperty("title")
+    @Json(name = "title")
     private final String title;
 
-    @JsonProperty("originalTitle")
+    @Json(name = "originalTitle")
     private final String originalTitle;
 
-    @JsonProperty("sortTitle")
+    @Json(name = "sortTitle")
     private final String sortTitle;
 
-    @JsonProperty("sizeOnDisk")
+    @Json(name = "sizeOnDisk")
     private final Long sizeOnDisk;
 
-    @JsonProperty("status")
+    @Json(name = "status")
     private final String status;
 
-    @JsonProperty("overview")
+    @Json(name = "overview")
     private final String overview;
 
-    @JsonProperty("inCinemas")
+    @Json(name = "inCinemas")
     private final LocalDateTime inCinemas;
 
-    @JsonProperty("physicalRelease")
+    @Json(name = "physicalRelease")
     private final LocalDateTime physicalRelease;
 
-    @JsonProperty("digitalRelease")
+    @Json(name = "digitalRelease")
     private final LocalDateTime digitalRelease;
 
-    @JsonProperty("releaseDate")
+    @Json(name = "releaseDate")
     private final LocalDateTime releaseDate;
 
-    @JsonProperty("website")
+    @Json(name = "website")
     private final String website;
 
-    @JsonProperty("year")
+    @Json(name = "year")
     private final Integer year;
 
-    @JsonProperty("youTubeTrailerId")
+    @Json(name = "youTubeTrailerId")
     private final String youTubeTrailerId;
 
-    @JsonProperty("studio")
+    @Json(name = "studio")
     private final String studio;
 
-    @JsonProperty("path")
+    @Json(name = "path")
     private final String path;
 
-    @JsonProperty("qualityProfileId")
+    @Json(name = "qualityProfileId")
     private final Integer qualityProfileId;
 
-    @JsonProperty("hasFile")
+    @Json(name = "hasFile")
     private final Boolean hasFile;
 
-    @JsonProperty("movieFileId")
+    @Json(name = "movieFileId")
     private final Integer movieFileId;
 
-    @JsonProperty("monitored")
+    @Json(name = "monitored")
     private final Boolean monitored;
 
-    @JsonProperty("minimumAvailability")
+    @Json(name = "minimumAvailability")
     private final String minimumAvailability;
 
-    @JsonProperty("isAvailable")
+    @Json(name = "isAvailable")
     private final Boolean isAvailable;
 
-    @JsonProperty("folderName")
+    @Json(name = "folderName")
     private final String folderName;
 
-    @JsonProperty("runtime")
+    @Json(name = "runtime")
     private final Integer runtime;
 
-    @JsonProperty("cleanTitle")
+    @Json(name = "cleanTitle")
     private final String cleanTitle;
 
-    @JsonProperty("imdbId")
+    @Json(name = "imdbId")
     private final String imdbId;
 
-    @JsonProperty("tmdbId")
+    @Json(name = "tmdbId")
     private final Integer tmdbId;
 
-    @JsonProperty("titleSlug")
+    @Json(name = "titleSlug")
     private final String titleSlug;
 
-    @JsonProperty("rootFolderPath")
+    @Json(name = "rootFolderPath")
     private final String rootFolderPath;
 
-    @JsonProperty("folder")
+    @Json(name = "folder")
     private final String folder;
 
-    @JsonProperty("certification")
+    @Json(name = "certification")
     private final String certification;
 
-    @JsonProperty("genres")
+    @Json(name = "genres")
     private final List<String> genres;
 
-    @JsonProperty("keywords")
+    @Json(name = "keywords")
     private final List<String> keywords;
 
-    @JsonProperty("tags")
+    @Json(name = "tags")
     private final List<Integer> tags;
 
-    @JsonProperty("added")
+    @Json(name = "added")
     private final LocalDateTime added;
 
-    @JsonProperty("popularity")
+    @Json(name = "popularity")
     private final Float popularity;
 
-    @JsonProperty("lastSearchTime")
+    @Json(name = "lastSearchTime")
     private final LocalDateTime lastSearchTime;
 
-    @JsonProperty("movieFile")
+    @Json(name = "movieFile")
     private final MovieFileResource movieFile;
 }

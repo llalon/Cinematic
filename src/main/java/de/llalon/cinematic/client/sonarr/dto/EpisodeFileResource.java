@@ -1,7 +1,6 @@
 package de.llalon.cinematic.client.sonarr.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.squareup.moshi.Json;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,48 +10,47 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class EpisodeFileResource {
 
-    @JsonProperty("id")
+    @Json(name = "id")
     private final Integer id;
 
-    @JsonProperty("seriesId")
+    @Json(name = "seriesId")
     private final Integer seriesId;
 
-    @JsonProperty("seasonNumber")
+    @Json(name = "seasonNumber")
     private final Integer seasonNumber;
 
-    @JsonProperty("relativePath")
+    @Json(name = "relativePath")
     private final String relativePath;
 
-    @JsonProperty("path")
+    @Json(name = "path")
     private final String path;
 
-    @JsonProperty("size")
+    @Json(name = "size")
     private final Long size;
 
-    @JsonProperty("dateAdded")
+    @Json(name = "dateAdded")
     private final LocalDateTime dateAdded;
 
-    @JsonProperty("sceneName")
+    @Json(name = "sceneName")
     private final String sceneName;
 
-    @JsonProperty("releaseGroup")
+    @Json(name = "releaseGroup")
     private final String releaseGroup;
 
-    @JsonProperty("quality")
+    @Json(name = "quality")
     private final Object quality;
 
-    @JsonProperty("qualityCutoffNotMet")
+    @Json(name = "qualityCutoffNotMet")
     private final Boolean qualityCutoffNotMet;
 
-    @JsonProperty("mediaInfo")
+    @Json(name = "mediaInfo")
     private final Object mediaInfo;
 
-    @JsonProperty("originalFilePath")
+    @Json(name = "originalFilePath")
     private final String originalFilePath;
 
-    @JsonProperty("qualityWeight")
+    @Json(name = "qualityWeight")
     private final Integer qualityWeight;
 }

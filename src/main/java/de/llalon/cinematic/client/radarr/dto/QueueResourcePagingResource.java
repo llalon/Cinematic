@@ -1,7 +1,6 @@
 package de.llalon.cinematic.client.radarr.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.squareup.moshi.Json;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,24 +10,23 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class QueueResourcePagingResource {
 
-    @JsonProperty("page")
+    @Json(name = "page")
     private final Integer page;
 
-    @JsonProperty("pageSize")
+    @Json(name = "pageSize")
     private final Integer pageSize;
 
-    @JsonProperty("sortKey")
+    @Json(name = "sortKey")
     private final String sortKey;
 
-    @JsonProperty("sortDirection")
+    @Json(name = "sortDirection")
     private final String sortDirection;
 
-    @JsonProperty("totalRecords")
+    @Json(name = "totalRecords")
     private final Integer totalRecords;
 
-    @JsonProperty("records")
+    @Json(name = "records")
     private final List<QueueResource> records;
 }

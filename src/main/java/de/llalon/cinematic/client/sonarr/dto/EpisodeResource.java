@@ -1,7 +1,6 @@
 package de.llalon.cinematic.client.sonarr.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.squareup.moshi.Json;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,75 +10,74 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class EpisodeResource {
 
-    @JsonProperty("id")
+    @Json(name = "id")
     private final Integer id;
 
-    @JsonProperty("seriesId")
+    @Json(name = "seriesId")
     private final Integer seriesId;
 
-    @JsonProperty("tvdbId")
+    @Json(name = "tvdbId")
     private final Integer tvdbId;
 
-    @JsonProperty("episodeFileId")
+    @Json(name = "episodeFileId")
     private final Integer episodeFileId;
 
-    @JsonProperty("seasonNumber")
+    @Json(name = "seasonNumber")
     private final Integer seasonNumber;
 
-    @JsonProperty("episodeNumber")
+    @Json(name = "episodeNumber")
     private final Integer episodeNumber;
 
-    @JsonProperty("title")
+    @Json(name = "title")
     private final String title;
 
-    @JsonProperty("airDate")
+    @Json(name = "airDate")
     private final String airDate;
 
-    @JsonProperty("airDateUtc")
+    @Json(name = "airDateUtc")
     private final LocalDateTime airDateUtc;
 
-    @JsonProperty("lastSearchTime")
+    @Json(name = "lastSearchTime")
     private final LocalDateTime lastSearchTime;
 
-    @JsonProperty("runtime")
+    @Json(name = "runtime")
     private final Integer runtime;
 
-    @JsonProperty("overview")
+    @Json(name = "overview")
     private final String overview;
 
-    @JsonProperty("episodeFile")
+    @Json(name = "episodeFile")
     private final EpisodeFileResource episodeFile;
 
-    @JsonProperty("hasFile")
+    @Json(name = "hasFile")
     private final Boolean hasFile;
 
-    @JsonProperty("monitored")
+    @Json(name = "monitored")
     private final Boolean monitored;
 
-    @JsonProperty("absoluteEpisodeNumber")
+    @Json(name = "absoluteEpisodeNumber")
     private final Integer absoluteEpisodeNumber;
 
-    @JsonProperty("sceneAbsoluteEpisodeNumber")
+    @Json(name = "sceneAbsoluteEpisodeNumber")
     private final Integer sceneAbsoluteEpisodeNumber;
 
-    @JsonProperty("sceneEpisodeNumber")
+    @Json(name = "sceneEpisodeNumber")
     private final Integer sceneEpisodeNumber;
 
-    @JsonProperty("sceneSeasonNumber")
+    @Json(name = "sceneSeasonNumber")
     private final Integer sceneSeasonNumber;
 
-    @JsonProperty("unverifiedSceneNumbering")
+    @Json(name = "unverifiedSceneNumbering")
     private final Boolean unverifiedSceneNumbering;
 
-    @JsonProperty("endTime")
+    @Json(name = "endTime")
     private final LocalDateTime endTime;
 
-    @JsonProperty("grabDate")
+    @Json(name = "grabDate")
     private final LocalDateTime grabDate;
 
-    @JsonProperty("series")
+    @Json(name = "series")
     private final SeriesResource series;
 }

@@ -1,7 +1,6 @@
 package de.llalon.cinematic.client.overseerr.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.squareup.moshi.Json;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -20,23 +19,22 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class MediaInfo {
     private final Integer id;
 
-    @JsonProperty("tmdbId")
+    @Json(name = "tmdbId")
     private final Integer tmdbId;
 
-    @JsonProperty("tvdbId")
+    @Json(name = "tvdbId")
     private final Integer tvdbId;
 
     private final Integer status;
 
     private final List<MediaRequest> requests;
 
-    @JsonProperty("createdAt")
+    @Json(name = "createdAt")
     private final LocalDateTime createdAt;
 
-    @JsonProperty("updatedAt")
+    @Json(name = "updatedAt")
     private final LocalDateTime updatedAt;
 }

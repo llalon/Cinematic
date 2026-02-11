@@ -1,6 +1,5 @@
 package de.llalon.cinematic.client.overseerr.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -9,7 +8,6 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class PageInfo {
     private final Integer pages;
     private final Integer pageSize;

@@ -1,7 +1,8 @@
 package de.llalon.cinematic.client.radarr;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Types;
 import de.llalon.cinematic.client.radarr.config.RadarrProperties;
 import de.llalon.cinematic.client.radarr.dto.MovieFileResource;
 import de.llalon.cinematic.client.radarr.dto.MovieResource;
@@ -11,6 +12,7 @@ import de.llalon.cinematic.client.radarr.dto.TagResource;
 import de.llalon.cinematic.client.radarr.exception.RadarrApiException;
 import de.llalon.cinematic.client.radarr.exception.RadarrClientException;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
@@ -40,11 +42,11 @@ public class RadarrClient {
 
     private final String apiKey;
     private final OkHttpClient httpClient;
-    private final ObjectMapper objectMapper;
+    private final Moshi moshi;
     private final HttpUrl baseUrl;
 
-    public RadarrClient(OkHttpClient httpClient, RadarrProperties properties, ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    public RadarrClient(OkHttpClient httpClient, RadarrProperties properties, Moshi moshi) {
+        this.moshi = moshi;
         this.apiKey = properties.getApiKey();
         this.httpClient = httpClient;
         this.baseUrl = HttpUrl.parse(properties.getUrl());
@@ -65,7 +67,8 @@ public class RadarrClient {
      */
     public List<MovieResource> getAllMovies() {
         log.debug("Fetching all movies");
-        return get("/api/v3/movie", new TypeReference<List<MovieResource>>() {});
+        Type type = Types.newParameterizedType(List.class, MovieResource.class);
+        return get("/api/v3/movie", type);
     }
 
     /**
@@ -76,7 +79,7 @@ public class RadarrClient {
      */
     public MovieResource getMovie(int movieId) {
         log.debug("Fetching movie with ID: {}", movieId);
-        return get("/api/v3/movie/" + movieId, new TypeReference<MovieResource>() {});
+        return get("/api/v3/movie/" + movieId, MovieResource.class);
     }
 
     /**
@@ -91,7 +94,8 @@ public class RadarrClient {
                 .addPathSegments("api/v3/movie")
                 .addQueryParameter("tmdbId", String.valueOf(tmdbId))
                 .build();
-        return get(url, new TypeReference<List<MovieResource>>() {});
+        Type type = Types.newParameterizedType(List.class, MovieResource.class);
+        return get(url, type);
     }
 
     /**
@@ -103,7 +107,7 @@ public class RadarrClient {
      */
     public MovieResource addMovie(MovieResource movie) {
         log.debug("Adding movie: {}", movie.getTitle());
-        return post("/api/v3/movie", movie, new TypeReference<MovieResource>() {});
+        return post("/api/v3/movie", movie, MovieResource.class);
     }
 
     /**
@@ -115,7 +119,7 @@ public class RadarrClient {
      */
     public MovieResource updateMovie(MovieResource movie) {
         log.debug("Updating movie with ID: {}", movie.getId());
-        return put("/api/v3/movie/" + movie.getId(), movie, new TypeReference<MovieResource>() {});
+        return put("/api/v3/movie/" + movie.getId(), movie, MovieResource.class);
     }
 
     /**
@@ -151,7 +155,7 @@ public class RadarrClient {
                 .addPathSegments("api/v3/movie/lookup/tmdb")
                 .addQueryParameter("tmdbId", String.valueOf(tmdbId))
                 .build();
-        return get(url, new TypeReference<MovieResource>() {});
+        return get(url, MovieResource.class);
     }
 
     /**
@@ -166,7 +170,7 @@ public class RadarrClient {
                 .addPathSegments("api/v3/movie/lookup/imdb")
                 .addQueryParameter("imdbId", imdbId)
                 .build();
-        return get(url, new TypeReference<MovieResource>() {});
+        return get(url, MovieResource.class);
     }
 
     /**
@@ -181,7 +185,8 @@ public class RadarrClient {
                 .addPathSegments("api/v3/movie/lookup")
                 .addQueryParameter("term", term)
                 .build();
-        return get(url, new TypeReference<List<MovieResource>>() {});
+        Type type = Types.newParameterizedType(List.class, MovieResource.class);
+        return get(url, type);
     }
 
     // ==================== MOVIE FILES ====================
@@ -198,7 +203,8 @@ public class RadarrClient {
                 .addPathSegments("api/v3/moviefile")
                 .addQueryParameter("movieId", String.valueOf(movieId))
                 .build();
-        return get(url, new TypeReference<List<MovieFileResource>>() {});
+        Type type = Types.newParameterizedType(List.class, MovieFileResource.class);
+        return get(url, type);
     }
 
     /**
@@ -209,7 +215,7 @@ public class RadarrClient {
      */
     public MovieFileResource getMovieFile(int movieFileId) {
         log.debug("Fetching movie file with ID: {}", movieFileId);
-        return get("/api/v3/moviefile/" + movieFileId, new TypeReference<MovieFileResource>() {});
+        return get("/api/v3/moviefile/" + movieFileId, MovieFileResource.class);
     }
 
     /**
@@ -221,7 +227,7 @@ public class RadarrClient {
      */
     public MovieFileResource updateMovieFile(MovieFileResource movieFile) {
         log.debug("Updating movie file with ID: {}", movieFile.getId());
-        return put("/api/v3/moviefile/" + movieFile.getId(), movieFile, new TypeReference<MovieFileResource>() {});
+        return put("/api/v3/moviefile/" + movieFile.getId(), movieFile, MovieFileResource.class);
     }
 
     /**
@@ -251,7 +257,7 @@ public class RadarrClient {
                 .addQueryParameter("pageSize", "1000")
                 .addQueryParameter("includeMovie", "true")
                 .build();
-        return get(url, new TypeReference<QueueResourcePagingResource>() {});
+        return get(url, QueueResourcePagingResource.class);
     }
 
     /**
@@ -267,7 +273,8 @@ public class RadarrClient {
                 .addQueryParameter("movieId", String.valueOf(movieId))
                 .addQueryParameter("includeMovie", "true")
                 .build();
-        return get(url, new TypeReference<List<QueueResource>>() {});
+        Type type = Types.newParameterizedType(List.class, QueueResource.class);
+        return get(url, type);
     }
 
     // ==================== TAGS ====================
@@ -280,7 +287,8 @@ public class RadarrClient {
      */
     public List<TagResource> getAllTags() {
         log.debug("Fetching all tags");
-        return get("/api/v3/tag", new TypeReference<List<TagResource>>() {});
+        Type type = Types.newParameterizedType(List.class, TagResource.class);
+        return get("/api/v3/tag", type);
     }
 
     /**
@@ -291,7 +299,7 @@ public class RadarrClient {
      */
     public TagResource getTag(int tagId) {
         log.debug("Fetching tag with ID: {}", tagId);
-        return get("/api/v3/tag/" + tagId, new TypeReference<TagResource>() {});
+        return get("/api/v3/tag/" + tagId, TagResource.class);
     }
 
     /**
@@ -303,7 +311,7 @@ public class RadarrClient {
      */
     public TagResource createTag(TagResource tag) {
         log.debug("Creating tag: {}", tag.getLabel());
-        return post("/api/v3/tag", tag, new TypeReference<TagResource>() {});
+        return post("/api/v3/tag", tag, TagResource.class);
     }
 
     /**
@@ -315,7 +323,7 @@ public class RadarrClient {
      */
     public TagResource updateTag(TagResource tag) {
         log.debug("Updating tag with ID: {}", tag.getId());
-        return put("/api/v3/tag/" + tag.getId(), tag, new TypeReference<TagResource>() {});
+        return put("/api/v3/tag/" + tag.getId(), tag, TagResource.class);
     }
 
     /**
@@ -334,11 +342,11 @@ public class RadarrClient {
      * Execute a GET request to the Radarr API.
      *
      * @param path API path
-     * @param responseType TypeReference for the expected response type
+     * @param responseType Type for the expected response type
      * @param <T> The type of the response
      * @return parsed response
      */
-    private <T> T get(String path, TypeReference<T> responseType) {
+    private <T> T get(String path, Type responseType) {
         HttpUrl url = baseUrl.newBuilder()
                 .addPathSegments(path.replaceFirst("^/", ""))
                 .build();
@@ -349,11 +357,11 @@ public class RadarrClient {
      * Execute a GET request to the Radarr API.
      *
      * @param url Full URL with query parameters
-     * @param responseType TypeReference for the expected response type
+     * @param responseType Type for the expected response type
      * @param <T> The type of the response
      * @return parsed response
      */
-    private <T> T get(HttpUrl url, TypeReference<T> responseType) {
+    private <T> T get(HttpUrl url, Type responseType) {
         Request request = new Request.Builder()
                 .url(url)
                 .header(API_KEY_HEADER, apiKey)
@@ -368,17 +376,17 @@ public class RadarrClient {
      *
      * @param path API path
      * @param body Request body object
-     * @param responseType TypeReference for the expected response type
+     * @param responseType Type for the expected response type
      * @param <T> The type of the response
      * @return parsed response
      */
-    private <T> T post(String path, Object body, TypeReference<T> responseType) {
+    private <T> T post(String path, Object body, Type responseType) {
         HttpUrl url = baseUrl.newBuilder()
                 .addPathSegments(path.replaceFirst("^/", ""))
                 .build();
 
         try {
-            String jsonBody = objectMapper.writeValueAsString(body);
+            String jsonBody = moshi.adapter(body.getClass()).toJson(body);
             RequestBody requestBody = RequestBody.create(jsonBody, JSON);
             Request request = new Request.Builder()
                     .url(url)
@@ -387,7 +395,7 @@ public class RadarrClient {
                     .build();
 
             return executeRequest(request, responseType);
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("Failed to serialize request body for POST {}", path, e);
             throw new RadarrClientException("Failed to serialize request body for POST " + path, e);
         }
@@ -398,17 +406,18 @@ public class RadarrClient {
      *
      * @param path API path
      * @param body Request body object
-     * @param responseType TypeReference for the expected response type
+     * @param responseType Type for the expected response type
      * @param <T> The type of the response
      * @return parsed response
      */
-    private <T> T put(String path, Object body, TypeReference<T> responseType) {
+    private <T> T put(String path, Object body, Type responseType) {
         HttpUrl url = baseUrl.newBuilder()
                 .addPathSegments(path.replaceFirst("^/", ""))
                 .build();
 
         try {
-            String jsonBody = objectMapper.writeValueAsString(body);
+            @SuppressWarnings("unchecked")
+            String jsonBody = ((JsonAdapter<Object>) moshi.adapter((Class<Object>) body.getClass())).toJson(body);
             RequestBody requestBody = RequestBody.create(jsonBody, JSON);
             Request request = new Request.Builder()
                     .url(url)
@@ -417,7 +426,7 @@ public class RadarrClient {
                     .build();
 
             return executeRequest(request, responseType);
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("Failed to serialize request body for PUT {}", path, e);
             throw new RadarrClientException("Failed to serialize request body for PUT " + path, e);
         }
@@ -452,11 +461,11 @@ public class RadarrClient {
      * Execute a request and parse the response.
      *
      * @param request HTTP request
-     * @param responseType TypeReference for the expected response type
+     * @param responseType Type for the expected response type
      * @param <T> The type of the response
      * @return parsed response
      */
-    private <T> T executeRequest(Request request, TypeReference<T> responseType) {
+    private <T> T executeRequest(Request request, Type responseType) {
         try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 String errorBody = response.body() != null ? response.body().string() : "";
@@ -471,7 +480,8 @@ public class RadarrClient {
             }
 
             try {
-                return objectMapper.readValue(responseBody, responseType);
+                JsonAdapter<T> adapter = (JsonAdapter<T>) moshi.adapter(responseType);
+                return adapter.fromJson(responseBody);
             } catch (IOException parseException) {
                 log.error("Failed to parse Radarr response: {}", request.url(), parseException);
                 throw new RadarrClientException("Failed to parse Radarr response: " + request.url(), parseException);

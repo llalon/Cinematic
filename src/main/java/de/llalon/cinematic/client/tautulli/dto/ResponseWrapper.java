@@ -1,7 +1,6 @@
 package de.llalon.cinematic.client.tautulli.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.squareup.moshi.Json;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -10,25 +9,24 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class ResponseWrapper<T> {
 
     /**
      * Result status: typically "success" or "error".
      */
-    @JsonProperty("result")
+    @Json(name = "result")
     private final String result;
 
     /**
      * Optional message providing additional context.
      */
-    @JsonProperty("message")
+    @Json(name = "message")
     private final String message;
 
     /**
      * The actual data payload.
      */
-    @JsonProperty("data")
+    @Json(name = "data")
     private final T data;
 
     /**

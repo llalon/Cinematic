@@ -1,14 +1,14 @@
 package de.llalon.cinematic.client.qbittorrent.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
+import com.squareup.moshi.FromJson;
+import com.squareup.moshi.ToJson;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
  * Enum representing possible torrent states in qBittorrent.
  *
- * These states are returned in the "state" field of torrent info.
+ * <p>These states are returned in the "state" field of torrent info.
  */
 @Getter
 @RequiredArgsConstructor
@@ -71,11 +71,15 @@ public enum TorrentState {
     /** Unknown status */
     UNKNOWN("unknown");
 
-    @JsonValue
     private final String value;
 
-    @JsonCreator
-    public static TorrentState fromValue(String value) {
+    @ToJson
+    public String toJson() {
+        return value;
+    }
+
+    @FromJson
+    public static TorrentState fromJson(String value) {
         if (value == null) {
             return UNKNOWN;
         }

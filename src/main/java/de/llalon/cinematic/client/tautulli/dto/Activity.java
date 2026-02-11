@@ -1,7 +1,6 @@
 package de.llalon.cinematic.client.tautulli.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.squareup.moshi.Json;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,48 +11,47 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Activity {
 
     /**
      * Current LAN bandwidth usage in bytes.
      */
-    @JsonProperty("lan_bandwidth")
+    @Json(name = "lan_bandwidth")
     private final Long lanBandwidth;
 
     /**
      * Current WAN bandwidth usage in bytes.
      */
-    @JsonProperty("wan_bandwidth")
+    @Json(name = "wan_bandwidth")
     private final Long wanBandwidth;
 
     /**
      * Total number of active stream sessions.
      */
-    @JsonProperty("stream_count")
+    @Json(name = "stream_count")
     private final Integer streamCount;
 
     /**
      * Total number of transcode sessions.
      */
-    @JsonProperty("stream_count_transcode")
+    @Json(name = "stream_count_transcode")
     private final Integer streamCountTranscode;
 
     /**
      * Total number of direct play sessions.
      */
-    @JsonProperty("stream_count_direct_play")
+    @Json(name = "stream_count_direct_play")
     private final Integer streamCountDirectPlay;
 
     /**
      * Total number of direct stream sessions.
      */
-    @JsonProperty("stream_count_direct_stream")
+    @Json(name = "stream_count_direct_stream")
     private final Integer streamCountDirectStream;
 
     /**
      * List of all active streaming sessions.
      */
-    @JsonProperty("sessions")
+    @Json(name = "sessions")
     private final List<Session> sessions;
 }

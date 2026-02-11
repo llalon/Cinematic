@@ -1,12 +1,14 @@
 package de.llalon.cinematic.client.overseerr;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Types;
 import de.llalon.cinematic.client.overseerr.config.OverseerrProperties;
 import de.llalon.cinematic.client.overseerr.dto.*;
 import de.llalon.cinematic.client.overseerr.exception.OverseerrApiException;
 import de.llalon.cinematic.client.overseerr.exception.OverseerrClientException;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 
@@ -35,11 +37,11 @@ public class OverseerrClient {
 
     private final String apiKey;
     private final OkHttpClient httpClient;
-    private final ObjectMapper objectMapper;
+    private final Moshi moshi;
     private final HttpUrl baseUrl;
 
-    public OverseerrClient(OkHttpClient httpClient, OverseerrProperties properties, ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    public OverseerrClient(OkHttpClient httpClient, OverseerrProperties properties, Moshi moshi) {
+        this.moshi = moshi;
         this.apiKey = properties.getApiKey();
         this.httpClient = httpClient;
         this.baseUrl = HttpUrl.parse(properties.getUrl());
@@ -73,7 +75,8 @@ public class OverseerrClient {
         if (sort != null) {
             urlBuilder.addQueryParameter("sort", sort);
         }
-        return get(urlBuilder.build(), new TypeReference<PagedResults<User>>() {});
+        Type type = Types.newParameterizedType(PagedResults.class, User.class);
+        return get(urlBuilder.build(), type);
     }
 
     /**
@@ -93,7 +96,7 @@ public class OverseerrClient {
      */
     public User getUser(int userId) {
         log.debug("Fetching user with ID: {}", userId);
-        return get("/api/v1/user/" + userId, new TypeReference<User>() {});
+        return get("/api/v1/user/" + userId, User.class);
     }
 
     /**
@@ -105,7 +108,7 @@ public class OverseerrClient {
      */
     public User createUser(User user) {
         log.debug("Creating user: {}", user.getEmail());
-        return post("/api/v1/user", user, new TypeReference<User>() {});
+        return post("/api/v1/user", user, User.class);
     }
 
     /**
@@ -119,7 +122,7 @@ public class OverseerrClient {
      */
     public User updateUser(int userId, User user) {
         log.debug("Updating user with ID: {}", userId);
-        return put("/api/v1/user/" + userId, user, new TypeReference<User>() {});
+        return put("/api/v1/user/" + userId, user, User.class);
     }
 
     /**
@@ -131,7 +134,8 @@ public class OverseerrClient {
      */
     public User deleteUser(int userId) {
         log.debug("Deleting user with ID: {}", userId);
-        return delete("/api/v1/user/" + userId, new TypeReference<User>() {});
+        Type type = Types.newParameterizedType(PagedResults.class, User.class);
+        return delete("/api/v1/user/" + userId, type);
     }
 
     // ==================== REQUESTS ====================
@@ -174,7 +178,8 @@ public class OverseerrClient {
         if (requestedBy != null) {
             urlBuilder.addQueryParameter("requestedBy", String.valueOf(requestedBy));
         }
-        return get(urlBuilder.build(), new TypeReference<PagedResults<MediaRequest>>() {});
+        Type type = Types.newParameterizedType(PagedResults.class, MediaRequest.class);
+        return get(urlBuilder.build(), type);
     }
 
     /**
@@ -194,7 +199,7 @@ public class OverseerrClient {
      */
     public MediaRequest getRequest(int requestId) {
         log.debug("Fetching request with ID: {}", requestId);
-        return get("/api/v1/request/" + requestId, new TypeReference<MediaRequest>() {});
+        return get("/api/v1/request/" + requestId, MediaRequest.class);
     }
 
     /**
@@ -214,7 +219,8 @@ public class OverseerrClient {
         if (skip != null) {
             urlBuilder.addQueryParameter("skip", String.valueOf(skip));
         }
-        return get(urlBuilder.build(), new TypeReference<PagedResults<MediaRequest>>() {});
+        Type type = Types.newParameterizedType(PagedResults.class, MediaRequest.class);
+        return get(urlBuilder.build(), type);
     }
 
     /**
@@ -235,7 +241,7 @@ public class OverseerrClient {
      */
     public RequestCount getRequestCount() {
         log.debug("Fetching request counts");
-        return get("/api/v1/request/count", new TypeReference<RequestCount>() {});
+        return get("/api/v1/request/count", RequestCount.class);
     }
 
     /**
@@ -249,7 +255,7 @@ public class OverseerrClient {
      */
     public MediaRequest createRequest(CreateRequestBody requestBody) {
         log.debug("Creating request for media ID: {} type: {}", requestBody.getMediaId(), requestBody.getMediaType());
-        return post("/api/v1/request", requestBody, new TypeReference<MediaRequest>() {});
+        return post("/api/v1/request", requestBody, MediaRequest.class);
     }
 
     /**
@@ -263,7 +269,7 @@ public class OverseerrClient {
      */
     public MediaRequest updateRequest(int requestId, CreateRequestBody requestBody) {
         log.debug("Updating request with ID: {}", requestId);
-        return put("/api/v1/request/" + requestId, requestBody, new TypeReference<MediaRequest>() {});
+        return put("/api/v1/request/" + requestId, requestBody, MediaRequest.class);
     }
 
     /**
@@ -287,7 +293,7 @@ public class OverseerrClient {
      */
     public MediaRequest approveRequest(int requestId) {
         log.debug("Approving request with ID: {}", requestId);
-        return post("/api/v1/request/" + requestId + "/approve", null, new TypeReference<MediaRequest>() {});
+        return post("/api/v1/request/" + requestId + "/approve", null, MediaRequest.class);
     }
 
     /**
@@ -299,7 +305,7 @@ public class OverseerrClient {
      */
     public MediaRequest declineRequest(int requestId) {
         log.debug("Declining request with ID: {}", requestId);
-        return post("/api/v1/request/" + requestId + "/decline", null, new TypeReference<MediaRequest>() {});
+        return post("/api/v1/request/" + requestId + "/decline", null, MediaRequest.class);
     }
 
     /**
@@ -312,7 +318,7 @@ public class OverseerrClient {
      */
     public MediaRequest retryRequest(int requestId) {
         log.debug("Retrying request with ID: {}", requestId);
-        return post("/api/v1/request/" + requestId + "/retry", null, new TypeReference<MediaRequest>() {});
+        return post("/api/v1/request/" + requestId + "/retry", null, MediaRequest.class);
     }
 
     // ==================== MEDIA ====================
@@ -341,7 +347,8 @@ public class OverseerrClient {
         if (sort != null) {
             urlBuilder.addQueryParameter("sort", sort);
         }
-        return get(urlBuilder.build(), new TypeReference<PagedResults<MediaInfo>>() {});
+        Type type = Types.newParameterizedType(PagedResults.class, MediaInfo.class);
+        return get(urlBuilder.build(), type);
     }
 
     /**
@@ -373,7 +380,7 @@ public class OverseerrClient {
      */
     public MediaInfo updateMediaStatus(int mediaId, String status) {
         log.debug("Updating media ID: {} to status: {}", mediaId, status);
-        return post("/api/v1/media/" + mediaId + "/" + status, null, new TypeReference<MediaInfo>() {});
+        return post("/api/v1/media/" + mediaId + "/" + status, null, MediaInfo.class);
     }
 
     // ==================== HTTP METHODS ====================
@@ -382,11 +389,11 @@ public class OverseerrClient {
      * Execute a GET request to the Overseerr API.
      *
      * @param path API path
-     * @param responseType TypeReference for the expected response type
+     * @param responseType Type for the expected response type
      * @param <T> The type of the response
      * @return parsed response
      */
-    private <T> T get(String path, TypeReference<T> responseType) {
+    private <T> T get(String path, Type responseType) {
         HttpUrl url = baseUrl.newBuilder()
                 .addPathSegments(path.replaceFirst("^/", ""))
                 .build();
@@ -397,11 +404,11 @@ public class OverseerrClient {
      * Execute a GET request to the Overseerr API.
      *
      * @param url Full URL with query parameters
-     * @param responseType TypeReference for the expected response type
+     * @param responseType Type for the expected response type
      * @param <T> The type of the response
      * @return parsed response
      */
-    private <T> T get(HttpUrl url, TypeReference<T> responseType) {
+    private <T> T get(HttpUrl url, Type responseType) {
         Request request = new Request.Builder()
                 .url(url)
                 .header(API_KEY_HEADER, apiKey)
@@ -416,11 +423,11 @@ public class OverseerrClient {
      *
      * @param path API path
      * @param body Request body object (can be null)
-     * @param responseType TypeReference for the expected response type
+     * @param responseType Type for the expected response type
      * @param <T> The type of the response
      * @return parsed response
      */
-    private <T> T post(String path, Object body, TypeReference<T> responseType) {
+    private <T> T post(String path, Object body, Type responseType) {
         HttpUrl url = baseUrl.newBuilder()
                 .addPathSegments(path.replaceFirst("^/", ""))
                 .build();
@@ -428,7 +435,7 @@ public class OverseerrClient {
         try {
             RequestBody requestBody;
             if (body != null) {
-                String jsonBody = objectMapper.writeValueAsString(body);
+                String jsonBody = moshi.adapter(body.getClass()).toJson(body);
                 requestBody = RequestBody.create(jsonBody, JSON);
             } else {
                 requestBody = RequestBody.create("", JSON);
@@ -441,7 +448,7 @@ public class OverseerrClient {
                     .build();
 
             return executeRequest(request, responseType);
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("Failed to serialize request body for POST {}", path, e);
             throw new OverseerrClientException("Failed to serialize request body for POST " + path, e);
         }
@@ -452,17 +459,17 @@ public class OverseerrClient {
      *
      * @param path API path
      * @param body Request body object
-     * @param responseType TypeReference for the expected response type
+     * @param responseType Type for the expected response type
      * @param <T> The type of the response
      * @return parsed response
      */
-    private <T> T put(String path, Object body, TypeReference<T> responseType) {
+    private <T> T put(String path, Object body, Type responseType) {
         HttpUrl url = baseUrl.newBuilder()
                 .addPathSegments(path.replaceFirst("^/", ""))
                 .build();
 
         try {
-            String jsonBody = objectMapper.writeValueAsString(body);
+            String jsonBody = moshi.adapter(body.getClass()).toJson(body);
             RequestBody requestBody = RequestBody.create(jsonBody, JSON);
             Request request = new Request.Builder()
                     .url(url)
@@ -471,7 +478,7 @@ public class OverseerrClient {
                     .build();
 
             return executeRequest(request, responseType);
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("Failed to serialize request body for PUT {}", path, e);
             throw new OverseerrClientException("Failed to serialize request body for PUT " + path, e);
         }
@@ -493,11 +500,11 @@ public class OverseerrClient {
      * Execute a DELETE request to the Overseerr API with response body.
      *
      * @param path API path
-     * @param responseType TypeReference for the expected response type
+     * @param responseType Type for the expected response type
      * @param <T> The type of the response
      * @return parsed response
      */
-    private <T> T delete(String path, TypeReference<T> responseType) {
+    private <T> T delete(String path, Type responseType) {
         HttpUrl url = baseUrl.newBuilder()
                 .addPathSegments(path.replaceFirst("^/", ""))
                 .build();
@@ -508,11 +515,11 @@ public class OverseerrClient {
      * Execute a DELETE request to the Overseerr API.
      *
      * @param url Full URL
-     * @param responseType TypeReference for the expected response type (can be null)
+     * @param responseType Type for the expected response type (can be null)
      * @param <T> The type of the response
      * @return parsed response or null
      */
-    private <T> T delete(HttpUrl url, TypeReference<T> responseType) {
+    private <T> T delete(HttpUrl url, Type responseType) {
         Request request = new Request.Builder()
                 .url(url)
                 .header(API_KEY_HEADER, apiKey)
@@ -541,11 +548,11 @@ public class OverseerrClient {
      * Execute a request and parse the response.
      *
      * @param request HTTP request
-     * @param responseType TypeReference for the expected response type
+     * @param responseType Type for the expected response type
      * @param <T> The type of the response
      * @return parsed response
      */
-    private <T> T executeRequest(Request request, TypeReference<T> responseType) {
+    private <T> T executeRequest(Request request, Type responseType) {
         try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful() && response.code() != 204) {
                 String errorBody = response.body() != null ? response.body().string() : "";
@@ -560,7 +567,8 @@ public class OverseerrClient {
             }
 
             try {
-                return objectMapper.readValue(responseBody, responseType);
+                JsonAdapter<T> adapter = (JsonAdapter<T>) moshi.adapter(responseType);
+                return adapter.fromJson(responseBody);
             } catch (IOException parseException) {
                 log.error("Failed to parse Overseerr response: {}", request.url(), parseException);
                 throw new OverseerrClientException(

@@ -1,12 +1,14 @@
 package de.llalon.cinematic.client.tautulli;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Types;
 import de.llalon.cinematic.client.tautulli.config.TautulliProperties;
 import de.llalon.cinematic.client.tautulli.dto.*;
 import de.llalon.cinematic.client.tautulli.exception.TautulliApiException;
 import de.llalon.cinematic.client.tautulli.exception.TautulliClientException;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,11 +41,11 @@ public class TautulliClient {
 
     private final String apiKey;
     private final OkHttpClient httpClient;
-    private final ObjectMapper objectMapper;
+    private final Moshi moshi;
     private final HttpUrl baseUrl;
 
-    public TautulliClient(OkHttpClient httpClient, TautulliProperties properties, ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    public TautulliClient(OkHttpClient httpClient, TautulliProperties properties, Moshi moshi) {
+        this.moshi = moshi;
         this.apiKey = properties.getApiKey();
         this.httpClient = httpClient;
         this.baseUrl = HttpUrl.parse(properties.getUrl());
@@ -65,7 +67,7 @@ public class TautulliClient {
      */
     public Activity getActivity() {
         log.debug("Fetching current activity");
-        return executeCommand("get_activity", Map.of(), new TypeReference<Activity>() {});
+        return executeCommand("get_activity", Map.of(), Activity.class);
     }
 
     /**
@@ -76,7 +78,7 @@ public class TautulliClient {
      */
     public Activity getActivity(String sessionKey) {
         log.debug("Fetching activity for session key: {}", sessionKey);
-        return executeCommand("get_activity", Map.of("session_key", sessionKey), new TypeReference<Activity>() {});
+        return executeCommand("get_activity", Map.of("session_key", sessionKey), Activity.class);
     }
 
     /**
@@ -87,7 +89,7 @@ public class TautulliClient {
      */
     public Activity getActivityBySessionId(String sessionId) {
         log.debug("Fetching activity for session ID: {}", sessionId);
-        return executeCommand("get_activity", Map.of("session_id", sessionId), new TypeReference<Activity>() {});
+        return executeCommand("get_activity", Map.of("session_id", sessionId), Activity.class);
     }
 
     // ==================== HISTORY ====================
@@ -105,7 +107,8 @@ public class TautulliClient {
         Map<String, Object> params = new HashMap<>();
         params.put("start", start);
         params.put("length", length);
-        return executeCommand("get_history", params, new TypeReference<TableResponse<History>>() {});
+        Type type = Types.newParameterizedType(TableResponse.class, History.class);
+        return executeCommand("get_history", params, type);
     }
 
     /**
@@ -122,7 +125,8 @@ public class TautulliClient {
         params.put("user_id", userId);
         params.put("start", start);
         params.put("length", length);
-        return executeCommand("get_history", params, new TypeReference<TableResponse<History>>() {});
+        Type type = Types.newParameterizedType(TableResponse.class, History.class);
+        return executeCommand("get_history", params, type);
     }
 
     /**
@@ -139,7 +143,8 @@ public class TautulliClient {
         params.put("rating_key", ratingKey);
         params.put("start", start);
         params.put("length", length);
-        return executeCommand("get_history", params, new TypeReference<TableResponse<History>>() {});
+        Type type = Types.newParameterizedType(TableResponse.class, History.class);
+        return executeCommand("get_history", params, type);
     }
 
     // ==================== USERS ====================
@@ -151,7 +156,8 @@ public class TautulliClient {
      */
     public List<User> getUsers() {
         log.debug("Fetching all users");
-        return executeCommand("get_users", Map.of(), new TypeReference<List<User>>() {});
+        Type type = Types.newParameterizedType(List.class, User.class);
+        return executeCommand("get_users", Map.of(), type);
     }
 
     /**
@@ -162,7 +168,7 @@ public class TautulliClient {
      */
     public User getUser(int userId) {
         log.debug("Fetching user with ID: {}", userId);
-        return executeCommand("get_user", Map.of("user_id", userId), new TypeReference<User>() {});
+        return executeCommand("get_user", Map.of("user_id", userId), User.class);
     }
 
     /**
@@ -173,7 +179,8 @@ public class TautulliClient {
      */
     public List<User> getUserNames() {
         log.debug("Fetching user names");
-        return executeCommand("get_user_names", Map.of(), new TypeReference<List<User>>() {});
+        Type type = Types.newParameterizedType(List.class, User.class);
+        return executeCommand("get_user_names", Map.of(), type);
     }
 
     // ==================== LIBRARIES ====================
@@ -185,7 +192,8 @@ public class TautulliClient {
      */
     public List<Library> getLibraries() {
         log.debug("Fetching all libraries");
-        return executeCommand("get_libraries", Map.of(), new TypeReference<List<Library>>() {});
+        Type type = Types.newParameterizedType(List.class, Library.class);
+        return executeCommand("get_libraries", Map.of(), type);
     }
 
     /**
@@ -196,7 +204,8 @@ public class TautulliClient {
      */
     public List<Library> getLibraryNames() {
         log.debug("Fetching library names");
-        return executeCommand("get_library_names", Map.of(), new TypeReference<List<Library>>() {});
+        Type type = Types.newParameterizedType(List.class, Library.class);
+        return executeCommand("get_library_names", Map.of(), type);
     }
 
     /**
@@ -207,7 +216,7 @@ public class TautulliClient {
      */
     public Library getLibrary(String sectionId) {
         log.debug("Fetching library with section ID: {}", sectionId);
-        return executeCommand("get_library", Map.of("section_id", sectionId), new TypeReference<Library>() {});
+        return executeCommand("get_library", Map.of("section_id", sectionId), Library.class);
     }
 
     // ==================== GENERIC COMMAND EXECUTION ====================
@@ -221,11 +230,11 @@ public class TautulliClient {
      *
      * @param command The Tautulli API command name (e.g., "get_activity", "get_history")
      * @param params Map of query parameters to include in the request
-     * @param responseType TypeReference for the expected response data type
+     * @param responseType Type for the expected response data type
      * @param <T> The type of the response data
      * @return the parsed response data
      */
-    public <T> T executeCommand(String command, Map<String, Object> params, TypeReference<T> responseType) {
+    public <T> T executeCommand(String command, Map<String, Object> params, Type responseType) {
         log.debug("Executing Tautulli command: {} with params: {}", command, params);
 
         // Build the URL with API key and command
@@ -271,12 +280,12 @@ public class TautulliClient {
      * Tautulli wraps all responses in a standard envelope with result status and data.
      *
      * @param responseBody Raw JSON string from API
-     * @param typeReference Target type reference for deserialization
+     * @param responseType Target type for deserialization
      * @param command Command name for error logging
      * @param <T> Target type
      * @return parsed object
      */
-    private <T> T parseResponse(String responseBody, TypeReference<T> typeReference, String command) {
+    private <T> T parseResponse(String responseBody, Type responseType, String command) {
         try {
             // Validate the response
             if (responseBody == null || responseBody.isEmpty()) {
@@ -284,7 +293,8 @@ public class TautulliClient {
             }
 
             // Parse the raw JSON into TautulliResponse envelope
-            TautulliResponse<?> rawResponse = objectMapper.readValue(responseBody, TautulliResponse.class);
+            JsonAdapter<TautulliResponse> responseAdapter = moshi.adapter(TautulliResponse.class);
+            TautulliResponse<?> rawResponse = responseAdapter.fromJson(responseBody);
 
             if (!rawResponse.isSuccess()) {
                 String errorMessage = rawResponse.getMessage() != null ? rawResponse.getMessage() : "Unknown error";
@@ -297,9 +307,11 @@ public class TautulliClient {
                 return null;
             }
 
-            // Convert the data object to the target type using ObjectMapper
-            String dataJson = objectMapper.writeValueAsString(data);
-            return objectMapper.readValue(dataJson, typeReference);
+            // Convert the data object to the target type using Moshi
+            JsonAdapter<Object> dataAdapter = (JsonAdapter<Object>) moshi.adapter(Object.class);
+            String dataJson = dataAdapter.toJson(data);
+            JsonAdapter<T> targetAdapter = (JsonAdapter<T>) moshi.adapter(responseType);
+            return targetAdapter.fromJson(dataJson);
 
         } catch (Exception e) {
             log.error("Unexpected error parsing Tautulli response for command: {}", command, e);

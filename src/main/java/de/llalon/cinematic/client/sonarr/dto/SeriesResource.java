@@ -1,7 +1,6 @@
 package de.llalon.cinematic.client.sonarr.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.squareup.moshi.Json;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -12,102 +11,101 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class SeriesResource {
 
-    @JsonProperty("id")
+    @Json(name = "id")
     private final Integer id;
 
-    @JsonProperty("title")
+    @Json(name = "title")
     private final String title;
 
-    @JsonProperty("sortTitle")
+    @Json(name = "sortTitle")
     private final String sortTitle;
 
-    @JsonProperty("status")
+    @Json(name = "status")
     private final String status;
 
-    @JsonProperty("ended")
+    @Json(name = "ended")
     private final Boolean ended;
 
-    @JsonProperty("overview")
+    @Json(name = "overview")
     private final String overview;
 
-    @JsonProperty("network")
+    @Json(name = "network")
     private final String network;
 
-    @JsonProperty("airTime")
+    @Json(name = "airTime")
     private final String airTime;
 
-    @JsonProperty("nextAiring")
+    @Json(name = "nextAiring")
     private final LocalDateTime nextAiring;
 
-    @JsonProperty("previousAiring")
+    @Json(name = "previousAiring")
     private final LocalDateTime previousAiring;
 
-    @JsonProperty("year")
+    @Json(name = "year")
     private final Integer year;
 
-    @JsonProperty("path")
+    @Json(name = "path")
     private final String path;
 
-    @JsonProperty("qualityProfileId")
+    @Json(name = "qualityProfileId")
     private final Integer qualityProfileId;
 
-    @JsonProperty("seasonFolder")
+    @Json(name = "seasonFolder")
     private final Boolean seasonFolder;
 
-    @JsonProperty("monitored")
+    @Json(name = "monitored")
     private final Boolean monitored;
 
-    @JsonProperty("runtime")
+    @Json(name = "runtime")
     private final Integer runtime;
 
-    @JsonProperty("tvdbId")
+    @Json(name = "tvdbId")
     private final Integer tvdbId;
 
-    @JsonProperty("tvRageId")
+    @Json(name = "tvRageId")
     private final Integer tvRageId;
 
-    @JsonProperty("tvMazeId")
+    @Json(name = "tvMazeId")
     private final Integer tvMazeId;
 
-    @JsonProperty("tmdbId")
+    @Json(name = "tmdbId")
     private final Integer tmdbId;
 
-    @JsonProperty("firstAired")
+    @Json(name = "firstAired")
     private final LocalDateTime firstAired;
 
-    @JsonProperty("lastAired")
+    @Json(name = "lastAired")
     private final LocalDateTime lastAired;
 
-    @JsonProperty("seriesType")
+    @Json(name = "seriesType")
     private final String seriesType;
 
-    @JsonProperty("cleanTitle")
+    @Json(name = "cleanTitle")
     private final String cleanTitle;
 
-    @JsonProperty("imdbId")
+    @Json(name = "imdbId")
     private final String imdbId;
 
-    @JsonProperty("titleSlug")
+    @Json(name = "titleSlug")
     private final String titleSlug;
 
-    @JsonProperty("certification")
+    @Json(name = "certification")
     private final String certification;
 
-    @JsonProperty("genres")
+    @Json(name = "genres")
     private final List<String> genres;
 
-    @JsonProperty("tags")
+    @Json(name = "tags")
     private final List<Integer> tags;
 
-    @JsonProperty("added")
+    @Json(name = "added")
     private final LocalDateTime added;
 
-    @JsonProperty("ratings")
+    @Json(name = "ratings")
     private final Object ratings;
 
-    @JsonProperty("statistics")
+    @Json(name = "statistics")
     private final Object statistics;
 }

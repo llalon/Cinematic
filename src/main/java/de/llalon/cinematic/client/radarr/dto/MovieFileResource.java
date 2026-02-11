@@ -1,7 +1,6 @@
 package de.llalon.cinematic.client.radarr.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.squareup.moshi.Json;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,39 +10,38 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class MovieFileResource {
 
-    @JsonProperty("id")
+    @Json(name = "id")
     private final Integer id;
 
-    @JsonProperty("movieId")
+    @Json(name = "movieId")
     private final Integer movieId;
 
-    @JsonProperty("relativePath")
+    @Json(name = "relativePath")
     private final String relativePath;
 
-    @JsonProperty("path")
+    @Json(name = "path")
     private final String path;
 
-    @JsonProperty("size")
+    @Json(name = "size")
     private final Long size;
 
-    @JsonProperty("dateAdded")
+    @Json(name = "dateAdded")
     private final LocalDateTime dateAdded;
 
-    @JsonProperty("sceneName")
+    @Json(name = "sceneName")
     private final String sceneName;
 
-    @JsonProperty("releaseGroup")
+    @Json(name = "releaseGroup")
     private final String releaseGroup;
 
-    @JsonProperty("edition")
+    @Json(name = "edition")
     private final String edition;
 
-    @JsonProperty("qualityCutoffNotMet")
+    @Json(name = "qualityCutoffNotMet")
     private final Boolean qualityCutoffNotMet;
 
-    @JsonProperty("originalFilePath")
+    @Json(name = "originalFilePath")
     private final String originalFilePath;
 }

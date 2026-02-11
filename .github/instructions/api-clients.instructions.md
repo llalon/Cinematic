@@ -11,11 +11,10 @@ applyTo: '**/*.java, **/*.kt'
 
 # JSON serialization/deserialization
 
-- Use Jackson for JSON serialization/deserialization
+- Use Moshi for JSON serialization/deserialization
 - Use typed DTOs for responses and requests including typed enums where appropriate
 - Methods must return typed DTO Response with response body
 - Method must accept typed DTO requests with request parameters and/or body
-- DTOs must use appropriate Jackson annotations for field mapping
 - DTOs must use lombok `@Data` and `@JsonIgnoreProperties(ignoreUnknown = true)`
 - DTOs must contain all final members
 - DTOs must use collection objects instead of arrays

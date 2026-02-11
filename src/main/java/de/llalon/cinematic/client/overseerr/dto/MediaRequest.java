@@ -1,7 +1,6 @@
 package de.llalon.cinematic.client.overseerr.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.squareup.moshi.Json;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -17,7 +16,6 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class MediaRequest {
     private final Integer id;
 
@@ -31,37 +29,37 @@ public class MediaRequest {
 
     private final MediaInfo media;
 
-    @JsonProperty("createdAt")
+    @Json(name = "createdAt")
     private final LocalDateTime createdAt;
 
-    @JsonProperty("updatedAt")
+    @Json(name = "updatedAt")
     private final LocalDateTime updatedAt;
 
-    @JsonProperty("requestedBy")
+    @Json(name = "requestedBy")
     private final User requestedBy;
 
-    @JsonProperty("modifiedBy")
+    @Json(name = "modifiedBy")
     private final User modifiedBy;
 
-    @JsonProperty("is4k")
+    @Json(name = "is4k")
     private final Boolean is4k;
 
-    @JsonProperty("serverId")
+    @Json(name = "serverId")
     private final Integer serverId;
 
-    @JsonProperty("profileId")
+    @Json(name = "profileId")
     private final Integer profileId;
 
-    @JsonProperty("rootFolder")
+    @Json(name = "rootFolder")
     private final String rootFolder;
 
-    @JsonProperty("mediaType")
+    @Json(name = "mediaType")
     private final Integer mediaType;
 
-    @JsonProperty("mediaId")
+    @Json(name = "mediaId")
     private final Integer mediaId;
 
-    @JsonProperty("tvdbId")
+    @Json(name = "tvdbId")
     private final String tvdbId;
 
     private final List<Season> seasons;

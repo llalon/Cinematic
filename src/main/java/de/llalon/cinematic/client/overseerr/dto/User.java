@@ -1,7 +1,6 @@
 package de.llalon.cinematic.client.overseerr.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.squareup.moshi.Json;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,30 +10,29 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
     private final Integer id;
     private final String email;
     private final String username;
 
-    @JsonProperty("plexToken")
+    @Json(name = "plexToken")
     private final String plexToken;
 
-    @JsonProperty("plexUsername")
+    @Json(name = "plexUsername")
     private final String plexUsername;
 
-    @JsonProperty("userType")
+    @Json(name = "userType")
     private final Integer userType;
 
     private final Long permissions;
     private final String avatar;
 
-    @JsonProperty("createdAt")
+    @Json(name = "createdAt")
     private final LocalDateTime createdAt;
 
-    @JsonProperty("updatedAt")
+    @Json(name = "updatedAt")
     private final LocalDateTime updatedAt;
 
-    @JsonProperty("requestCount")
+    @Json(name = "requestCount")
     private final Integer requestCount;
 }

@@ -1,7 +1,6 @@
 package de.llalon.cinematic.client.sonarr.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.squareup.moshi.Json;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -10,12 +9,11 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class TagResource {
 
-    @JsonProperty("id")
+    @Json(name = "id")
     private final Integer id;
 
-    @JsonProperty("label")
+    @Json(name = "label")
     private final String label;
 }

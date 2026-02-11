@@ -1,9 +1,7 @@
 package de.llalon.cinematic.domain;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.squareup.moshi.Moshi;
+import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter;
 import de.llalon.cinematic.client.overseerr.OverseerrClient;
 import de.llalon.cinematic.client.overseerr.config.OverseerrProperties;
 import de.llalon.cinematic.client.qbittorrent.QBittorrentClient;
@@ -14,6 +12,7 @@ import de.llalon.cinematic.client.sonarr.SonarrClient;
 import de.llalon.cinematic.client.sonarr.config.SonarrProperties;
 import de.llalon.cinematic.client.tautulli.TautulliClient;
 import de.llalon.cinematic.client.tautulli.config.TautulliProperties;
+import java.time.LocalDateTime;
 import java.util.function.Supplier;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,7 +26,7 @@ public final class ClientContext {
 
     public ClientContext(
             OkHttpClient httpClient,
-            ObjectMapper objectMapper,
+            Moshi moshi,
             RadarrProperties radarrProperties,
             SonarrProperties sonarrProperties,
             QBittorrentProperties qbittorrentProperties,
@@ -39,12 +38,11 @@ public final class ClientContext {
             OverseerrClient overseerrClient,
             TautulliClient tautulliClient) {
         this.httpClient = httpClient == null ? new OkHttpClient() : httpClient;
-        this.objectMapper = objectMapper == null
-                ? JsonMapper.builder()
-                        .addModule(new JavaTimeModule())
-                        .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+        this.moshi = moshi == null
+                ? new Moshi.Builder()
+                        .add(LocalDateTime.class, new Rfc3339DateJsonAdapter().lenient())
                         .build()
-                : objectMapper;
+                : moshi;
 
         // Radarr
         if (radarrClient != null) {
@@ -55,7 +53,7 @@ public final class ClientContext {
                     ? radarrProperties
                     : safeFromEnv(RadarrProperties::fromEnvironment, "Radarr");
             this.radarrClient = this.radarrProperties != null
-                    ? new RadarrClient(this.httpClient, this.radarrProperties, this.objectMapper)
+                    ? new RadarrClient(this.httpClient, this.radarrProperties, this.moshi)
                     : null;
         }
 
@@ -68,7 +66,7 @@ public final class ClientContext {
                     ? sonarrProperties
                     : safeFromEnv(SonarrProperties::fromEnvironment, "Sonarr");
             this.sonarrClient = this.sonarrProperties != null
-                    ? new SonarrClient(this.httpClient, this.sonarrProperties, this.objectMapper)
+                    ? new SonarrClient(this.httpClient, this.sonarrProperties, this.moshi)
                     : null;
         }
 
@@ -81,7 +79,7 @@ public final class ClientContext {
                     ? qbittorrentProperties
                     : safeFromEnv(QBittorrentProperties::fromEnvironment, "QBittorrent");
             this.qbittorrentClient = this.qbittorrentProperties != null
-                    ? new QBittorrentClient(this.httpClient, this.qbittorrentProperties, this.objectMapper)
+                    ? new QBittorrentClient(this.httpClient, this.qbittorrentProperties, this.moshi)
                     : null;
         }
 
@@ -94,7 +92,7 @@ public final class ClientContext {
                     ? overseerrProperties
                     : safeFromEnv(OverseerrProperties::fromEnvironment, "Overseerr");
             this.overseerrClient = this.overseerrProperties != null
-                    ? new OverseerrClient(this.httpClient, this.overseerrProperties, this.objectMapper)
+                    ? new OverseerrClient(this.httpClient, this.overseerrProperties, this.moshi)
                     : null;
         }
 
@@ -107,7 +105,7 @@ public final class ClientContext {
                     ? tautulliProperties
                     : safeFromEnv(TautulliProperties::fromEnvironment, "Tautulli");
             this.tautulliClient = this.tautulliProperties != null
-                    ? new TautulliClient(this.httpClient, this.tautulliProperties, this.objectMapper)
+                    ? new TautulliClient(this.httpClient, this.tautulliProperties, this.moshi)
                     : null;
         }
     }
@@ -136,7 +134,7 @@ public final class ClientContext {
     }
 
     private final OkHttpClient httpClient;
-    private final ObjectMapper objectMapper;
+    private final Moshi moshi;
     private final RadarrProperties radarrProperties;
     private final SonarrProperties sonarrProperties;
     private final QBittorrentProperties qbittorrentProperties;

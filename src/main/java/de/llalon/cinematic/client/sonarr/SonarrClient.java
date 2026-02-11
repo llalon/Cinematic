@@ -1,7 +1,8 @@
 package de.llalon.cinematic.client.sonarr;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Types;
 import de.llalon.cinematic.client.sonarr.config.SonarrProperties;
 import de.llalon.cinematic.client.sonarr.dto.EpisodeFileResource;
 import de.llalon.cinematic.client.sonarr.dto.EpisodeResource;
@@ -12,6 +13,7 @@ import de.llalon.cinematic.client.sonarr.dto.TagResource;
 import de.llalon.cinematic.client.sonarr.exception.SonarrApiException;
 import de.llalon.cinematic.client.sonarr.exception.SonarrClientException;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
@@ -42,11 +44,11 @@ public class SonarrClient {
 
     private final String apiKey;
     private final OkHttpClient httpClient;
-    private final ObjectMapper objectMapper;
+    private final Moshi moshi;
     private final HttpUrl baseUrl;
 
-    public SonarrClient(OkHttpClient httpClient, SonarrProperties properties, ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    public SonarrClient(OkHttpClient httpClient, SonarrProperties properties, Moshi moshi) {
+        this.moshi = moshi;
         this.apiKey = properties.getApiKey();
         this.httpClient = httpClient;
         this.baseUrl = HttpUrl.parse(properties.getUrl());
@@ -67,7 +69,8 @@ public class SonarrClient {
      */
     public List<SeriesResource> getAllSeries() {
         log.debug("Fetching all series");
-        return get("/api/v3/series", new TypeReference<List<SeriesResource>>() {});
+        Type type = Types.newParameterizedType(List.class, SeriesResource.class);
+        return get("/api/v3/series", type);
     }
 
     /**
@@ -78,7 +81,7 @@ public class SonarrClient {
      */
     public SeriesResource getSeries(int seriesId) {
         log.debug("Fetching series with ID: {}", seriesId);
-        return get("/api/v3/series/" + seriesId, new TypeReference<SeriesResource>() {});
+        return get("/api/v3/series/" + seriesId, SeriesResource.class);
     }
 
     /**
@@ -93,7 +96,8 @@ public class SonarrClient {
                 .addPathSegments("api/v3/series")
                 .addQueryParameter("tvdbId", String.valueOf(tvdbId))
                 .build();
-        return get(url, new TypeReference<List<SeriesResource>>() {});
+        Type type = Types.newParameterizedType(List.class, SeriesResource.class);
+        return get(url, type);
     }
 
     /**
@@ -105,7 +109,7 @@ public class SonarrClient {
      */
     public SeriesResource updateSeries(SeriesResource series) {
         log.debug("Updating series with ID: {}", series.getId());
-        return put("/api/v3/series/" + series.getId(), series, new TypeReference<SeriesResource>() {});
+        return put("/api/v3/series/" + series.getId(), series, SeriesResource.class);
     }
 
     /**
@@ -137,7 +141,8 @@ public class SonarrClient {
                 .addPathSegments("api/v3/episode")
                 .addQueryParameter("seriesId", String.valueOf(seriesId))
                 .build();
-        return get(url, new TypeReference<List<EpisodeResource>>() {});
+        Type type = Types.newParameterizedType(List.class, EpisodeResource.class);
+        return get(url, type);
     }
 
     /**
@@ -154,7 +159,8 @@ public class SonarrClient {
                 .addQueryParameter("seriesId", String.valueOf(seriesId))
                 .addQueryParameter("seasonNumber", String.valueOf(seasonNumber))
                 .build();
-        return get(url, new TypeReference<List<EpisodeResource>>() {});
+        Type type = Types.newParameterizedType(List.class, EpisodeResource.class);
+        return get(url, type);
     }
 
     /**
@@ -165,7 +171,7 @@ public class SonarrClient {
      */
     public EpisodeResource getEpisode(int episodeId) {
         log.debug("Fetching episode with ID: {}", episodeId);
-        return get("/api/v3/episode/" + episodeId, new TypeReference<EpisodeResource>() {});
+        return get("/api/v3/episode/" + episodeId, EpisodeResource.class);
     }
 
     /**
@@ -177,7 +183,7 @@ public class SonarrClient {
      */
     public EpisodeResource updateEpisode(EpisodeResource episode) {
         log.debug("Updating episode with ID: {}", episode.getId());
-        return put("/api/v3/episode/" + episode.getId(), episode, new TypeReference<EpisodeResource>() {});
+        return put("/api/v3/episode/" + episode.getId(), episode, EpisodeResource.class);
     }
 
     // ==================== EPISODE FILES ====================
@@ -194,7 +200,8 @@ public class SonarrClient {
                 .addPathSegments("api/v3/episodefile")
                 .addQueryParameter("seriesId", String.valueOf(seriesId))
                 .build();
-        return get(url, new TypeReference<List<EpisodeFileResource>>() {});
+        Type type = Types.newParameterizedType(List.class, EpisodeFileResource.class);
+        return get(url, type);
     }
 
     /**
@@ -205,7 +212,7 @@ public class SonarrClient {
      */
     public EpisodeFileResource getEpisodeFile(int episodeFileId) {
         log.debug("Fetching episode file with ID: {}", episodeFileId);
-        return get("/api/v3/episodefile/" + episodeFileId, new TypeReference<EpisodeFileResource>() {});
+        return get("/api/v3/episodefile/" + episodeFileId, EpisodeFileResource.class);
     }
 
     /**
@@ -217,8 +224,7 @@ public class SonarrClient {
      */
     public EpisodeFileResource updateEpisodeFile(EpisodeFileResource episodeFile) {
         log.debug("Updating episode file with ID: {}", episodeFile.getId());
-        return put(
-                "/api/v3/episodefile/" + episodeFile.getId(), episodeFile, new TypeReference<EpisodeFileResource>() {});
+        return put("/api/v3/episodefile/" + episodeFile.getId(), episodeFile, EpisodeFileResource.class);
     }
 
     /**
@@ -248,7 +254,7 @@ public class SonarrClient {
                 .addQueryParameter("pageSize", "1000")
                 .addQueryParameter("includeSeries", "true")
                 .build();
-        return get(url, new TypeReference<QueueResourcePagingResource>() {});
+        return get(url, QueueResourcePagingResource.class);
     }
 
     /**
@@ -264,7 +270,8 @@ public class SonarrClient {
                 .addQueryParameter("seriesId", String.valueOf(seriesId))
                 .addQueryParameter("includeSeries", "true")
                 .build();
-        return get(url, new TypeReference<List<QueueResource>>() {});
+        Type type = Types.newParameterizedType(List.class, QueueResource.class);
+        return get(url, type);
     }
 
     // ==================== TAGS ====================
@@ -277,7 +284,8 @@ public class SonarrClient {
      */
     public List<TagResource> getAllTags() {
         log.debug("Fetching all tags");
-        return get("/api/v3/tag", new TypeReference<List<TagResource>>() {});
+        Type type = Types.newParameterizedType(List.class, TagResource.class);
+        return get("/api/v3/tag", type);
     }
 
     /**
@@ -288,7 +296,7 @@ public class SonarrClient {
      */
     public TagResource getTag(int tagId) {
         log.debug("Fetching tag with ID: {}", tagId);
-        return get("/api/v3/tag/" + tagId, new TypeReference<TagResource>() {});
+        return get("/api/v3/tag/" + tagId, TagResource.class);
     }
 
     /**
@@ -300,7 +308,7 @@ public class SonarrClient {
      */
     public TagResource createTag(TagResource tag) {
         log.debug("Creating tag: {}", tag.getLabel());
-        return post("/api/v3/tag", tag, new TypeReference<TagResource>() {});
+        return post("/api/v3/tag", tag, TagResource.class);
     }
 
     /**
@@ -312,7 +320,7 @@ public class SonarrClient {
      */
     public TagResource updateTag(TagResource tag) {
         log.debug("Updating tag with ID: {}", tag.getId());
-        return put("/api/v3/tag/" + tag.getId(), tag, new TypeReference<TagResource>() {});
+        return put("/api/v3/tag/" + tag.getId(), tag, TagResource.class);
     }
 
     /**
@@ -331,11 +339,11 @@ public class SonarrClient {
      * Execute a GET request to the Sonarr API.
      *
      * @param path API path
-     * @param responseType TypeReference for the expected response type
+     * @param responseType Type for the expected response type
      * @param <T> The type of the response
      * @return parsed response
      */
-    private <T> T get(String path, TypeReference<T> responseType) {
+    private <T> T get(String path, Type responseType) {
         HttpUrl url = baseUrl.newBuilder()
                 .addPathSegments(path.replaceFirst("^/", ""))
                 .build();
@@ -346,11 +354,11 @@ public class SonarrClient {
      * Execute a GET request to the Sonarr API.
      *
      * @param url Full URL with query parameters
-     * @param responseType TypeReference for the expected response type
+     * @param responseType Type for the expected response type
      * @param <T> The type of the response
      * @return parsed response
      */
-    private <T> T get(HttpUrl url, TypeReference<T> responseType) {
+    private <T> T get(HttpUrl url, Type responseType) {
         Request request = new Request.Builder()
                 .url(url)
                 .header(API_KEY_HEADER, apiKey)
@@ -365,17 +373,17 @@ public class SonarrClient {
      *
      * @param path API path
      * @param body Request body object
-     * @param responseType TypeReference for the expected response type
+     * @param responseType Type for the expected response type
      * @param <T> The type of the response
      * @return parsed response
      */
-    private <T> T post(String path, Object body, TypeReference<T> responseType) {
+    private <T> T post(String path, Object body, Type responseType) {
         HttpUrl url = baseUrl.newBuilder()
                 .addPathSegments(path.replaceFirst("^/", ""))
                 .build();
 
         try {
-            String jsonBody = objectMapper.writeValueAsString(body);
+            String jsonBody = moshi.adapter(body.getClass()).toJson(body);
             RequestBody requestBody = RequestBody.create(jsonBody, JSON);
             Request request = new Request.Builder()
                     .url(url)
@@ -384,7 +392,7 @@ public class SonarrClient {
                     .build();
 
             return executeRequest(request, responseType);
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("Failed to serialize request body for POST {}", path, e);
             throw new SonarrClientException("Failed to serialize request body for POST " + path, e);
         }
@@ -395,17 +403,17 @@ public class SonarrClient {
      *
      * @param path API path
      * @param body Request body object
-     * @param responseType TypeReference for the expected response type
+     * @param responseType Type for the expected response type
      * @param <T> The type of the response
      * @return parsed response
      */
-    private <T> T put(String path, Object body, TypeReference<T> responseType) {
+    private <T> T put(String path, Object body, Type responseType) {
         HttpUrl url = baseUrl.newBuilder()
                 .addPathSegments(path.replaceFirst("^/", ""))
                 .build();
 
         try {
-            String jsonBody = objectMapper.writeValueAsString(body);
+            String jsonBody = moshi.adapter(body.getClass()).toJson(body);
             RequestBody requestBody = RequestBody.create(jsonBody, JSON);
             Request request = new Request.Builder()
                     .url(url)
@@ -414,7 +422,7 @@ public class SonarrClient {
                     .build();
 
             return executeRequest(request, responseType);
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("Failed to serialize request body for PUT {}", path, e);
             throw new SonarrClientException("Failed to serialize request body for PUT " + path, e);
         }
@@ -449,11 +457,11 @@ public class SonarrClient {
      * Execute a request and parse the response.
      *
      * @param request HTTP request
-     * @param responseType TypeReference for the expected response type
+     * @param responseType Type for the expected response type
      * @param <T> The type of the response
      * @return parsed response
      */
-    private <T> T executeRequest(Request request, TypeReference<T> responseType) {
+    private <T> T executeRequest(Request request, Type responseType) {
         try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 String errorBody = response.body() != null ? response.body().string() : "";
@@ -468,7 +476,8 @@ public class SonarrClient {
             }
 
             try {
-                return objectMapper.readValue(responseBody, responseType);
+                JsonAdapter<T> adapter = (JsonAdapter<T>) moshi.adapter(responseType);
+                return adapter.fromJson(responseBody);
             } catch (IOException parseException) {
                 log.error("Failed to parse Sonarr response: {}", request.url(), parseException);
                 throw new SonarrClientException("Failed to parse Sonarr response: " + request.url(), parseException);

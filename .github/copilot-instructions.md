@@ -27,3 +27,10 @@ The domain model must hide this complexity completely.
 - ActiveRecord
 - Rich Domain Model
 - Thin HTTP clients
+
+## Key Constraints 
+
+All code in this library must work in jRuby and other jvm languages with maximum compatibility.
+
+- Do not use records
+- Do not use reflection

@@ -1,7 +1,8 @@
 package de.llalon.cinematic.client.qbittorrent;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Types;
 import de.llalon.cinematic.client.qbittorrent.config.QBittorrentProperties;
 import de.llalon.cinematic.client.qbittorrent.dto.TorrentFile;
 import de.llalon.cinematic.client.qbittorrent.dto.TorrentInfo;
@@ -9,6 +10,7 @@ import de.llalon.cinematic.client.qbittorrent.dto.TorrentProperties;
 import de.llalon.cinematic.client.qbittorrent.exception.QBittorrentApiException;
 import de.llalon.cinematic.client.qbittorrent.exception.QBittorrentClientException;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -42,12 +44,12 @@ public class QBittorrentClient {
     private final String username;
     private final String password;
     private final OkHttpClient httpClient;
-    private final ObjectMapper objectMapper;
+    private final Moshi moshi;
     private final HttpUrl baseUrl;
     private volatile String sessionCookie;
 
-    public QBittorrentClient(OkHttpClient httpClient, QBittorrentProperties properties, ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    public QBittorrentClient(OkHttpClient httpClient, QBittorrentProperties properties, Moshi moshi) {
+        this.moshi = moshi;
         this.username = properties.getUsername();
         this.password = properties.getPassword();
         this.httpClient = httpClient;
@@ -164,7 +166,8 @@ public class QBittorrentClient {
      */
     public List<TorrentInfo> getTorrents() {
         log.debug("Fetching all torrents");
-        return get("/api/v2/torrents/info", Map.of(), new TypeReference<List<TorrentInfo>>() {});
+        Type type = Types.newParameterizedType(List.class, TorrentInfo.class);
+        return get("/api/v2/torrents/info", Map.of(), type);
     }
 
     /**
@@ -191,7 +194,8 @@ public class QBittorrentClient {
             urlBuilder.addQueryParameter("tag", tag);
         }
 
-        return get(urlBuilder.build(), new TypeReference<List<TorrentInfo>>() {});
+        Type type = Types.newParameterizedType(List.class, TorrentInfo.class);
+        return get(urlBuilder.build(), type);
     }
 
     /**
@@ -202,7 +206,7 @@ public class QBittorrentClient {
      */
     public TorrentProperties getTorrentProperties(String hash) {
         log.debug("Fetching properties for torrent: {}", hash);
-        return get("/api/v2/torrents/properties", Map.of("hash", hash), new TypeReference<TorrentProperties>() {});
+        return get("/api/v2/torrents/properties", Map.of("hash", hash), TorrentProperties.class);
     }
 
     /**
@@ -213,7 +217,8 @@ public class QBittorrentClient {
      */
     public List<TorrentFile> getTorrentFiles(String hash) {
         log.debug("Fetching files for torrent: {}", hash);
-        return get("/api/v2/torrents/files", Map.of("hash", hash), new TypeReference<List<TorrentFile>>() {});
+        Type type = Types.newParameterizedType(List.class, TorrentFile.class);
+        return get("/api/v2/torrents/files", Map.of("hash", hash), type);
     }
 
     /**
@@ -336,7 +341,8 @@ public class QBittorrentClient {
      */
     public Map<String, Object> getAllCategories() {
         log.debug("Fetching all categories");
-        return get("/api/v2/torrents/categories", Map.of(), new TypeReference<Map<String, Object>>() {});
+        Type type = Types.newParameterizedType(Map.class, String.class, Object.class);
+        return get("/api/v2/torrents/categories", Map.of(), type);
     }
 
     /**
@@ -365,7 +371,8 @@ public class QBittorrentClient {
      */
     public List<String> getAllTags() {
         log.debug("Fetching all tags");
-        return get("/api/v2/torrents/tags", Map.of(), new TypeReference<List<String>>() {});
+        Type type = Types.newParameterizedType(List.class, String.class);
+        return get("/api/v2/torrents/tags", Map.of(), type);
     }
 
     /**
@@ -455,16 +462,16 @@ public class QBittorrentClient {
     /**
      * Execute GET request with path and query parameters.
      */
-    private <T> T get(String path, Map<String, String> params, TypeReference<T> typeReference) {
+    private <T> T get(String path, Map<String, String> params, Type responseType) {
         HttpUrl.Builder urlBuilder = baseUrl.newBuilder().addPathSegments(path.replaceFirst("^/", ""));
         params.forEach(urlBuilder::addQueryParameter);
-        return get(urlBuilder.build(), typeReference);
+        return get(urlBuilder.build(), responseType);
     }
 
     /**
      * Execute GET request with full URL.
      */
-    private <T> T get(HttpUrl url, TypeReference<T> typeReference) {
+    private <T> T get(HttpUrl url, Type responseType) {
         ensureAuthenticated();
 
         Request request = new Request.Builder()
@@ -485,11 +492,11 @@ public class QBittorrentClient {
                 // Retry request with new session
                 request = request.newBuilder().header("Cookie", sessionCookie).build();
                 try (Response retryResponse = httpClient.newCall(request).execute()) {
-                    return handleResponse(retryResponse, typeReference);
+                    return handleResponse(retryResponse, responseType);
                 }
             }
 
-            return handleResponse(response, typeReference);
+            return handleResponse(response, responseType);
         } catch (IOException e) {
             throw new QBittorrentApiException("GET request failed: " + url, e);
         }
@@ -552,7 +559,7 @@ public class QBittorrentClient {
     /**
      * Handle HTTP response and deserialize JSON.
      */
-    private <T> T handleResponse(Response response, TypeReference<T> typeReference) throws IOException {
+    private <T> T handleResponse(Response response, Type responseType) throws IOException {
         if (!response.isSuccessful()) {
             String errorBody = response.body() != null ? response.body().string() : "";
             throw new QBittorrentApiException(
@@ -567,7 +574,8 @@ public class QBittorrentClient {
         log.debug("Response: {}", responseBody);
 
         try {
-            return objectMapper.readValue(responseBody, typeReference);
+            JsonAdapter<T> adapter = (JsonAdapter<T>) moshi.adapter(responseType);
+            return adapter.fromJson(responseBody);
         } catch (IOException e) {
             log.error("Failed to parse qBittorrent response", e);
             throw new QBittorrentClientException("Failed to parse qBittorrent response", e);

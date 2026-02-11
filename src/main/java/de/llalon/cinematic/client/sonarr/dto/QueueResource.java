@@ -1,7 +1,6 @@
 package de.llalon.cinematic.client.sonarr.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.squareup.moshi.Json;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,52 +13,51 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class QueueResource {
 
-    @JsonProperty("id")
+    @Json(name = "id")
     private final Integer id;
 
-    @JsonProperty("seriesId")
+    @Json(name = "seriesId")
     private final Integer seriesId;
 
-    @JsonProperty("episodeId")
+    @Json(name = "episodeId")
     private final Integer episodeId;
 
-    @JsonProperty("seasonNumber")
+    @Json(name = "seasonNumber")
     private final Integer seasonNumber;
 
-    @JsonProperty("series")
+    @Json(name = "series")
     private final SeriesResource series;
 
-    @JsonProperty("episode")
+    @Json(name = "episode")
     private final EpisodeResource episode;
 
-    @JsonProperty("size")
+    @Json(name = "size")
     private final Double size;
 
-    @JsonProperty("title")
+    @Json(name = "title")
     private final String title;
 
-    @JsonProperty("sizeleft")
+    @Json(name = "sizeleft")
     private final Double sizeleft;
 
-    @JsonProperty("estimatedCompletionTime")
+    @Json(name = "estimatedCompletionTime")
     private final LocalDateTime estimatedCompletionTime;
 
-    @JsonProperty("added")
+    @Json(name = "added")
     private final LocalDateTime added;
 
-    @JsonProperty("status")
+    @Json(name = "status")
     private final String status;
 
-    @JsonProperty("trackedDownloadStatus")
+    @Json(name = "trackedDownloadStatus")
     private final String trackedDownloadStatus;
 
-    @JsonProperty("trackedDownloadState")
+    @Json(name = "trackedDownloadState")
     private final String trackedDownloadState;
 
-    @JsonProperty("errorMessage")
+    @Json(name = "errorMessage")
     private final String errorMessage;
 
     /**
@@ -67,18 +65,18 @@ public class QueueResource {
      * For qBittorrent, this is the torrent hash (uppercase).
      * This is the key field for correlating queue items with actual downloads.
      */
-    @JsonProperty("downloadId")
+    @Json(name = "downloadId")
     private final String downloadId;
 
-    @JsonProperty("protocol")
+    @Json(name = "protocol")
     private final String protocol;
 
-    @JsonProperty("downloadClient")
+    @Json(name = "downloadClient")
     private final String downloadClient;
 
-    @JsonProperty("indexer")
+    @Json(name = "indexer")
     private final String indexer;
 
-    @JsonProperty("outputPath")
+    @Json(name = "outputPath")
     private final String outputPath;
 }
