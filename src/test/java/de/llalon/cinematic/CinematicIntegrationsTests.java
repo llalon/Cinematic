@@ -16,6 +16,9 @@ class CinematicIntegrationsTests {
 
         Assumptions.assumeFalse(ClientContext.getInstance().getRadarrClient() == null);
         Assumptions.assumeFalse(ClientContext.getInstance().getQbittorrentClient() == null);
+        Assumptions.assumeFalse(ClientContext.getInstance().getTautulliClient() == null);
+        Assumptions.assumeFalse(ClientContext.getInstance().getSonarrClient() == null);
+        Assumptions.assumeFalse(ClientContext.getInstance().getOverseerrClient() == null);
     }
 
     @Test
