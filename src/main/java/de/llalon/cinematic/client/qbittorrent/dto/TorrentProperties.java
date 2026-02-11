@@ -14,128 +14,128 @@ public class TorrentProperties {
 
     /** Torrent save path */
     @JsonProperty("save_path")
-    private String savePath;
+    private final String savePath;
 
     /** Torrent creation date (Unix timestamp) */
     @JsonProperty("creation_date")
-    private Long creationDate;
+    private final Long creationDate;
 
     /** Torrent piece size (bytes) */
     @JsonProperty("piece_size")
-    private Long pieceSize;
+    private final Long pieceSize;
 
     /** Torrent comment */
-    private String comment;
+    private final String comment;
 
     /** Total data wasted for torrent (bytes) */
     @JsonProperty("total_wasted")
-    private Long totalWasted;
+    private final Long totalWasted;
 
     /** Total data uploaded for torrent (bytes) */
     @JsonProperty("total_uploaded")
-    private Long totalUploaded;
+    private final Long totalUploaded;
 
     /** Total data uploaded this session (bytes) */
     @JsonProperty("total_uploaded_session")
-    private Long totalUploadedSession;
+    private final Long totalUploadedSession;
 
     /** Total data downloaded for torrent (bytes) */
     @JsonProperty("total_downloaded")
-    private Long totalDownloaded;
+    private final Long totalDownloaded;
 
     /** Total data downloaded this session (bytes) */
     @JsonProperty("total_downloaded_session")
-    private Long totalDownloadedSession;
+    private final Long totalDownloadedSession;
 
     /** Torrent upload limit (bytes/s) */
     @JsonProperty("up_limit")
-    private Long upLimit;
+    private final Long upLimit;
 
     /** Torrent download limit (bytes/s) */
     @JsonProperty("dl_limit")
-    private Long dlLimit;
+    private final Long dlLimit;
 
     /** Torrent elapsed time (seconds) */
     @JsonProperty("time_elapsed")
-    private Long timeElapsed;
+    private final Long timeElapsed;
 
     /** Torrent elapsed time while complete (seconds) */
     @JsonProperty("seeding_time")
-    private Long seedingTime;
+    private final Long seedingTime;
 
     /** Torrent connection count */
     @JsonProperty("nb_connections")
-    private Integer nbConnections;
+    private final Integer nbConnections;
 
     /** Torrent connection count limit */
     @JsonProperty("nb_connections_limit")
-    private Integer nbConnectionsLimit;
+    private final Integer nbConnectionsLimit;
 
     /** Torrent share ratio */
     @JsonProperty("share_ratio")
-    private Float shareRatio;
+    private final Float shareRatio;
 
     /** When this torrent was added (unix timestamp) */
     @JsonProperty("addition_date")
-    private Long additionDate;
+    private final Long additionDate;
 
     /** Torrent completion date (unix timestamp) */
     @JsonProperty("completion_date")
-    private Long completionDate;
+    private final Long completionDate;
 
     /** Torrent creator */
     @JsonProperty("created_by")
-    private String createdBy;
+    private final String createdBy;
 
     /** Torrent average download speed (bytes/second) */
     @JsonProperty("dl_speed_avg")
-    private Long dlSpeedAvg;
+    private final Long dlSpeedAvg;
 
     /** Torrent download speed (bytes/second) */
     @JsonProperty("dl_speed")
-    private Long dlSpeed;
+    private final Long dlSpeed;
 
     /** Torrent ETA (seconds) */
-    private Long eta;
+    private final Long eta;
 
     /** Last seen complete date (unix timestamp) */
     @JsonProperty("last_seen")
-    private Long lastSeen;
+    private final Long lastSeen;
 
     /** Number of peers connected to */
-    private Integer peers;
+    private final Integer peers;
 
     /** Number of peers in the swarm */
     @JsonProperty("peers_total")
-    private Integer peersTotal;
+    private final Integer peersTotal;
 
     /** Number of pieces owned */
     @JsonProperty("pieces_have")
-    private Integer piecesHave;
+    private final Integer piecesHave;
 
     /** Number of pieces in the torrent */
     @JsonProperty("pieces_num")
-    private Integer piecesNum;
+    private final Integer piecesNum;
 
     /** Torrent reannounce (seconds) */
-    private Long reannounce;
+    private final Long reannounce;
 
     /** Number of seeds connected to */
-    private Integer seeds;
+    private final Integer seeds;
 
     /** Number of seeds in the swarm */
     @JsonProperty("seeds_total")
-    private Integer seedsTotal;
+    private final Integer seedsTotal;
 
     /** Total size (bytes) */
     @JsonProperty("total_size")
-    private Long totalSize;
+    private final Long totalSize;
 
     /** Torrent upload speed (bytes/second) */
     @JsonProperty("up_speed")
-    private Long upSpeed;
+    private final Long upSpeed;
 
     /** Torrent average upload speed (bytes/second) */
     @JsonProperty("up_speed_avg")
-    private Long upSpeedAvg;
+    private final Long upSpeedAvg;
 }

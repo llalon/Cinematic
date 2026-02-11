@@ -10,7 +10,7 @@ import de.llalon.cinematic.client.sonarr.dto.QueueResourcePagingResource;
 import de.llalon.cinematic.client.sonarr.dto.SeriesResource;
 import de.llalon.cinematic.client.sonarr.dto.TagResource;
 import de.llalon.cinematic.client.sonarr.exception.SonarrApiException;
-import de.llalon.cinematic.client.sonarr.exception.SonarrClientParseException;
+import de.llalon.cinematic.client.sonarr.exception.SonarrClientException;
 import java.io.IOException;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -386,7 +386,7 @@ public class SonarrClient {
             return executeRequest(request, responseType);
         } catch (IOException e) {
             log.error("Failed to serialize request body for POST {}", path, e);
-            throw new SonarrClientParseException("Failed to serialize request body for POST " + path, e);
+            throw new SonarrClientException("Failed to serialize request body for POST " + path, e);
         }
     }
 
@@ -416,7 +416,7 @@ public class SonarrClient {
             return executeRequest(request, responseType);
         } catch (IOException e) {
             log.error("Failed to serialize request body for PUT {}", path, e);
-            throw new SonarrClientParseException("Failed to serialize request body for PUT " + path, e);
+            throw new SonarrClientException("Failed to serialize request body for PUT " + path, e);
         }
     }
 
@@ -471,8 +471,7 @@ public class SonarrClient {
                 return objectMapper.readValue(responseBody, responseType);
             } catch (IOException parseException) {
                 log.error("Failed to parse Sonarr response: {}", request.url(), parseException);
-                throw new SonarrClientParseException(
-                        "Failed to parse Sonarr response: " + request.url(), parseException);
+                throw new SonarrClientException("Failed to parse Sonarr response: " + request.url(), parseException);
             }
         } catch (IOException e) {
             log.error("Failed to execute Sonarr request: {}", request.url(), e);

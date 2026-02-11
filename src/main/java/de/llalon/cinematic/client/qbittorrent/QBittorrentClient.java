@@ -3,11 +3,11 @@ package de.llalon.cinematic.client.qbittorrent;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.llalon.cinematic.client.qbittorrent.config.QBittorrentProperties;
-import de.llalon.cinematic.client.qbittorrent.dto.TorrentFileDTO;
+import de.llalon.cinematic.client.qbittorrent.dto.TorrentFile;
 import de.llalon.cinematic.client.qbittorrent.dto.TorrentInfo;
 import de.llalon.cinematic.client.qbittorrent.dto.TorrentProperties;
 import de.llalon.cinematic.client.qbittorrent.exception.QBittorrentApiException;
-import de.llalon.cinematic.client.qbittorrent.exception.QBittorrentClientParseException;
+import de.llalon.cinematic.client.qbittorrent.exception.QBittorrentClientException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
@@ -211,9 +211,9 @@ public class QBittorrentClient {
      * @param hash Torrent hash
      * @return list of torrent files
      */
-    public List<TorrentFileDTO> getTorrentFiles(String hash) {
+    public List<TorrentFile> getTorrentFiles(String hash) {
         log.debug("Fetching files for torrent: {}", hash);
-        return get("/api/v2/torrents/files", Map.of("hash", hash), new TypeReference<List<TorrentFileDTO>>() {});
+        return get("/api/v2/torrents/files", Map.of("hash", hash), new TypeReference<List<TorrentFile>>() {});
     }
 
     /**
@@ -570,7 +570,7 @@ public class QBittorrentClient {
             return objectMapper.readValue(responseBody, typeReference);
         } catch (IOException e) {
             log.error("Failed to parse qBittorrent response", e);
-            throw new QBittorrentClientParseException("Failed to parse qBittorrent response", e);
+            throw new QBittorrentClientException("Failed to parse qBittorrent response", e);
         }
     }
 }

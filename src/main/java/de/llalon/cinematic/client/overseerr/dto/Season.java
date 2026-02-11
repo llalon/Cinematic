@@ -10,10 +10,10 @@ import lombok.Data;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Season {
-    private Integer id;
+    private final Integer id;
 
     @JsonProperty("seasonNumber")
-    private Integer seasonNumber;
+    private final Integer seasonNumber;
 
-    private Integer status;
+    private final Integer status;
 }

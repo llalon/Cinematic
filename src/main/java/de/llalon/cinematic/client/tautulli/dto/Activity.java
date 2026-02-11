@@ -17,41 +17,41 @@ public class Activity {
      * Current LAN bandwidth usage in bytes.
      */
     @JsonProperty("lan_bandwidth")
-    private Long lanBandwidth;
+    private final Long lanBandwidth;
 
     /**
      * Current WAN bandwidth usage in bytes.
      */
     @JsonProperty("wan_bandwidth")
-    private Long wanBandwidth;
+    private final Long wanBandwidth;
 
     /**
      * Total number of active stream sessions.
      */
     @JsonProperty("stream_count")
-    private Integer streamCount;
+    private final Integer streamCount;
 
     /**
      * Total number of transcode sessions.
      */
     @JsonProperty("stream_count_transcode")
-    private Integer streamCountTranscode;
+    private final Integer streamCountTranscode;
 
     /**
      * Total number of direct play sessions.
      */
     @JsonProperty("stream_count_direct_play")
-    private Integer streamCountDirectPlay;
+    private final Integer streamCountDirectPlay;
 
     /**
      * Total number of direct stream sessions.
      */
     @JsonProperty("stream_count_direct_stream")
-    private Integer streamCountDirectStream;
+    private final Integer streamCountDirectStream;
 
     /**
      * List of all active streaming sessions.
      */
     @JsonProperty("sessions")
-    private List<Session> sessions;
+    private final List<Session> sessions;
 }

@@ -13,35 +13,35 @@ import lombok.Data;
 public class MovieFileResource {
 
     @JsonProperty("id")
-    private Integer id;
+    private final Integer id;
 
     @JsonProperty("movieId")
-    private Integer movieId;
+    private final Integer movieId;
 
     @JsonProperty("relativePath")
-    private String relativePath;
+    private final String relativePath;
 
     @JsonProperty("path")
-    private String path;
+    private final String path;
 
     @JsonProperty("size")
-    private Long size;
+    private final Long size;
 
     @JsonProperty("dateAdded")
-    private LocalDateTime dateAdded;
+    private final LocalDateTime dateAdded;
 
     @JsonProperty("sceneName")
-    private String sceneName;
+    private final String sceneName;
 
     @JsonProperty("releaseGroup")
-    private String releaseGroup;
+    private final String releaseGroup;
 
     @JsonProperty("edition")
-    private String edition;
+    private final String edition;
 
     @JsonProperty("qualityCutoffNotMet")
-    private Boolean qualityCutoffNotMet;
+    private final Boolean qualityCutoffNotMet;
 
     @JsonProperty("originalFilePath")
-    private String originalFilePath;
+    private final String originalFilePath;
 }

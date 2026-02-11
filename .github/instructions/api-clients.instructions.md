@@ -20,7 +20,6 @@ applyTo: '**/*.java, **/*.kt'
 - DTOs must contain all final members
 - DTOs must use collection objects instead of arrays
 - DTOs must boxed objects instead of primitives
-- DTO class names must end with DTO
 
 # Logging
 

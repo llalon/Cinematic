@@ -17,137 +17,137 @@ public class User {
      * Unique Plex user ID.
      */
     @JsonProperty("user_id")
-    private Integer userId;
+    private final Integer userId;
 
     /**
      * Plex username.
      */
     @JsonProperty("username")
-    private String username;
+    private final String username;
 
     /**
      * Friendly display name.
      */
     @JsonProperty("friendly_name")
-    private String friendlyName;
+    private final String friendlyName;
 
     /**
      * User's email address.
      */
     @JsonProperty("email")
-    private String email;
+    private final String email;
 
     /**
      * User's avatar/thumbnail URL.
      */
     @JsonProperty("user_thumb")
-    private String userThumb;
+    private final String userThumb;
 
     /**
      * Alternative thumbnail field name.
      */
     @JsonProperty("thumb")
-    private String thumb;
+    private final String thumb;
 
     /**
      * Whether the user is an admin.
      */
     @JsonProperty("is_admin")
-    private Integer isAdmin;
+    private final Integer isAdmin;
 
     /**
      * Whether the user is a home user.
      */
     @JsonProperty("is_home_user")
-    private Integer isHomeUser;
+    private final Integer isHomeUser;
 
     /**
      * Whether the user is restricted (managed user).
      */
     @JsonProperty("is_restricted")
-    private Integer isRestricted;
+    private final Integer isRestricted;
 
     /**
      * Whether the user is currently active.
      */
     @JsonProperty("is_active")
-    private Integer isActive;
+    private final Integer isActive;
 
     /**
      * Whether to keep playback history for this user.
      */
     @JsonProperty("keep_history")
-    private Integer keepHistory;
+    private final Integer keepHistory;
 
     /**
      * Whether to send notifications for this user.
      */
     @JsonProperty("do_notify")
-    private Integer doNotify;
+    private final Integer doNotify;
 
     /**
      * Whether to allow guest access.
      */
     @JsonProperty("allow_guest")
-    private Integer allowGuest;
+    private final Integer allowGuest;
 
     /**
      * Whether the user is allowed to sync content.
      */
     @JsonProperty("is_allow_sync")
-    private Integer isAllowSync;
+    private final Integer isAllowSync;
 
     /**
      * List of shared library section IDs.
      */
     @JsonProperty("shared_libraries")
-    private List<String> sharedLibraries;
+    private final List<String> sharedLibraries;
 
     /**
      * Filter settings for all media types.
      */
     @JsonProperty("filter_all")
-    private String filterAll;
+    private final String filterAll;
 
     /**
      * Filter settings for movies.
      */
     @JsonProperty("filter_movies")
-    private String filterMovies;
+    private final String filterMovies;
 
     /**
      * Filter settings for TV shows.
      */
     @JsonProperty("filter_tv")
-    private String filterTv;
+    private final String filterTv;
 
     /**
      * Filter settings for music.
      */
     @JsonProperty("filter_music")
-    private String filterMusic;
+    private final String filterMusic;
 
     /**
      * Filter settings for photos.
      */
     @JsonProperty("filter_photos")
-    private String filterPhotos;
+    private final String filterPhotos;
 
     /**
      * Tautulli row ID (internal database identifier).
      */
     @JsonProperty("row_id")
-    private Integer rowId;
+    private final Integer rowId;
 
     /**
      * Timestamp of when user was last seen (Unix epoch).
      */
     @JsonProperty("last_seen")
-    private Long lastSeen;
+    private final Long lastSeen;
 
     /**
      * Whether this is a deleted user.
      */
     @JsonProperty("deleted_user")
-    private Integer deletedUser;
+    private final Integer deletedUser;
 }

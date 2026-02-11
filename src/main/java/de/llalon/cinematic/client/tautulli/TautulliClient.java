@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.llalon.cinematic.client.tautulli.config.TautulliProperties;
 import de.llalon.cinematic.client.tautulli.dto.*;
 import de.llalon.cinematic.client.tautulli.exception.TautulliApiException;
-import de.llalon.cinematic.client.tautulli.exception.TautulliClientParseException;
+import de.llalon.cinematic.client.tautulli.exception.TautulliClientException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -280,7 +280,7 @@ public class TautulliClient {
         try {
             // Validate the response
             if (responseBody == null || responseBody.isEmpty()) {
-                throw new TautulliClientParseException("Received empty response from Tautulli", null);
+                throw new TautulliClientException("Received empty response from Tautulli", null);
             }
 
             // Parse the raw JSON into TautulliResponse envelope
@@ -303,7 +303,7 @@ public class TautulliClient {
 
         } catch (Exception e) {
             log.error("Unexpected error parsing Tautulli response for command: {}", command, e);
-            throw new TautulliClientParseException("Failed to parse Tautulli response: " + command, e);
+            throw new TautulliClientException("Failed to parse Tautulli response: " + command, e);
         }
     }
 }

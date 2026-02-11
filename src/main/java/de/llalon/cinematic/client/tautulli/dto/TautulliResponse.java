@@ -18,7 +18,7 @@ public class TautulliResponse<T> {
      * The response object containing result, message, and data.
      */
     @JsonProperty("response")
-    private ResponseWrapper<T> response;
+    private final ResponseWrapper<T> response;
 
     /**
      * Nested response wrapper containing result status, message, and actual data.
@@ -31,19 +31,19 @@ public class TautulliResponse<T> {
          * Result status: typically "success" or "error".
          */
         @JsonProperty("result")
-        private String result;
+        private final String result;
 
         /**
          * Optional message providing additional context.
          */
         @JsonProperty("message")
-        private String message;
+        private final String message;
 
         /**
          * The actual data payload.
          */
         @JsonProperty("data")
-        private T data;
+        private final T data;
 
         /**
          * Check if the response indicates success.

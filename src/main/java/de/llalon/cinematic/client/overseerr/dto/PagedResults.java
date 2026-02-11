@@ -12,6 +12,6 @@ import lombok.Data;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PagedResults<T> {
-    private PageInfo pageInfo;
-    private List<T> results;
+    private final PageInfo pageInfo;
+    private final List<T> results;
 }

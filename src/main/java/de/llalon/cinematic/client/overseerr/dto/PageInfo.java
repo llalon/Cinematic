@@ -9,8 +9,8 @@ import lombok.Data;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PageInfo {
-    private Integer pages;
-    private Integer pageSize;
-    private Integer results;
-    private Integer page;
+    private final Integer pages;
+    private final Integer pageSize;
+    private final Integer results;
+    private final Integer page;
 }

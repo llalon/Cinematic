@@ -17,251 +17,251 @@ public class Session {
      * Unique session key for this streaming session.
      */
     @JsonProperty("session_key")
-    private String sessionKey;
+    private final String sessionKey;
 
     /**
      * Session ID.
      */
     @JsonProperty("session_id")
-    private String sessionId;
+    private final String sessionId;
 
     /**
      * User ID of the viewer.
      */
     @JsonProperty("user_id")
-    private Integer userId;
+    private final Integer userId;
 
     /**
      * Username of the viewer.
      */
     @JsonProperty("user")
-    private String user;
+    private final String user;
 
     /**
      * Friendly display name of the viewer.
      */
     @JsonProperty("friendly_name")
-    private String friendlyName;
+    private final String friendlyName;
 
     /**
      * User's avatar/thumbnail URL.
      */
     @JsonProperty("user_thumb")
-    private String userThumb;
+    private final String userThumb;
 
     /**
      * Media type: "movie", "episode", "track", "live", etc.
      */
     @JsonProperty("media_type")
-    private String mediaType;
+    private final String mediaType;
 
     /**
      * Rating key for the media item.
      */
     @JsonProperty("rating_key")
-    private String ratingKey;
+    private final String ratingKey;
 
     /**
      * Parent rating key (for episodes: season; for tracks: album).
      */
     @JsonProperty("parent_rating_key")
-    private String parentRatingKey;
+    private final String parentRatingKey;
 
     /**
      * Grandparent rating key (for episodes: show; for tracks: artist).
      */
     @JsonProperty("grandparent_rating_key")
-    private String grandparentRatingKey;
+    private final String grandparentRatingKey;
 
     /**
      * Title of the media item.
      */
     @JsonProperty("title")
-    private String title;
+    private final String title;
 
     /**
      * Parent title (season or album name).
      */
     @JsonProperty("parent_title")
-    private String parentTitle;
+    private final String parentTitle;
 
     /**
      * Grandparent title (show or artist name).
      */
     @JsonProperty("grandparent_title")
-    private String grandparentTitle;
+    private final String grandparentTitle;
 
     /**
      * Full formatted title.
      */
     @JsonProperty("full_title")
-    private String fullTitle;
+    private final String fullTitle;
 
     /**
      * Media index (episode number, track number).
      */
     @JsonProperty("media_index")
-    private Integer mediaIndex;
+    private final Integer mediaIndex;
 
     /**
      * Parent media index (season number, disc number).
      */
     @JsonProperty("parent_media_index")
-    private Integer parentMediaIndex;
+    private final Integer parentMediaIndex;
 
     /**
      * Thumbnail path for the media item.
      */
     @JsonProperty("thumb")
-    private String thumb;
+    private final String thumb;
 
     /**
      * Year the media was released.
      */
     @JsonProperty("year")
-    private Integer year;
+    private final Integer year;
 
     /**
      * Platform the user is streaming from (Windows, Android, iOS, etc.).
      */
     @JsonProperty("platform")
-    private String platform;
+    private final String platform;
 
     /**
      * Product name (Plex Web, Plex for iOS, etc.).
      */
     @JsonProperty("product")
-    private String product;
+    private final String product;
 
     /**
      * Player device name.
      */
     @JsonProperty("player")
-    private String player;
+    private final String player;
 
     /**
      * IP address of the streaming client.
      */
     @JsonProperty("ip_address")
-    private String ipAddress;
+    private final String ipAddress;
 
     /**
      * Connection location: "lan" or "wan".
      */
     @JsonProperty("location")
-    private String location;
+    private final String location;
 
     /**
      * Whether the connection is secure (HTTPS).
      */
     @JsonProperty("secure")
-    private Integer secure;
+    private final Integer secure;
 
     /**
      * Whether the connection is relayed through Plex.
      */
     @JsonProperty("relayed")
-    private Integer relayed;
+    private final Integer relayed;
 
     /**
      * Transcode decision: "transcode", "copy", "direct play".
      */
     @JsonProperty("transcode_decision")
-    private String transcodeDecision;
+    private final String transcodeDecision;
 
     /**
      * Current state: "playing", "paused", "buffering".
      */
     @JsonProperty("state")
-    private String state;
+    private final String state;
 
     /**
      * Current playback position in milliseconds.
      */
     @JsonProperty("view_offset")
-    private Long viewOffset;
+    private final Long viewOffset;
 
     /**
      * Total duration of the media in milliseconds.
      */
     @JsonProperty("duration")
-    private Long duration;
+    private final Long duration;
 
     /**
      * Percentage of media watched.
      */
     @JsonProperty("percent_complete")
-    private Integer percentComplete;
+    private final Integer percentComplete;
 
     /**
      * Bandwidth usage in kbps.
      */
     @JsonProperty("bandwidth")
-    private Integer bandwidth;
+    private final Integer bandwidth;
 
     /**
      * Video resolution (e.g., "1080", "720", "4k").
      */
     @JsonProperty("video_resolution")
-    private String videoResolution;
+    private final String videoResolution;
 
     /**
      * Video codec (e.g., "h264", "hevc").
      */
     @JsonProperty("video_codec")
-    private String videoCodec;
+    private final String videoCodec;
 
     /**
      * Audio codec (e.g., "aac", "ac3").
      */
     @JsonProperty("audio_codec")
-    private String audioCodec;
+    private final String audioCodec;
 
     /**
      * Audio channels (e.g., "2.0", "5.1", "7.1").
      */
     @JsonProperty("audio_channels")
-    private String audioChannels;
+    private final String audioChannels;
 
     /**
      * Stream container format (e.g., "mkv", "mp4").
      */
     @JsonProperty("container")
-    private String container;
+    private final String container;
 
     /**
      * Library section ID.
      */
     @JsonProperty("section_id")
-    private String sectionId;
+    private final String sectionId;
 
     /**
      * Plex GUID for the media item.
      */
     @JsonProperty("guid")
-    private String guid;
+    private final String guid;
 
     /**
      * List of actors in the media.
      */
     @JsonProperty("actors")
-    private List<String> actors;
+    private final List<String> actors;
 
     /**
      * List of directors.
      */
     @JsonProperty("directors")
-    private List<String> directors;
+    private final List<String> directors;
 
     /**
      * List of writers.
      */
     @JsonProperty("writers")
-    private List<String> writers;
+    private final List<String> writers;
 
     /**
      * List of genres.
      */
     @JsonProperty("genres")
-    private List<String> genres;
+    private final List<String> genres;
 }

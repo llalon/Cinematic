@@ -9,12 +9,12 @@ import lombok.Data;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RequestCount {
-    private Integer total;
-    private Integer movie;
-    private Integer tv;
-    private Integer pending;
-    private Integer approved;
-    private Integer declined;
-    private Integer processing;
-    private Integer available;
+    private final Integer total;
+    private final Integer movie;
+    private final Integer tv;
+    private final Integer pending;
+    private final Integer approved;
+    private final Integer declined;
+    private final Integer processing;
+    private final Integer available;
 }

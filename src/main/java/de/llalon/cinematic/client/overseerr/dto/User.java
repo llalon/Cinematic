@@ -11,28 +11,28 @@ import lombok.Data;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
-    private Integer id;
-    private String email;
-    private String username;
+    private final Integer id;
+    private final String email;
+    private final String username;
 
     @JsonProperty("plexToken")
-    private String plexToken;
+    private final String plexToken;
 
     @JsonProperty("plexUsername")
-    private String plexUsername;
+    private final String plexUsername;
 
     @JsonProperty("userType")
-    private Integer userType;
+    private final Integer userType;
 
-    private Long permissions;
-    private String avatar;
+    private final Long permissions;
+    private final String avatar;
 
     @JsonProperty("createdAt")
-    private LocalDateTime createdAt;
+    private final LocalDateTime createdAt;
 
     @JsonProperty("updatedAt")
-    private LocalDateTime updatedAt;
+    private final LocalDateTime updatedAt;
 
     @JsonProperty("requestCount")
-    private Integer requestCount;
+    private final Integer requestCount;
 }

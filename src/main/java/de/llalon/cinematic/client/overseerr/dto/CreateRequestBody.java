@@ -12,35 +12,35 @@ import lombok.Data;
 @Builder
 public class CreateRequestBody {
     @JsonProperty("mediaType")
-    private String mediaType; // "movie" or "tv"
+    private final String mediaType; // "movie" or "tv"
 
     @JsonProperty("mediaId")
-    private Integer mediaId;
+    private final Integer mediaId;
 
     @JsonProperty("tvdbId")
-    private String tvdbId;
+    private final String tvdbId;
 
     /**
      * List of season numbers to request.
      * For the request body, use simple Strings representing season numbers.
      */
-    private List<String> seasons; // or "all" string
+    private final List<String> seasons; // or "all" string
 
     @JsonProperty("is4k")
-    private Boolean is4k;
+    private final Boolean is4k;
 
     @JsonProperty("serverId")
-    private String serverId;
+    private final String serverId;
 
     @JsonProperty("profileId")
-    private String profileId;
+    private final String profileId;
 
     @JsonProperty("rootFolder")
-    private String rootFolder;
+    private final String rootFolder;
 
     @JsonProperty("languageProfileId")
-    private String languageProfileId;
+    private final String languageProfileId;
 
     @JsonProperty("userId")
-    private String userId;
+    private final String userId;
 }

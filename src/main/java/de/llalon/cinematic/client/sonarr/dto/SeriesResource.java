@@ -14,98 +14,98 @@ import lombok.Data;
 public class SeriesResource {
 
     @JsonProperty("id")
-    private Integer id;
+    private final Integer id;
 
     @JsonProperty("title")
-    private String title;
+    private final String title;
 
     @JsonProperty("sortTitle")
-    private String sortTitle;
+    private final String sortTitle;
 
     @JsonProperty("status")
-    private String status;
+    private final String status;
 
     @JsonProperty("ended")
-    private Boolean ended;
+    private final Boolean ended;
 
     @JsonProperty("overview")
-    private String overview;
+    private final String overview;
 
     @JsonProperty("network")
-    private String network;
+    private final String network;
 
     @JsonProperty("airTime")
-    private String airTime;
+    private final String airTime;
 
     @JsonProperty("nextAiring")
-    private LocalDateTime nextAiring;
+    private final LocalDateTime nextAiring;
 
     @JsonProperty("previousAiring")
-    private LocalDateTime previousAiring;
+    private final LocalDateTime previousAiring;
 
     @JsonProperty("year")
-    private Integer year;
+    private final Integer year;
 
     @JsonProperty("path")
-    private String path;
+    private final String path;
 
     @JsonProperty("qualityProfileId")
-    private Integer qualityProfileId;
+    private final Integer qualityProfileId;
 
     @JsonProperty("seasonFolder")
-    private Boolean seasonFolder;
+    private final Boolean seasonFolder;
 
     @JsonProperty("monitored")
-    private Boolean monitored;
+    private final Boolean monitored;
 
     @JsonProperty("runtime")
-    private Integer runtime;
+    private final Integer runtime;
 
     @JsonProperty("tvdbId")
-    private Integer tvdbId;
+    private final Integer tvdbId;
 
     @JsonProperty("tvRageId")
-    private Integer tvRageId;
+    private final Integer tvRageId;
 
     @JsonProperty("tvMazeId")
-    private Integer tvMazeId;
+    private final Integer tvMazeId;
 
     @JsonProperty("tmdbId")
-    private Integer tmdbId;
+    private final Integer tmdbId;
 
     @JsonProperty("firstAired")
-    private LocalDateTime firstAired;
+    private final LocalDateTime firstAired;
 
     @JsonProperty("lastAired")
-    private LocalDateTime lastAired;
+    private final LocalDateTime lastAired;
 
     @JsonProperty("seriesType")
-    private String seriesType;
+    private final String seriesType;
 
     @JsonProperty("cleanTitle")
-    private String cleanTitle;
+    private final String cleanTitle;
 
     @JsonProperty("imdbId")
-    private String imdbId;
+    private final String imdbId;
 
     @JsonProperty("titleSlug")
-    private String titleSlug;
+    private final String titleSlug;
 
     @JsonProperty("certification")
-    private String certification;
+    private final String certification;
 
     @JsonProperty("genres")
-    private List<String> genres;
+    private final List<String> genres;
 
     @JsonProperty("tags")
-    private List<Integer> tags;
+    private final List<Integer> tags;
 
     @JsonProperty("added")
-    private LocalDateTime added;
+    private final LocalDateTime added;
 
     @JsonProperty("ratings")
-    private Object ratings;
+    private final Object ratings;
 
     @JsonProperty("statistics")
-    private Object statistics;
+    private final Object statistics;
 }

@@ -1,15 +1,15 @@
-package de.llalon.cinematic.client.tautulli.exception;
+package de.llalon.cinematic.client.sonarr.exception;
 
 /**
- * Exception thrown when Tautulli client fails to parse or serialize data.
+ * Exception thrown when Sonarr client fails to parse or serialize data.
  * This indicates local client errors such as JSON serialization/deserialization failures,
  * schema mismatches, or invalid configuration.
  *
  * These errors are never retryable and typically indicate bugs or breaking API changes.
  */
-public class TautulliClientParseException extends RuntimeException {
+public class SonarrClientException extends RuntimeException {
 
-    public TautulliClientParseException(String message, Throwable cause) {
+    public SonarrClientException(String message, Throwable cause) {
         super(message, cause);
     }
 

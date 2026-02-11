@@ -2,6 +2,7 @@ package de.llalon.cinematic.client.qbittorrent.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.List;
 import lombok.Data;
 
 /**
@@ -11,29 +12,29 @@ import lombok.Data;
  */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TorrentFileDTO {
+public class TorrentFile {
 
     /** File name (including relative path) */
-    private String name;
+    private final String name;
 
     /** File size (bytes) */
-    private Long size;
+    private final Long size;
 
     /** File progress (percentage/100) */
     @JsonProperty("progress")
-    private Float progress;
+    private final Float progress;
 
     /** File priority */
-    private Integer priority;
+    private final Integer priority;
 
     /** True if file is priority */
     @JsonProperty("is_seed")
-    private Boolean isSeed;
+    private final Boolean isSeed;
 
     /** Piece range for the file */
     @JsonProperty("piece_range")
-    private int[] pieceRange;
+    private final List<Integer> pieceRange;
 
     /** Availability of the file (percentage/100) */
-    private Float availability;
+    private final Float availability;
 }

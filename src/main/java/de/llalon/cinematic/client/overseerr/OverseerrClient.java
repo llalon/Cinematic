@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.llalon.cinematic.client.overseerr.config.OverseerrProperties;
 import de.llalon.cinematic.client.overseerr.dto.*;
 import de.llalon.cinematic.client.overseerr.exception.OverseerrApiException;
-import de.llalon.cinematic.client.overseerr.exception.OverseerrClientParseException;
+import de.llalon.cinematic.client.overseerr.exception.OverseerrClientException;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
@@ -443,7 +443,7 @@ public class OverseerrClient {
             return executeRequest(request, responseType);
         } catch (IOException e) {
             log.error("Failed to serialize request body for POST {}", path, e);
-            throw new OverseerrClientParseException("Failed to serialize request body for POST " + path, e);
+            throw new OverseerrClientException("Failed to serialize request body for POST " + path, e);
         }
     }
 
@@ -473,7 +473,7 @@ public class OverseerrClient {
             return executeRequest(request, responseType);
         } catch (IOException e) {
             log.error("Failed to serialize request body for PUT {}", path, e);
-            throw new OverseerrClientParseException("Failed to serialize request body for PUT " + path, e);
+            throw new OverseerrClientException("Failed to serialize request body for PUT " + path, e);
         }
     }
 
@@ -563,7 +563,7 @@ public class OverseerrClient {
                 return objectMapper.readValue(responseBody, responseType);
             } catch (IOException parseException) {
                 log.error("Failed to parse Overseerr response: {}", request.url(), parseException);
-                throw new OverseerrClientParseException(
+                throw new OverseerrClientException(
                         "Failed to parse Overseerr response: " + request.url(), parseException);
             }
         } catch (IOException e) {

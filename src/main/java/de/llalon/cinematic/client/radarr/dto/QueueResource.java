@@ -16,40 +16,40 @@ import lombok.Data;
 public class QueueResource {
 
     @JsonProperty("id")
-    private Integer id;
+    private final Integer id;
 
     @JsonProperty("movieId")
-    private Integer movieId;
+    private final Integer movieId;
 
     @JsonProperty("movie")
-    private MovieResource movie;
+    private final MovieResource movie;
 
     @JsonProperty("size")
-    private Double size;
+    private final Double size;
 
     @JsonProperty("title")
-    private String title;
+    private final String title;
 
     @JsonProperty("sizeleft")
-    private Double sizeleft;
+    private final Double sizeleft;
 
     @JsonProperty("estimatedCompletionTime")
-    private LocalDateTime estimatedCompletionTime;
+    private final LocalDateTime estimatedCompletionTime;
 
     @JsonProperty("added")
-    private LocalDateTime added;
+    private final LocalDateTime added;
 
     @JsonProperty("status")
-    private String status;
+    private final String status;
 
     @JsonProperty("trackedDownloadStatus")
-    private String trackedDownloadStatus;
+    private final String trackedDownloadStatus;
 
     @JsonProperty("trackedDownloadState")
-    private String trackedDownloadState;
+    private final String trackedDownloadState;
 
     @JsonProperty("errorMessage")
-    private String errorMessage;
+    private final String errorMessage;
 
     /**
      * Download ID that identifies the download in the download client.
@@ -57,17 +57,17 @@ public class QueueResource {
      * This is the key field for correlating queue items with actual downloads.
      */
     @JsonProperty("downloadId")
-    private String downloadId;
+    private final String downloadId;
 
     @JsonProperty("protocol")
-    private String protocol;
+    private final String protocol;
 
     @JsonProperty("downloadClient")
-    private String downloadClient;
+    private final String downloadClient;
 
     @JsonProperty("indexer")
-    private String indexer;
+    private final String indexer;
 
     @JsonProperty("outputPath")
-    private String outputPath;
+    private final String outputPath;
 }

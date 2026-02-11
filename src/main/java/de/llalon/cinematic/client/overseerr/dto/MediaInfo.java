@@ -20,21 +20,21 @@ import lombok.Data;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MediaInfo {
-    private Integer id;
+    private final Integer id;
 
     @JsonProperty("tmdbId")
-    private Integer tmdbId;
+    private final Integer tmdbId;
 
     @JsonProperty("tvdbId")
-    private Integer tvdbId;
+    private final Integer tvdbId;
 
-    private Integer status;
+    private final Integer status;
 
-    private List<MediaRequest> requests;
+    private final List<MediaRequest> requests;
 
     @JsonProperty("createdAt")
-    private LocalDateTime createdAt;
+    private final LocalDateTime createdAt;
 
     @JsonProperty("updatedAt")
-    private LocalDateTime updatedAt;
+    private final LocalDateTime updatedAt;
 }

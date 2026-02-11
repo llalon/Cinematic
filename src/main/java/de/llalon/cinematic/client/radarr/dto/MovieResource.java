@@ -14,116 +14,116 @@ import lombok.Data;
 public class MovieResource {
 
     @JsonProperty("id")
-    private Integer id;
+    private final Integer id;
 
     @JsonProperty("title")
-    private String title;
+    private final String title;
 
     @JsonProperty("originalTitle")
-    private String originalTitle;
+    private final String originalTitle;
 
     @JsonProperty("sortTitle")
-    private String sortTitle;
+    private final String sortTitle;
 
     @JsonProperty("sizeOnDisk")
-    private Long sizeOnDisk;
+    private final Long sizeOnDisk;
 
     @JsonProperty("status")
-    private String status;
+    private final String status;
 
     @JsonProperty("overview")
-    private String overview;
+    private final String overview;
 
     @JsonProperty("inCinemas")
-    private LocalDateTime inCinemas;
+    private final LocalDateTime inCinemas;
 
     @JsonProperty("physicalRelease")
-    private LocalDateTime physicalRelease;
+    private final LocalDateTime physicalRelease;
 
     @JsonProperty("digitalRelease")
-    private LocalDateTime digitalRelease;
+    private final LocalDateTime digitalRelease;
 
     @JsonProperty("releaseDate")
-    private LocalDateTime releaseDate;
+    private final LocalDateTime releaseDate;
 
     @JsonProperty("website")
-    private String website;
+    private final String website;
 
     @JsonProperty("year")
-    private Integer year;
+    private final Integer year;
 
     @JsonProperty("youTubeTrailerId")
-    private String youTubeTrailerId;
+    private final String youTubeTrailerId;
 
     @JsonProperty("studio")
-    private String studio;
+    private final String studio;
 
     @JsonProperty("path")
-    private String path;
+    private final String path;
 
     @JsonProperty("qualityProfileId")
-    private Integer qualityProfileId;
+    private final Integer qualityProfileId;
 
     @JsonProperty("hasFile")
-    private Boolean hasFile;
+    private final Boolean hasFile;
 
     @JsonProperty("movieFileId")
-    private Integer movieFileId;
+    private final Integer movieFileId;
 
     @JsonProperty("monitored")
-    private Boolean monitored;
+    private final Boolean monitored;
 
     @JsonProperty("minimumAvailability")
-    private String minimumAvailability;
+    private final String minimumAvailability;
 
     @JsonProperty("isAvailable")
-    private Boolean isAvailable;
+    private final Boolean isAvailable;
 
     @JsonProperty("folderName")
-    private String folderName;
+    private final String folderName;
 
     @JsonProperty("runtime")
-    private Integer runtime;
+    private final Integer runtime;
 
     @JsonProperty("cleanTitle")
-    private String cleanTitle;
+    private final String cleanTitle;
 
     @JsonProperty("imdbId")
-    private String imdbId;
+    private final String imdbId;
 
     @JsonProperty("tmdbId")
-    private Integer tmdbId;
+    private final Integer tmdbId;
 
     @JsonProperty("titleSlug")
-    private String titleSlug;
+    private final String titleSlug;
 
     @JsonProperty("rootFolderPath")
-    private String rootFolderPath;
+    private final String rootFolderPath;
 
     @JsonProperty("folder")
-    private String folder;
+    private final String folder;
 
     @JsonProperty("certification")
-    private String certification;
+    private final String certification;
 
     @JsonProperty("genres")
-    private List<String> genres;
+    private final List<String> genres;
 
     @JsonProperty("keywords")
-    private List<String> keywords;
+    private final List<String> keywords;
 
     @JsonProperty("tags")
-    private List<Integer> tags;
+    private final List<Integer> tags;
 
     @JsonProperty("added")
-    private LocalDateTime added;
+    private final LocalDateTime added;
 
     @JsonProperty("popularity")
-    private Float popularity;
+    private final Float popularity;
 
     @JsonProperty("lastSearchTime")
-    private LocalDateTime lastSearchTime;
+    private final LocalDateTime lastSearchTime;
 
     @JsonProperty("movieFile")
-    private MovieFileResource movieFile;
+    private final MovieFileResource movieFile;
 }

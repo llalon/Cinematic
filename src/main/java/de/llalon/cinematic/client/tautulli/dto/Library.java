@@ -16,125 +16,125 @@ public class Library {
      * Unique library section ID.
      */
     @JsonProperty("section_id")
-    private String sectionId;
+    private final String sectionId;
 
     /**
      * Plex server identifier.
      */
     @JsonProperty("server_id")
-    private String serverId;
+    private final String serverId;
 
     /**
      * Library name/title.
      */
     @JsonProperty("section_name")
-    private String sectionName;
+    private final String sectionName;
 
     /**
      * Library type: "movie", "show", "artist", "photo".
      */
     @JsonProperty("section_type")
-    private String sectionType;
+    private final String sectionType;
 
     /**
      * Library thumbnail path.
      */
     @JsonProperty("library_thumb")
-    private String libraryThumb;
+    private final String libraryThumb;
 
     /**
      * Library background art path.
      */
     @JsonProperty("library_art")
-    private String libraryArt;
+    private final String libraryArt;
 
     /**
      * Alternative art field.
      */
     @JsonProperty("art")
-    private String art;
+    private final String art;
 
     /**
      * Alternative thumb field.
      */
     @JsonProperty("thumb")
-    private String thumb;
+    private final String thumb;
 
     /**
      * Total number of items in the library.
      */
     @JsonProperty("count")
-    private Integer count;
+    private final Integer count;
 
     /**
      * Number of parent items (shows, albums).
      */
     @JsonProperty("parent_count")
-    private Integer parentCount;
+    private final Integer parentCount;
 
     /**
      * Number of child items (episodes, tracks).
      */
     @JsonProperty("child_count")
-    private Integer childCount;
+    private final Integer childCount;
 
     /**
      * Whether the library is currently active.
      */
     @JsonProperty("is_active")
-    private Integer isActive;
+    private final Integer isActive;
 
     /**
      * Whether to keep history for this library.
      */
     @JsonProperty("keep_history")
-    private Integer keepHistory;
+    private final Integer keepHistory;
 
     /**
      * Whether to send notifications when items are played.
      */
     @JsonProperty("do_notify")
-    private Integer doNotify;
+    private final Integer doNotify;
 
     /**
      * Whether to send notifications when new items are added.
      */
     @JsonProperty("do_notify_created")
-    private Integer doNotifyCreated;
+    private final Integer doNotifyCreated;
 
     /**
      * Timestamp of when the library was last accessed (Unix epoch).
      */
     @JsonProperty("last_accessed")
-    private Long lastAccessed;
+    private final Long lastAccessed;
 
     /**
      * Title of the last played item from this library.
      */
     @JsonProperty("last_played")
-    private String lastPlayed;
+    private final String lastPlayed;
 
     /**
      * Total number of plays from this library.
      */
     @JsonProperty("plays")
-    private Integer plays;
+    private final Integer plays;
 
     /**
      * Total watch time in seconds.
      */
     @JsonProperty("duration")
-    private Long duration;
+    private final Long duration;
 
     /**
      * Tautulli row ID (internal database identifier).
      */
     @JsonProperty("row_id")
-    private Integer rowId;
+    private final Integer rowId;
 
     /**
      * Whether this is a deleted library section.
      */
     @JsonProperty("deleted_section")
-    private Integer deletedSection;
+    private final Integer deletedSection;
 }

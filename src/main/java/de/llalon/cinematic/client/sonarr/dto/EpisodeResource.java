@@ -13,71 +13,71 @@ import lombok.Data;
 public class EpisodeResource {
 
     @JsonProperty("id")
-    private Integer id;
+    private final Integer id;
 
     @JsonProperty("seriesId")
-    private Integer seriesId;
+    private final Integer seriesId;
 
     @JsonProperty("tvdbId")
-    private Integer tvdbId;
+    private final Integer tvdbId;
 
     @JsonProperty("episodeFileId")
-    private Integer episodeFileId;
+    private final Integer episodeFileId;
 
     @JsonProperty("seasonNumber")
-    private Integer seasonNumber;
+    private final Integer seasonNumber;
 
     @JsonProperty("episodeNumber")
-    private Integer episodeNumber;
+    private final Integer episodeNumber;
 
     @JsonProperty("title")
-    private String title;
+    private final String title;
 
     @JsonProperty("airDate")
-    private String airDate;
+    private final String airDate;
 
     @JsonProperty("airDateUtc")
-    private LocalDateTime airDateUtc;
+    private final LocalDateTime airDateUtc;
 
     @JsonProperty("lastSearchTime")
-    private LocalDateTime lastSearchTime;
+    private final LocalDateTime lastSearchTime;
 
     @JsonProperty("runtime")
-    private Integer runtime;
+    private final Integer runtime;
 
     @JsonProperty("overview")
-    private String overview;
+    private final String overview;
 
     @JsonProperty("episodeFile")
-    private EpisodeFileResource episodeFile;
+    private final EpisodeFileResource episodeFile;
 
     @JsonProperty("hasFile")
-    private Boolean hasFile;
+    private final Boolean hasFile;
 
     @JsonProperty("monitored")
-    private Boolean monitored;
+    private final Boolean monitored;
 
     @JsonProperty("absoluteEpisodeNumber")
-    private Integer absoluteEpisodeNumber;
+    private final Integer absoluteEpisodeNumber;
 
     @JsonProperty("sceneAbsoluteEpisodeNumber")
-    private Integer sceneAbsoluteEpisodeNumber;
+    private final Integer sceneAbsoluteEpisodeNumber;
 
     @JsonProperty("sceneEpisodeNumber")
-    private Integer sceneEpisodeNumber;
+    private final Integer sceneEpisodeNumber;
 
     @JsonProperty("sceneSeasonNumber")
-    private Integer sceneSeasonNumber;
+    private final Integer sceneSeasonNumber;
 
     @JsonProperty("unverifiedSceneNumbering")
-    private Boolean unverifiedSceneNumbering;
+    private final Boolean unverifiedSceneNumbering;
 
     @JsonProperty("endTime")
-    private LocalDateTime endTime;
+    private final LocalDateTime endTime;
 
     @JsonProperty("grabDate")
-    private LocalDateTime grabDate;
+    private final LocalDateTime grabDate;
 
     @JsonProperty("series")
-    private SeriesResource series;
+    private final SeriesResource series;
 }

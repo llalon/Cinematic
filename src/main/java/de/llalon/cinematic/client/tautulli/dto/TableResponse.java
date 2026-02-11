@@ -17,53 +17,53 @@ public class TableResponse<T> {
      * Draw counter for DataTables compatibility.
      */
     @JsonProperty("draw")
-    private Integer draw;
+    private final Integer draw;
 
     /**
      * Total number of records (before filtering).
      */
     @JsonProperty("recordsTotal")
-    private Integer recordsTotal;
+    private final Integer recordsTotal;
 
     /**
      * Number of records after filtering.
      */
     @JsonProperty("recordsFiltered")
-    private Integer recordsFiltered;
+    private final Integer recordsFiltered;
 
     /**
      * The actual data rows.
      */
     @JsonProperty("data")
-    private List<T> data;
+    private final List<T> data;
 
     /**
      * Total duration across all records (history tables only).
      */
     @JsonProperty("total_duration")
-    private String totalDuration;
+    private final String totalDuration;
 
     /**
      * Total duration for filtered records (history tables only).
      */
     @JsonProperty("filter_duration")
-    private String filterDuration;
+    private final String filterDuration;
 
     /**
      * Total file size across all records (media info tables only).
      */
     @JsonProperty("total_file_size")
-    private Long totalFileSize;
+    private final Long totalFileSize;
 
     /**
      * Total file size for filtered records (media info tables only).
      */
     @JsonProperty("filtered_file_size")
-    private Long filteredFileSize;
+    private final Long filteredFileSize;
 
     /**
      * Timestamp of when the table was last refreshed (media info tables only).
      */
     @JsonProperty("last_refreshed")
-    private Long lastRefreshed;
+    private final Long lastRefreshed;
 }

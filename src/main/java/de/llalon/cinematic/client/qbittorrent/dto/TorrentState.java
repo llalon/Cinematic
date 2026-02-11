@@ -1,10 +1,17 @@
 package de.llalon.cinematic.client.qbittorrent.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 /**
  * Enum representing possible torrent states in qBittorrent.
  *
  * These states are returned in the "state" field of torrent info.
  */
+@Getter
+@RequiredArgsConstructor
 public enum TorrentState {
 
     /** Some error occurred, applies to paused torrents */
@@ -64,19 +71,16 @@ public enum TorrentState {
     /** Unknown status */
     UNKNOWN("unknown");
 
+    @JsonValue
     private final String value;
 
-    TorrentState(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
+    @JsonCreator
     public static TorrentState fromValue(String value) {
-        for (TorrentState state : TorrentState.values()) {
-            if (state.value.equals(value)) {
+        if (value == null) {
+            return UNKNOWN;
+        }
+        for (TorrentState state : values()) {
+            if (state.value.equalsIgnoreCase(value.trim())) {
                 return state;
             }
         }

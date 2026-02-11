@@ -9,7 +9,7 @@ import de.llalon.cinematic.client.radarr.dto.QueueResource;
 import de.llalon.cinematic.client.radarr.dto.QueueResourcePagingResource;
 import de.llalon.cinematic.client.radarr.dto.TagResource;
 import de.llalon.cinematic.client.radarr.exception.RadarrApiException;
-import de.llalon.cinematic.client.radarr.exception.RadarrClientParseException;
+import de.llalon.cinematic.client.radarr.exception.RadarrClientException;
 import java.io.IOException;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -389,7 +389,7 @@ public class RadarrClient {
             return executeRequest(request, responseType);
         } catch (IOException e) {
             log.error("Failed to serialize request body for POST {}", path, e);
-            throw new RadarrClientParseException("Failed to serialize request body for POST " + path, e);
+            throw new RadarrClientException("Failed to serialize request body for POST " + path, e);
         }
     }
 
@@ -419,7 +419,7 @@ public class RadarrClient {
             return executeRequest(request, responseType);
         } catch (IOException e) {
             log.error("Failed to serialize request body for PUT {}", path, e);
-            throw new RadarrClientParseException("Failed to serialize request body for PUT " + path, e);
+            throw new RadarrClientException("Failed to serialize request body for PUT " + path, e);
         }
     }
 
@@ -474,8 +474,7 @@ public class RadarrClient {
                 return objectMapper.readValue(responseBody, responseType);
             } catch (IOException parseException) {
                 log.error("Failed to parse Radarr response: {}", request.url(), parseException);
-                throw new RadarrClientParseException(
-                        "Failed to parse Radarr response: " + request.url(), parseException);
+                throw new RadarrClientException("Failed to parse Radarr response: " + request.url(), parseException);
             }
         } catch (IOException e) {
             log.error("Failed to execute Radarr request: {}", request.url(), e);

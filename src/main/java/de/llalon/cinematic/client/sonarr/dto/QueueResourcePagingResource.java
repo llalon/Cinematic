@@ -13,20 +13,20 @@ import lombok.Data;
 public class QueueResourcePagingResource {
 
     @JsonProperty("page")
-    private Integer page;
+    private final Integer page;
 
     @JsonProperty("pageSize")
-    private Integer pageSize;
+    private final Integer pageSize;
 
     @JsonProperty("sortKey")
-    private String sortKey;
+    private final String sortKey;
 
     @JsonProperty("sortDirection")
-    private String sortDirection;
+    private final String sortDirection;
 
     @JsonProperty("totalRecords")
-    private Integer totalRecords;
+    private final Integer totalRecords;
 
     @JsonProperty("records")
-    private List<QueueResource> records;
+    private final List<QueueResource> records;
 }

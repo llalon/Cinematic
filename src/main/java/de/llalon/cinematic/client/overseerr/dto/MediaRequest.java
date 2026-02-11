@@ -17,7 +17,7 @@ import lombok.Data;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MediaRequest {
-    private Integer id;
+    private final Integer id;
 
     /**
      * Status of the request.
@@ -25,42 +25,42 @@ public class MediaRequest {
      * 2 = APPROVED
      * 3 = DECLINED
      */
-    private Integer status;
+    private final Integer status;
 
-    private MediaInfo media;
+    private final MediaInfo media;
 
     @JsonProperty("createdAt")
-    private LocalDateTime createdAt;
+    private final LocalDateTime createdAt;
 
     @JsonProperty("updatedAt")
-    private LocalDateTime updatedAt;
+    private final LocalDateTime updatedAt;
 
     @JsonProperty("requestedBy")
-    private User requestedBy;
+    private final User requestedBy;
 
     @JsonProperty("modifiedBy")
-    private User modifiedBy;
+    private final User modifiedBy;
 
     @JsonProperty("is4k")
-    private Boolean is4k;
+    private final Boolean is4k;
 
     @JsonProperty("serverId")
-    private Integer serverId;
+    private final Integer serverId;
 
     @JsonProperty("profileId")
-    private Integer profileId;
+    private final Integer profileId;
 
     @JsonProperty("rootFolder")
-    private String rootFolder;
+    private final String rootFolder;
 
     @JsonProperty("mediaType")
-    private Integer mediaType;
+    private final Integer mediaType;
 
     @JsonProperty("mediaId")
-    private Integer mediaId;
+    private final Integer mediaId;
 
     @JsonProperty("tvdbId")
-    private String tvdbId;
+    private final String tvdbId;
 
-    private List<Season> seasons;
+    private final List<Season> seasons;
 }

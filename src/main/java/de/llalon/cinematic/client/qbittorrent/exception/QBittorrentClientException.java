@@ -7,9 +7,9 @@ package de.llalon.cinematic.client.qbittorrent.exception;
  *
  * These errors are never retryable and typically indicate bugs or breaking API changes.
  */
-public class QBittorrentClientParseException extends RuntimeException {
+public class QBittorrentClientException extends RuntimeException {
 
-    public QBittorrentClientParseException(String message, Throwable cause) {
+    public QBittorrentClientException(String message, Throwable cause) {
         super(message, cause);
     }
 

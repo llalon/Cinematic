@@ -12,8 +12,8 @@ import lombok.Data;
 public class TagResource {
 
     @JsonProperty("id")
-    private Integer id;
+    private final Integer id;
 
     @JsonProperty("label")
-    private String label;
+    private final String label;
 }

@@ -16,173 +16,173 @@ public class TorrentInfo {
 
     /** Time (Unix Epoch) when the torrent was added to the client */
     @JsonProperty("added_on")
-    private Long addedOn;
+    private final Long addedOn;
 
     /** Amount of data left to download (bytes) */
     @JsonProperty("amount_left")
-    private Long amountLeft;
+    private final Long amountLeft;
 
     /** Whether this torrent is managed by Automatic Torrent Management */
     @JsonProperty("auto_tmm")
-    private Boolean autoTmm;
+    private final Boolean autoTmm;
 
     /** Percentage of file pieces currently available */
-    private Float availability;
+    private final Float availability;
 
     /** Category of the torrent */
-    private String category;
+    private final String category;
 
     /** Amount of transfer data completed (bytes) */
-    private Long completed;
+    private final Long completed;
 
     /** Time (Unix Epoch) when the torrent completed */
     @JsonProperty("completion_on")
-    private Long completionOn;
+    private final Long completionOn;
 
     /** Absolute path of torrent content (root path for multifile torrents, absolute file path for singlefile torrents) */
     @JsonProperty("content_path")
-    private String contentPath;
+    private final String contentPath;
 
     /** Torrent download speed limit (bytes/s). -1 if unlimited. */
     @JsonProperty("dl_limit")
-    private Long dlLimit;
+    private final Long dlLimit;
 
     /** Torrent download speed (bytes/s) */
     @JsonProperty("dlspeed")
-    private Long dlspeed;
+    private final Long dlspeed;
 
     /** Amount of data downloaded */
-    private Long downloaded;
+    private final Long downloaded;
 
     /** Amount of data downloaded this session */
     @JsonProperty("downloaded_session")
-    private Long downloadedSession;
+    private final Long downloadedSession;
 
     /** Torrent ETA (seconds) */
-    private Long eta;
+    private final Long eta;
 
     /** True if first last piece are prioritized */
     @JsonProperty("f_l_piece_prio")
-    private Boolean flPiecePrio;
+    private final Boolean flPiecePrio;
 
     /** True if force start is enabled for this torrent */
     @JsonProperty("force_start")
-    private Boolean forceStart;
+    private final Boolean forceStart;
 
     /** Torrent hash */
-    private String hash;
+    private final String hash;
 
-    /** True if torrent is from a private tracker */
+    /** True if torrent is from a private final tracker */
     @JsonProperty("isPrivate")
-    private Boolean isPrivate;
+    private final Boolean isPrivate;
 
     /** Last time (Unix Epoch) when a chunk was downloaded/uploaded */
     @JsonProperty("last_activity")
-    private Long lastActivity;
+    private final Long lastActivity;
 
     /** Magnet URI corresponding to this torrent */
     @JsonProperty("magnet_uri")
-    private String magnetUri;
+    private final String magnetUri;
 
     /** Maximum share ratio until torrent is stopped from seeding/uploading */
     @JsonProperty("max_ratio")
-    private Float maxRatio;
+    private final Float maxRatio;
 
     /** Maximum seeding time (seconds) until torrent is stopped from seeding */
     @JsonProperty("max_seeding_time")
-    private Long maxSeedingTime;
+    private final Long maxSeedingTime;
 
     /** Torrent name */
-    private String name;
+    private final String name;
 
     /** Number of seeds in the swarm */
     @JsonProperty("num_complete")
-    private Integer numComplete;
+    private final Integer numComplete;
 
     /** Number of leechers in the swarm */
     @JsonProperty("num_incomplete")
-    private Integer numIncomplete;
+    private final Integer numIncomplete;
 
     /** Number of leechers connected to */
     @JsonProperty("num_leechs")
-    private Integer numLeechs;
+    private final Integer numLeechs;
 
     /** Number of seeds connected to */
     @JsonProperty("num_seeds")
-    private Integer numSeeds;
+    private final Integer numSeeds;
 
     /** Torrent priority. Returns -1 if queuing is disabled or torrent is in seed mode */
-    private Integer priority;
+    private final Integer priority;
 
     /** Torrent progress (percentage/100) */
-    private Float progress;
+    private final Float progress;
 
     /** Torrent share ratio. Max ratio value: 9999. */
-    private Float ratio;
+    private final Float ratio;
 
     /** Ratio limit */
     @JsonProperty("ratio_limit")
-    private Float ratioLimit;
+    private final Float ratioLimit;
 
     /** Time until the next tracker reannounce */
-    private Integer reannounce;
+    private final Integer reannounce;
 
     /** Path where this torrent's data is stored */
     @JsonProperty("save_path")
-    private String savePath;
+    private final String savePath;
 
     /** Torrent elapsed time while complete (seconds) */
     @JsonProperty("seeding_time")
-    private Long seedingTime;
+    private final Long seedingTime;
 
     /** Seeding time limit */
     @JsonProperty("seeding_time_limit")
-    private Long seedingTimeLimit;
+    private final Long seedingTimeLimit;
 
     /** Time (Unix Epoch) when this torrent was last seen complete */
     @JsonProperty("seen_complete")
-    private Long seenComplete;
+    private final Long seenComplete;
 
     /** True if sequential download is enabled */
     @JsonProperty("seq_dl")
-    private Boolean seqDl;
+    private final Boolean seqDl;
 
     /** Total size (bytes) of files selected for download */
-    private Long size;
+    private final Long size;
 
     /** Torrent state. See TorrentState enum for possible values */
-    private String state;
+    private final TorrentState state;
 
     /** True if super seeding is enabled */
     @JsonProperty("super_seeding")
-    private Boolean superSeeding;
+    private final Boolean superSeeding;
 
     /** Comma-concatenated tag list of the torrent */
-    private String tags;
+    private final String tags;
 
     /** Total active time (seconds) */
     @JsonProperty("time_active")
-    private Long timeActive;
+    private final Long timeActive;
 
     /** Total size (bytes) of all file in this torrent (including unselected ones) */
     @JsonProperty("total_size")
-    private Long totalSize;
+    private final Long totalSize;
 
     /** The first tracker with working status. Returns empty string if no tracker is working. */
-    private String tracker;
+    private final String tracker;
 
     /** Torrent upload speed limit (bytes/s). -1 if unlimited. */
     @JsonProperty("up_limit")
-    private Long upLimit;
+    private final Long upLimit;
 
     /** Amount of data uploaded */
-    private Long uploaded;
+    private final Long uploaded;
 
     /** Amount of data uploaded this session */
     @JsonProperty("uploaded_session")
-    private Long uploadedSession;
+    private final Long uploadedSession;
 
     /** Torrent upload speed (bytes/s) */
     @JsonProperty("upspeed")
-    private Long upspeed;
+    private final Long upspeed;
 }
