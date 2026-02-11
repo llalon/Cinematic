@@ -3,6 +3,7 @@ package de.llalon.cinematic.client.qbittorrent.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -11,6 +12,7 @@ import lombok.Data;
  * This DTO corresponds to the file info returned by the /api/v2/torrents/files endpoint.
  */
 @Data
+@AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TorrentFile {
 

@@ -1,12 +1,14 @@
 package de.llalon.cinematic.client.overseerr.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
  * Represents request counts in Overseerr.
  */
 @Data
+@AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RequestCount {
     private final Integer total;

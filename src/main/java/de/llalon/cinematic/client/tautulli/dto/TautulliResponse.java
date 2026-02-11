@@ -2,6 +2,7 @@ package de.llalon.cinematic.client.tautulli.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -11,6 +12,7 @@ import lombok.Data;
  * @param <T> The type of the data payload
  */
 @Data
+@AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TautulliResponse<T> {
 
@@ -19,39 +21,6 @@ public class TautulliResponse<T> {
      */
     @JsonProperty("response")
     private final ResponseWrapper<T> response;
-
-    /**
-     * Nested response wrapper containing result status, message, and actual data.
-     */
-    @Data
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class ResponseWrapper<T> {
-
-        /**
-         * Result status: typically "success" or "error".
-         */
-        @JsonProperty("result")
-        private final String result;
-
-        /**
-         * Optional message providing additional context.
-         */
-        @JsonProperty("message")
-        private final String message;
-
-        /**
-         * The actual data payload.
-         */
-        @JsonProperty("data")
-        private final T data;
-
-        /**
-         * Check if the response indicates success.
-         */
-        public boolean isSuccess() {
-            return "success".equalsIgnoreCase(result);
-        }
-    }
 
     /**
      * Convenience method to check if the API call was successful.

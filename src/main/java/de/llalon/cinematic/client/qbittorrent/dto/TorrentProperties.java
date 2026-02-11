@@ -1,6 +1,8 @@
 package de.llalon.cinematic.client.qbittorrent.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -10,6 +12,8 @@ import lombok.Data;
  * Contains detailed information about a torrent's configuration and statistics.
  */
 @Data
+@AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TorrentProperties {
 
     /** Torrent save path */

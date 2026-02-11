@@ -3,12 +3,14 @@ package de.llalon.cinematic.client.sonarr.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
  * Represents a paginated response of queue resources from Sonarr.
  */
 @Data
+@AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class QueueResourcePagingResource {
 

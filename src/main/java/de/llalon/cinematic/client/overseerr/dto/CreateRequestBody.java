@@ -2,14 +2,14 @@ package de.llalon.cinematic.client.overseerr.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
  * Request body for creating a new media request in Overseerr.
  */
 @Data
-@Builder
+@AllArgsConstructor
 public class CreateRequestBody {
     @JsonProperty("mediaType")
     private final String mediaType; // "movie" or "tv"
