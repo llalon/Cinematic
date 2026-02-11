@@ -1,7 +1,6 @@
 package de.llalon.cinematic.domain;
 
 import com.squareup.moshi.Moshi;
-import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter;
 import de.llalon.cinematic.client.overseerr.OverseerrClient;
 import de.llalon.cinematic.client.overseerr.config.OverseerrProperties;
 import de.llalon.cinematic.client.qbittorrent.QBittorrentClient;
@@ -12,7 +11,7 @@ import de.llalon.cinematic.client.sonarr.SonarrClient;
 import de.llalon.cinematic.client.sonarr.config.SonarrProperties;
 import de.llalon.cinematic.client.tautulli.TautulliClient;
 import de.llalon.cinematic.client.tautulli.config.TautulliProperties;
-import java.time.LocalDateTime;
+import de.llalon.cinematic.util.LenientDateTimeAdapter;
 import java.util.function.Supplier;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,9 +38,7 @@ public final class ClientContext {
             TautulliClient tautulliClient) {
         this.httpClient = httpClient == null ? new OkHttpClient() : httpClient;
         this.moshi = moshi == null
-                ? new Moshi.Builder()
-                        .add(LocalDateTime.class, new Rfc3339DateJsonAdapter().lenient())
-                        .build()
+                ? new Moshi.Builder().add(new LenientDateTimeAdapter()).build()
                 : moshi;
 
         // Radarr

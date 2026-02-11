@@ -151,7 +151,7 @@ public class TorrentInfo {
     private final Long size;
 
     /** Torrent state. See TorrentState enum for possible values */
-    private final TorrentState state;
+    private final String state;
 
     /** True if super seeding is enabled */
     @Json(name = "super_seeding")
