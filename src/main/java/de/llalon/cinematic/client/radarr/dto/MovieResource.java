@@ -1,6 +1,7 @@
 package de.llalon.cinematic.client.radarr.dto;
 
 import com.squareup.moshi.Json;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -35,16 +36,16 @@ public class MovieResource {
     private final String overview;
 
     @Json(name = "inCinemas")
-    private final LocalDateTime inCinemas;
+    private final LocalDate inCinemas;
 
     @Json(name = "physicalRelease")
-    private final LocalDateTime physicalRelease;
+    private final LocalDate physicalRelease;
 
     @Json(name = "digitalRelease")
-    private final LocalDateTime digitalRelease;
+    private final LocalDate digitalRelease;
 
     @Json(name = "releaseDate")
-    private final LocalDateTime releaseDate;
+    private final LocalDate releaseDate;
 
     @Json(name = "website")
     private final String website;
