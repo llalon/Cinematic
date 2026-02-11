@@ -42,7 +42,11 @@ class CinematicTests {
     }
 
     @Test
-    void todo() {
-        // ToDo: Configure mock web server....
+    void canConfigureClients() {
+        Assertions.assertNotNull(ClientContext.getInstance().getRadarrClient());
+        Assertions.assertNotNull(ClientContext.getInstance().getQbittorrentClient());
+        Assertions.assertNotNull(ClientContext.getInstance().getTautulliClient());
+        Assertions.assertNotNull(ClientContext.getInstance().getSonarrClient());
+        Assertions.assertNotNull(ClientContext.getInstance().getOverseerrClient());
     }
 }
