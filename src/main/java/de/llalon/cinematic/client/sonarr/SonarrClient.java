@@ -369,6 +369,19 @@ public class SonarrClient {
     }
 
     /**
+     * Serialize an object to JSON string using Moshi.
+     * Uses raw types to avoid generic type capture issues.
+     *
+     * @param body the object to serialize
+     * @return JSON string representation
+     */
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private String toJson(Object body) {
+        JsonAdapter adapter = moshi.adapter(body.getClass());
+        return adapter.toJson(body);
+    }
+
+    /**
      * Execute a POST request to the Sonarr API.
      *
      * @param path API path
@@ -383,7 +396,7 @@ public class SonarrClient {
                 .build();
 
         try {
-            String jsonBody = moshi.adapter(body.getClass()).toJson(body);
+            String jsonBody = toJson(body);
             RequestBody requestBody = RequestBody.create(jsonBody, JSON);
             Request request = new Request.Builder()
                     .url(url)
@@ -413,7 +426,7 @@ public class SonarrClient {
                 .build();
 
         try {
-            String jsonBody = moshi.adapter(body.getClass()).toJson(body);
+            String jsonBody = toJson(body);
             RequestBody requestBody = RequestBody.create(jsonBody, JSON);
             Request request = new Request.Builder()
                     .url(url)

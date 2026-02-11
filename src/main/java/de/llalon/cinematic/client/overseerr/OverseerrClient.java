@@ -419,6 +419,19 @@ public class OverseerrClient {
     }
 
     /**
+     * Serialize an object to JSON string using Moshi.
+     * Uses raw types to avoid generic type capture issues.
+     *
+     * @param body the object to serialize
+     * @return JSON string representation
+     */
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private String toJson(Object body) {
+        JsonAdapter adapter = moshi.adapter(body.getClass());
+        return adapter.toJson(body);
+    }
+
+    /**
      * Execute a POST request to the Overseerr API.
      *
      * @param path API path
@@ -435,7 +448,7 @@ public class OverseerrClient {
         try {
             RequestBody requestBody;
             if (body != null) {
-                String jsonBody = moshi.adapter(body.getClass()).toJson(body);
+                String jsonBody = toJson(body);
                 requestBody = RequestBody.create(jsonBody, JSON);
             } else {
                 requestBody = RequestBody.create("", JSON);
@@ -469,7 +482,7 @@ public class OverseerrClient {
                 .build();
 
         try {
-            String jsonBody = moshi.adapter(body.getClass()).toJson(body);
+            String jsonBody = toJson(body);
             RequestBody requestBody = RequestBody.create(jsonBody, JSON);
             Request request = new Request.Builder()
                     .url(url)
