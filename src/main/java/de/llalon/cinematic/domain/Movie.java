@@ -42,6 +42,14 @@ public class Movie {
                 .toList();
     }
 
+    public boolean hasTag(String tag) {
+        if (tag == null || tag.isBlank()) {
+            return false;
+        }
+
+        return this.fetchTags().stream().anyMatch(x -> x.getLabel().equals(tag));
+    }
+
     public List<Torrent> fetchTorrents() {
         List<QueueResource> queueItems = getInstance().getRadarrClient().getQueueForMovie(this.getId());
         if (queueItems == null || queueItems.isEmpty()) {

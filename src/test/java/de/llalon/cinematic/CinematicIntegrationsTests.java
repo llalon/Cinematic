@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import de.llalon.cinematic.domain.ClientContext;
 import de.llalon.cinematic.domain.Movie;
+import de.llalon.cinematic.domain.Series;
 import de.llalon.cinematic.domain.Torrent;
 import java.util.List;
 import org.junit.jupiter.api.*;
@@ -22,7 +23,7 @@ class CinematicIntegrationsTests {
     }
 
     @Test
-    void canFetchTorrentsFromMovie() {
+    void fetchTorrentsForMovie() {
         List<Movie> movies = Movie.fetchAll();
         Movie movie1 = movies.get(0);
         var torrents = movie1.fetchTorrents();
@@ -32,7 +33,7 @@ class CinematicIntegrationsTests {
     }
 
     @Test
-    void canFetchAllMovies() {
+    void fetchAllMovies() {
         List<Movie> movies = Movie.fetchAll();
         Movie movie1 = movies.get(0);
         Movie movie2 = Movie.fetchOne(String.valueOf(movie1.getId()));
@@ -40,7 +41,7 @@ class CinematicIntegrationsTests {
     }
 
     @Test
-    void canFindTorrentFilesWithViruses() {
+    void findTorrentFilesWithToxicFiles() {
         var virusFiles = Torrent.fetchAll().stream()
                 .peek(a -> System.out.println("Checking torrent: " + a))
                 .filter(x -> x.fetchFiles().stream()
@@ -49,5 +50,27 @@ class CinematicIntegrationsTests {
                 .toList();
 
         assertNotNull(virusFiles);
+    }
+
+    @Test
+    void increaseTorrentPriorityForMoviesWithTag() {
+        Movie.fetchAll().stream()
+                .peek(movie -> System.out.println("Checking torrent: " + movie.getTitle()))
+                .filter(movie -> movie.hasTag("hp"))
+                .forEach(movie -> movie.fetchTorrents().stream()
+                        .peek(torrent -> System.out.println(
+                                "Bumping " + movie.getTitle() + " torrent priority: " + torrent.getName()))
+                        .forEach(Torrent::setTopPriority));
+    }
+
+    @Test
+    void increaseTorrentPriorityForSeriesWithTag() {
+        Series.fetchAll().stream()
+                .peek(series -> System.out.println("Checking torrent: " + series.getTitle()))
+                .filter(series -> series.hasTag("hp"))
+                .forEach(series -> series.fetchTorrents().stream()
+                        .peek(torrent -> System.out.println(
+                                "Bumping " + series.getTitle() + " torrent priority: " + torrent.getName()))
+                        .forEach(Torrent::setTopPriority));
     }
 }

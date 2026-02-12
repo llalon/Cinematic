@@ -21,6 +21,19 @@ public class Series {
     @Delegate
     private final SeriesResource seriesResource;
 
+    public static List<Series> fetchAll() {
+        return getInstance().getSonarrClient().getAllSeries().stream()
+                .map(Series::new)
+                .toList();
+    }
+
+    public boolean hasTag(String tag) {
+        if (tag == null || tag.isBlank()) {
+            return false;
+        }
+        return this.fetchTags().stream().anyMatch(x -> x.getLabel().equals(tag));
+    }
+
     public List<TagResource> fetchTags() {
         return seriesResource.getTags().stream()
                 .map(t -> getInstance().getSonarrClient().getTag(t))
