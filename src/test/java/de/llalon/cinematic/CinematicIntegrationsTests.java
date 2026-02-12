@@ -7,6 +7,7 @@ import de.llalon.cinematic.domain.Movie;
 import de.llalon.cinematic.domain.Series;
 import de.llalon.cinematic.domain.Torrent;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.*;
 
 class CinematicIntegrationsTests {
@@ -72,5 +73,23 @@ class CinematicIntegrationsTests {
                         .peek(torrent -> System.out.println(
                                 "Bumping " + series.getTitle() + " torrent priority: " + torrent.getName()))
                         .forEach(Torrent::setTopPriority));
+    }
+
+    @Test
+    void tagTorrentWithTracker() {
+        Map<String, String> map = Map.of(
+                "landof.tv", "btn",
+                "tracker.opentrackr.org", "tracker.opentrackr.org",
+                "cow.milkie.cc", "milkie");
+        Torrent.fetchAll().stream()
+                .peek(torrent -> System.out.println("Checking torrent: " + torrent.getName()))
+                .forEach(torrent -> {
+                    map.forEach((key, value) -> {
+                        if (torrent.getTracker().contains(key)) {
+                            System.out.println("Tagging torrent " + torrent.getName() + ": " + key);
+                            // torrent.addTag(value);
+                        }
+                    });
+                });
     }
 }
