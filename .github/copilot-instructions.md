@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Cinematic is a jvm library that provides api clients and a rich domain model for media server arr APIs.
+Cinematic is a JVM library that provides api clients and a rich domain model for media server arr APIs.
 
 It integrates:
 
@@ -13,24 +13,16 @@ It integrates:
 - Radarr
 - qBittorrent
 
-These APIs:
+The goal is to expose a single navigable domain graph that:
 
-- Do not follow REST conventions
-- Have inconsistent schemas
-- Use different identifiers for the same media
-- Require orchestration across systems
+- Feels like an in-memory object model
+- Hides all HTTP clients and API DTOs
+- Supports lazy paging via Iterable
+- Enables powerful automation workflows
+- Keeps orchestration logic outside entities
 
-The domain model must hide this complexity completely.
+The domain has a single entry point: Library. From Library, everything is reachable.
 
-## Project Architecture Patterns
-
-- ActiveRecord
-- Rich Domain Model
-- Thin HTTP clients
-
-## Key Constraints 
-
-All code in this library must work in jRuby and other jvm languages with maximum compatibility.
-
-- Do not use records
-- Do not use reflection
+All objects are rich.
+All relations return other domain objects.
+No DTOs escape the domain boundary.
