@@ -6,6 +6,7 @@ import de.llalon.cinematic.client.radarr.config.RadarrProperties;
 import de.llalon.cinematic.client.sonarr.config.SonarrProperties;
 import de.llalon.cinematic.client.tautulli.config.TautulliProperties;
 import de.llalon.cinematic.domain.ClientContext;
+import de.llalon.cinematic.domain.Library;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.*;
 
@@ -13,9 +14,11 @@ class CinematicTests {
 
     static MockWebServer server;
 
+    static Library library;
+
     @BeforeAll
     static void setUp() {
-        ClientContext.builder()
+        library = new Library(ClientContext.builder()
                 .sonarrProperties(SonarrProperties.builder()
                         .url("http://localhost:8989")
                         .apiKey("test")
@@ -37,16 +40,15 @@ class CinematicTests {
                         .url("http://localhost:5055")
                         .apiKey("test")
                         .build())
-                .build()
-                .register();
+                .build());
     }
 
     @Test
     void canConfigureClients() {
-        Assertions.assertNotNull(ClientContext.getInstance().getRadarrClient());
-        Assertions.assertNotNull(ClientContext.getInstance().getQbittorrentClient());
-        Assertions.assertNotNull(ClientContext.getInstance().getTautulliClient());
-        Assertions.assertNotNull(ClientContext.getInstance().getSonarrClient());
-        Assertions.assertNotNull(ClientContext.getInstance().getOverseerrClient());
+        Assertions.assertNotNull(library.getContext().getRadarrClient());
+        Assertions.assertNotNull(library.getContext().getQbittorrentClient());
+        Assertions.assertNotNull(library.getContext().getTautulliClient());
+        Assertions.assertNotNull(library.getContext().getSonarrClient());
+        Assertions.assertNotNull(library.getContext().getOverseerrClient());
     }
 }

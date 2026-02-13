@@ -117,19 +117,6 @@ public final class ClientContext {
         }
     }
 
-    private static ClientContext INSTANCE;
-
-    public static ClientContext getInstance() {
-        if (INSTANCE == null) {
-            throw new IllegalStateException("Context not initialized");
-        }
-        return INSTANCE;
-    }
-
-    public void register() {
-        INSTANCE = this;
-    }
-
     private final OkHttpClient httpClient;
     private final Moshi moshi;
     private final RadarrProperties radarrProperties;

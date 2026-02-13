@@ -1,3 +1,3 @@
 package de.llalon.cinematic.domain;
 
-public class Torrent {}
+public class Tag {}
