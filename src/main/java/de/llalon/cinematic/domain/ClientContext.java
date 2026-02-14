@@ -12,7 +12,6 @@ import de.llalon.cinematic.client.sonarr.config.SonarrProperties;
 import de.llalon.cinematic.client.tautulli.TautulliClient;
 import de.llalon.cinematic.client.tautulli.config.TautulliProperties;
 import de.llalon.cinematic.util.LenientDateTimeAdapter;
-import java.util.function.Supplier;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -46,10 +45,8 @@ public final class ClientContext {
             this.radarrClient = radarrClient;
             this.radarrProperties = radarrProperties;
         } else {
-            this.radarrProperties = radarrProperties != null
-                    ? radarrProperties
-                    : safeFromEnv(RadarrProperties::fromEnvironment, "Radarr");
-            this.radarrClient = this.radarrProperties != null
+            this.radarrProperties = radarrProperties != null ? radarrProperties : RadarrProperties.fromEnvironment();
+            this.radarrClient = this.radarrProperties.getUrl() != null
                     ? new RadarrClient(this.httpClient, this.radarrProperties, this.moshi)
                     : null;
         }
@@ -59,10 +56,8 @@ public final class ClientContext {
             this.sonarrClient = sonarrClient;
             this.sonarrProperties = sonarrProperties;
         } else {
-            this.sonarrProperties = sonarrProperties != null
-                    ? sonarrProperties
-                    : safeFromEnv(SonarrProperties::fromEnvironment, "Sonarr");
-            this.sonarrClient = this.sonarrProperties != null
+            this.sonarrProperties = sonarrProperties != null ? sonarrProperties : SonarrProperties.fromEnvironment();
+            this.sonarrClient = this.sonarrProperties.getUrl() != null
                     ? new SonarrClient(this.httpClient, this.sonarrProperties, this.moshi)
                     : null;
         }
@@ -72,10 +67,9 @@ public final class ClientContext {
             this.qbittorrentClient = qbittorrentClient;
             this.qbittorrentProperties = qbittorrentProperties;
         } else {
-            this.qbittorrentProperties = qbittorrentProperties != null
-                    ? qbittorrentProperties
-                    : safeFromEnv(QBittorrentProperties::fromEnvironment, "QBittorrent");
-            this.qbittorrentClient = this.qbittorrentProperties != null
+            this.qbittorrentProperties =
+                    qbittorrentProperties != null ? qbittorrentProperties : QBittorrentProperties.fromEnvironment();
+            this.qbittorrentClient = this.qbittorrentProperties.getUrl() != null
                     ? new QBittorrentClient(this.httpClient, this.qbittorrentProperties, this.moshi)
                     : null;
         }
@@ -85,10 +79,9 @@ public final class ClientContext {
             this.overseerrClient = overseerrClient;
             this.overseerrProperties = overseerrProperties;
         } else {
-            this.overseerrProperties = overseerrProperties != null
-                    ? overseerrProperties
-                    : safeFromEnv(OverseerrProperties::fromEnvironment, "Overseerr");
-            this.overseerrClient = this.overseerrProperties != null
+            this.overseerrProperties =
+                    overseerrProperties != null ? overseerrProperties : OverseerrProperties.fromEnvironment();
+            this.overseerrClient = this.overseerrProperties.getUrl() != null
                     ? new OverseerrClient(this.httpClient, this.overseerrProperties, this.moshi)
                     : null;
         }
@@ -98,22 +91,27 @@ public final class ClientContext {
             this.tautulliClient = tautulliClient;
             this.tautulliProperties = tautulliProperties;
         } else {
-            this.tautulliProperties = tautulliProperties != null
-                    ? tautulliProperties
-                    : safeFromEnv(TautulliProperties::fromEnvironment, "Tautulli");
-            this.tautulliClient = this.tautulliProperties != null
+            this.tautulliProperties =
+                    tautulliProperties != null ? tautulliProperties : TautulliProperties.fromEnvironment();
+            this.tautulliClient = this.tautulliProperties.getUrl() != null
                     ? new TautulliClient(this.httpClient, this.tautulliProperties, this.moshi)
                     : null;
         }
-    }
 
-    private static <T> T safeFromEnv(Supplier<T> supplier, String name) {
-        try {
-            log.debug("Creating {} properties from environment variables", name);
-            return supplier.get();
-        } catch (IllegalArgumentException | NullPointerException exception) {
-            log.warn("{} properties could not be initialized from environment variables", name, exception);
-            return null;
+        if (this.tautulliClient == null) {
+            log.warn("Tautulli not configured. Some features may not be available");
+        }
+        if (this.overseerrClient == null) {
+            log.warn("Overseerr not configured. Some features may not be available");
+        }
+        if (this.radarrClient == null) {
+            log.warn("Radarr not configured. Some features may not be available");
+        }
+        if (this.sonarrClient == null) {
+            log.warn("Sonarr not configured. Some features may not be available");
+        }
+        if (this.qbittorrentClient == null) {
+            log.warn("QBittorrent not configured. Some features may not be available");
         }
     }
 

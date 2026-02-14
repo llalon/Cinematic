@@ -13,6 +13,7 @@ class CinematicIntegrationsTests {
     static void setUp() {
         library = new Library(ClientContext.builder().build());
 
+        Assumptions.assumeFalse(library.getContext() == null);
         Assumptions.assumeFalse(library.getContext().getRadarrClient() == null);
         Assumptions.assumeFalse(library.getContext().getQbittorrentClient() == null);
         Assumptions.assumeFalse(library.getContext().getTautulliClient() == null);
