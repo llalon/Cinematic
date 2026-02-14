@@ -1,6 +1,6 @@
 package de.llalon.cinematic.domain;
 
-import de.llalon.cinematic.util.PagedIterable;
+import de.llalon.cinematic.util.collections.OffsetPagedIterable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +43,7 @@ public class Library extends DomainModel {
     }
 
     public Iterable<Request> requests() {
-        return new PagedIterable<>((take, skip) -> ctx.getOverseerrClient()
+        return new OffsetPagedIterable<>((take, skip) -> ctx.getOverseerrClient()
                         .getAllRequests(take, skip, null, null, null)
                         .getResults())
                 .map(x -> new Request(ctx, x));

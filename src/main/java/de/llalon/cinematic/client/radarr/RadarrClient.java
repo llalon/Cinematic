@@ -6,7 +6,6 @@ import com.squareup.moshi.Types;
 import de.llalon.cinematic.client.radarr.config.RadarrProperties;
 import de.llalon.cinematic.client.radarr.dto.MovieFileResource;
 import de.llalon.cinematic.client.radarr.dto.MovieResource;
-import de.llalon.cinematic.client.radarr.dto.QueueResource;
 import de.llalon.cinematic.client.radarr.dto.QueueResourcePagingResource;
 import de.llalon.cinematic.client.radarr.dto.TagResource;
 import de.llalon.cinematic.client.radarr.exception.RadarrApiException;
@@ -250,31 +249,17 @@ public class RadarrClient {
      *
      * @return paginated queue response
      */
-    public QueueResourcePagingResource getQueue() {
-        log.debug("Fetching download queue");
-        HttpUrl url = baseUrl.newBuilder()
-                .addPathSegments("api/v3/queue")
-                .addQueryParameter("pageSize", "1000")
-                .addQueryParameter("includeMovie", "true")
-                .build();
-        return get(url, QueueResourcePagingResource.class);
-    }
+    public QueueResourcePagingResource getQueue(int page, int pageSize, boolean includeMovie) {
+        log.debug("Fetching queue resources for page {} and size {}", page, pageSize);
 
-    /**
-     * Get queue items for a specific movie.
-     *
-     * @param movieId Movie ID
-     * @return list of queue items for the movie
-     */
-    public List<QueueResource> getQueueForMovie(int movieId) {
-        log.debug("Fetching queue items for movie ID: {}", movieId);
-        HttpUrl url = baseUrl.newBuilder()
-                .addPathSegments("api/v3/queue/details")
-                .addQueryParameter("movieId", String.valueOf(movieId))
-                .addQueryParameter("includeMovie", "true")
+        final HttpUrl url = baseUrl.newBuilder()
+                .addPathSegments("api/v3/queue")
+                .addQueryParameter("page", String.valueOf(page))
+                .addQueryParameter("pageSize", String.valueOf(pageSize))
+                .addQueryParameter("includeMovie", String.valueOf(includeMovie))
                 .build();
-        Type type = Types.newParameterizedType(List.class, QueueResource.class);
-        return get(url, type);
+
+        return get(url, QueueResourcePagingResource.class);
     }
 
     // ==================== TAGS ====================

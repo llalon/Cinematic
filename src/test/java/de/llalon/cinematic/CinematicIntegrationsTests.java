@@ -50,4 +50,12 @@ class CinematicIntegrationsTests {
         var results = library.tags();
         assertNotNull(results);
     }
+
+    @Test
+    void canGetMovieTorrents() {
+        var movie = library.movies().iterator().next();
+        var torrent = movie.torrents();
+
+        assertNotNull(torrent);
+    }
 }
