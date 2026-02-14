@@ -70,4 +70,51 @@ public class PagedIterable<T> implements Iterable<T> {
             return mapped;
         });
     }
+
+    public <R> PagedIterable<R> flatMap(Function<T, ? extends Collection<? extends R>> mapper) {
+        return new PagedIterable<>(pageSize, (take, skip) -> {
+            List<R> result = new ArrayList<>(take);
+            int localSkip = skip;
+            int remaining = take;
+
+            while (remaining > 0) {
+
+                List<T> page = fetcher.fetch(pageSize, localSkip);
+
+                if (page == null || page.isEmpty()) {
+                    break;
+                }
+
+                localSkip += page.size();
+
+                for (T item : page) {
+                    Collection<? extends R> mapped = mapper.apply(item);
+
+                    if (mapped == null || mapped.isEmpty()) {
+                        continue;
+                    }
+
+                    for (R r : mapped) {
+                        if (skip > 0) {
+                            skip--;
+                            continue;
+                        }
+
+                        result.add(r);
+                        remaining--;
+
+                        if (remaining == 0) {
+                            break;
+                        }
+                    }
+
+                    if (remaining == 0) {
+                        break;
+                    }
+                }
+            }
+
+            return result;
+        });
+    }
 }
