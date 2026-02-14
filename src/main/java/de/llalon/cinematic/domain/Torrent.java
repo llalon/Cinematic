@@ -1,3 +1,13 @@
 package de.llalon.cinematic.domain;
 
-public class Torrent {}
+import de.llalon.cinematic.client.qbittorrent.dto.TorrentInfo;
+
+public class Torrent extends DomainModel {
+
+    private final TorrentInfo torrentInfo;
+
+    Torrent(ClientContext ctx, TorrentInfo torrentInfo) {
+        super(ctx);
+        this.torrentInfo = torrentInfo;
+    }
+}

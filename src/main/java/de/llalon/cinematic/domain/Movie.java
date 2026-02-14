@@ -5,22 +5,21 @@ import de.llalon.cinematic.client.radarr.dto.TagResource;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class Movie {
+public class Movie extends DomainModel {
 
-    private final ClientContext context;
     private final MovieResource radarrMovie;
 
-    public Movie(ClientContext context, MovieResource radarrMovie) {
-        this.context = context;
+    public Movie(ClientContext ctx, MovieResource radarrMovie) {
+        super(ctx);
         this.radarrMovie = radarrMovie;
     }
 
     public Iterable<Tag> tags() {
-        final Map<Integer, String> tags = context.getRadarrClient().getAllTags().stream()
+        final Map<Integer, String> tags = ctx.getRadarrClient().getAllTags().stream()
                 .collect(Collectors.toMap(TagResource::getId, TagResource::getLabel));
 
         return radarrMovie.getTags().stream()
-                .map(tagId -> new Tag(context, tags.get(tagId)))
+                .map(tagId -> new Tag(ctx, tags.get(tagId)))
                 .toList();
     }
 }

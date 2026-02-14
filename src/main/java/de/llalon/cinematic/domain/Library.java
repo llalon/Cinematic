@@ -1,31 +1,52 @@
 package de.llalon.cinematic.domain;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import de.llalon.cinematic.util.PagedIterable;
+import java.util.ArrayList;
+import java.util.List;
 
-@RequiredArgsConstructor
-public class Library {
-    @Getter
-    private final ClientContext context;
+public class Library extends DomainModel {
+
+    public ClientContext getContext() {
+        return super.ctx;
+    }
+
+    public Library(ClientContext ctx) {
+        super(ctx);
+    }
 
     public Iterable<Movie> movies() {
-        return null;
+        return ctx.getRadarrClient().getAllMovies().stream()
+                .map(x -> new Movie(ctx, x))
+                .toList();
     }
 
     public Iterable<Series> series() {
-        return null;
+        return ctx.getSonarrClient().getAllSeries().stream()
+                .map(x -> new Series(ctx, x))
+                .toList();
     }
 
     public Iterable<Torrent> torrents() {
-        return null;
+        return ctx.getQbittorrentClient().getTorrents().stream()
+                .map(x -> new Torrent(ctx, x))
+                .toList();
     }
 
     public Iterable<Tag> tags() {
-        return null;
+        List<Tag> tags = new ArrayList<>();
+
+        ctx.getQbittorrentClient().getAllTags().forEach(x -> tags.add(new Tag(ctx, x)));
+        ctx.getRadarrClient().getAllTags().forEach(x -> tags.add(new Tag(ctx, x.getLabel())));
+        ctx.getSonarrClient().getAllTags().forEach(x -> tags.add(new Tag(ctx, x.getLabel())));
+
+        return tags;
     }
 
     public Iterable<Request> requests() {
-        return null;
+        return new PagedIterable<>((take, skip) -> ctx.getOverseerrClient()
+                        .getAllRequests(take, skip, null, null, null)
+                        .getResults())
+                .map(x -> new Request(ctx, x));
     }
 
     public Iterable<User> users() {

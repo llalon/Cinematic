@@ -21,8 +21,32 @@ class CinematicIntegrationsTests {
     }
 
     @Test
-    void test() {
-        var movies = library.movies();
-        assertNotNull(movies);
+    void canGetMovies() {
+        var results = library.movies();
+        assertNotNull(results);
+    }
+
+    @Test
+    void canGetSeries() {
+        var results = library.series();
+        assertNotNull(results);
+    }
+
+    @Test
+    void canCanTorrents() {
+        var results = library.torrents();
+        assertNotNull(results);
+    }
+
+    @Test
+    void canCanRequests() {
+        var results = library.requests();
+        assertNotNull(results);
+    }
+
+    @Test
+    void canGetTags() {
+        var results = library.tags();
+        assertNotNull(results);
     }
 }

@@ -1,12 +1,11 @@
 package de.llalon.cinematic.domain;
 
-public class Tag {
+public class Tag extends DomainModel {
 
-    private final ClientContext context;
     private final String name;
 
     public Tag(ClientContext context, String name) {
-        this.context = context;
+        super(context);
         this.name = name;
     }
 
@@ -15,16 +14,20 @@ public class Tag {
     }
 
     public Iterable<Movie> movies() {
-        return context.getRadarrClient().getAllMovies().stream()
-                .map(x -> new Movie(context, x))
+        return ctx.getRadarrClient().getAllMovies().stream()
+                .map(x -> new Movie(ctx, x))
                 .toList();
     }
 
     public Iterable<Series> series() {
-        return null;
+        return ctx.getSonarrClient().getAllSeries().stream()
+                .map(x -> new Series(ctx, x))
+                .toList();
     }
 
     public Iterable<Torrent> torrents() {
-        return null;
+        return ctx.getQbittorrentClient().getTorrents(null, null, this.name).stream()
+                .map(x -> new Torrent(ctx, x))
+                .toList();
     }
 }
