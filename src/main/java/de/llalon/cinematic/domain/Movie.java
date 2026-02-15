@@ -4,6 +4,7 @@ import de.llalon.cinematic.client.qbittorrent.dto.TorrentInfo;
 import de.llalon.cinematic.client.radarr.dto.MovieResource;
 import de.llalon.cinematic.client.radarr.dto.QueueResource;
 import de.llalon.cinematic.client.radarr.dto.TagResource;
+import de.llalon.cinematic.util.collections.OffsetPagedIterable;
 import de.llalon.cinematic.util.collections.PagePagedIterable;
 import java.util.List;
 import java.util.Map;
@@ -45,5 +46,19 @@ public class Movie extends DomainModel {
                             .map(torrent -> new Torrent(ctx, torrent)))
                     .iterator();
         };
+    }
+
+    public Iterable<Request> requests() {
+        final Integer tmdbId = radarrMovie.getTmdbId();
+
+        return () -> new OffsetPagedIterable<>((take, skip) -> ctx.getOverseerrClient()
+                        .getAllRequests(take, skip, null, null, null)
+                        .getResults())
+                .stream()
+                        .filter(r -> r.getMedia() != null
+                                && tmdbId != null
+                                && Objects.equals(r.getMedia().getTmdbId(), tmdbId))
+                        .map(x -> new Request(ctx, x))
+                        .iterator();
     }
 }
