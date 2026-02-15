@@ -8,6 +8,7 @@ applyTo: '**/*.java, **/*.kt'
 - Use OkHttp as the http client
 - Use synchronous blocking calls - do not use reactive patterns
 - Clients must be thread safe
+- Client API request methods should always return DTOs matching the response body
 
 # JSON serialization/deserialization
 
