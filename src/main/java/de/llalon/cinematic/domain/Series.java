@@ -4,6 +4,7 @@ import de.llalon.cinematic.client.qbittorrent.dto.TorrentInfo;
 import de.llalon.cinematic.client.sonarr.dto.QueueResource;
 import de.llalon.cinematic.client.sonarr.dto.SeriesResource;
 import de.llalon.cinematic.client.sonarr.dto.TagResource;
+import de.llalon.cinematic.util.collections.OffsetPagedIterable;
 import de.llalon.cinematic.util.collections.PagePagedIterable;
 import java.util.List;
 import java.util.Map;
@@ -47,5 +48,18 @@ public class Series extends DomainModel {
                             .map(torrent -> new Torrent(ctx, torrent)))
                     .iterator();
         };
+    }
+
+    public Iterable<Request> requests() {
+        final Integer tmdbId = sonarrSeries.getTmdbId();
+
+        return () -> new OffsetPagedIterable<>((take, skip) -> ctx.getOverseerrClient()
+                        .getAllRequests(take, skip, null, null, null)
+                        .getResults())
+                .stream()
+                        .filter(request -> request.getMedia() != null)
+                        .filter(request -> tmdbId.equals(request.getMedia().getTmdbId()))
+                        .map(x -> new Request(ctx, x))
+                        .iterator();
     }
 }

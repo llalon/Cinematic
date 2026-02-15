@@ -95,4 +95,11 @@ class CinematicIntegrationsTests {
         var requests = movie.requests();
         assertNotNull(requests.iterator().next());
     }
+
+    @Test
+    void canGetSeriesRequests() {
+        var series = getTestSeries();
+        var requests = series.requests();
+        assertNotNull(requests.iterator().next());
+    }
 }
