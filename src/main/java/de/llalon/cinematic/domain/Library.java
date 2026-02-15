@@ -1,8 +1,7 @@
 package de.llalon.cinematic.domain;
 
 import de.llalon.cinematic.util.collections.OffsetPagedIterable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.stream.Stream;
 
 public class Library extends DomainModel {
 
@@ -15,41 +14,36 @@ public class Library extends DomainModel {
     }
 
     public Iterable<Movie> movies() {
-        return ctx.getRadarrClient().getAllMovies().stream()
+        return () -> ctx.getRadarrClient().getAllMovies().stream()
                 .map(x -> new Movie(ctx, x))
-                .toList();
+                .iterator();
     }
 
     public Iterable<Series> series() {
-        return ctx.getSonarrClient().getAllSeries().stream()
+        return () -> ctx.getSonarrClient().getAllSeries().stream()
                 .map(x -> new Series(ctx, x))
-                .toList();
+                .iterator();
     }
 
     public Iterable<Torrent> torrents() {
-        return ctx.getQbittorrentClient().getTorrents().stream()
+        return () -> ctx.getQbittorrentClient().getTorrents().stream()
                 .map(x -> new Torrent(ctx, x))
-                .toList();
+                .iterator();
     }
 
     public Iterable<Tag> tags() {
-        List<Tag> tags = new ArrayList<>();
-
-        ctx.getQbittorrentClient().getAllTags().forEach(x -> tags.add(new Tag(ctx, x)));
-        ctx.getRadarrClient().getAllTags().forEach(x -> tags.add(new Tag(ctx, x.getLabel())));
-        ctx.getSonarrClient().getAllTags().forEach(x -> tags.add(new Tag(ctx, x.getLabel())));
-
-        return tags;
+        return () -> {
+            Stream<Tag> s1 = ctx.getQbittorrentClient().getAllTags().stream().map(x -> new Tag(ctx, x));
+            Stream<Tag> s2 = ctx.getRadarrClient().getAllTags().stream().map(x -> new Tag(ctx, x.getLabel()));
+            Stream<Tag> s3 = ctx.getSonarrClient().getAllTags().stream().map(x -> new Tag(ctx, x.getLabel()));
+            return Stream.concat(Stream.concat(s1, s2), s3).iterator();
+        };
     }
 
     public Iterable<Request> requests() {
-        return new OffsetPagedIterable<>((take, skip) -> ctx.getOverseerrClient()
+        return () -> new OffsetPagedIterable<>((take, skip) -> ctx.getOverseerrClient()
                         .getAllRequests(take, skip, null, null, null)
                         .getResults())
-                .stream().map(x -> new Request(ctx, x)).toList();
-    }
-
-    public Iterable<User> users() {
-        return null;
+                .stream().map(x -> new Request(ctx, x)).iterator();
     }
 }
