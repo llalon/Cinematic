@@ -44,9 +44,11 @@ public class Library extends DomainModel {
 
     public Iterable<Request> requests() {
         return new OffsetPagedIterable<>((take, skip) -> ctx.getOverseerrClient()
-                        .getAllRequests(take, skip, null, null, null)
-                        .getResults())
-                .map(x -> new Request(ctx, x));
+                .getAllRequests(take, skip, null, null, null)
+                .getResults())
+            .stream()
+            .map(x -> new Request(ctx, x))
+            .toList();
     }
 
     public Iterable<User> users() {

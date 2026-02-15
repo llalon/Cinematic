@@ -2,7 +2,6 @@ package de.llalon.cinematic.util.collections;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -111,29 +110,7 @@ public abstract class AbstractPagedIterable<T> implements Iterable<T> {
         return currentPageIndex + 1;
     } // override for offset style
 
-    @Deprecated
-    public <R> AbstractPagedIterable<R> map(Function<T, R> mapper) {
-        return new AbstractPagedIterable<>(pageSize) {
-            @Override
-            protected List<R> fetchPage(int pageIndex, int pageSize) {
-                List<T> original = AbstractPagedIterable.this.fetchPage(pageIndex, pageSize);
-                if (original == null || original.isEmpty()) return Collections.emptyList();
-                List<R> mapped = new ArrayList<>(original.size());
-                for (T item : original) mapped.add(mapper.apply(item));
-                return mapped;
-            }
-
-            @Override
-            protected int initialPageIndex() {
-                return AbstractPagedIterable.this.initialPageIndex();
-            }
-
-            @Override
-            protected int nextPageIndex(int currentPageIndex, int lastPageSize) {
-                return AbstractPagedIterable.this.nextPageIndex(currentPageIndex, lastPageSize);
-            }
-        };
-    }
+    // Deprecated `map` removed in favor of using the standard Stream API via `stream().map(...)`.
 
     public List<T> toList() {
         List<T> result = new ArrayList<>();
