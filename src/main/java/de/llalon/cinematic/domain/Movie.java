@@ -62,4 +62,13 @@ public class Movie extends DomainModel {
                         .map(x -> new Request(ctx, x))
                         .iterator();
     }
+
+    public Iterable<Watches> watches() {
+        final Integer tmdbId = radarrMovie.getTmdbId();
+
+        return new OffsetPagedIterable<>((take, skip) ->
+                ctx.getTautulliClient().getHistoryByRatingKey(tmdbId.toString(), skip, take).getData().stream()
+                        .map(h -> new Watches(ctx, h))
+                        .toList());
+    }
 }
