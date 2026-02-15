@@ -57,3 +57,19 @@ Design for dynamic invocation safety.
 - Use final fields
 - Prefer Iterable/lazy data structures
 - Avoid unnecessary eager loading; prefer lazy evaluation
+
+## Build and Verification
+
+- The project uses maven wrapper
+- After adding or modifying code, verify the project continues to build successfully.
+- Ensure all tests pass as part of the build.
+- Ensure code is formatted using spotless
+
+## Useful Commands
+
+| Maven Command           | Description            |
+|:------------------------|:-----------------------|
+| `./mvnw package`        | Build the application. |
+| `./mvnw test`           | Run tests.             |
+| `./mvnw compile`        | Compile.               |
+| `./mvnw spotless:apply` | Apply code formatting. |
