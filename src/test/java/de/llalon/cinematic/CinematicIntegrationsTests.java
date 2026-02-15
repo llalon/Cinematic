@@ -11,7 +11,7 @@ import org.junit.jupiter.api.*;
 class CinematicIntegrationsTests {
 
     static int TEST_SERIES_ID = 367;
-    static int TEST_MOVIE_ID = 1290159;
+    static int TEST_MOVIE_ID = 763215;
 
     static Library library;
 

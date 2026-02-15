@@ -8,7 +8,6 @@ import de.llalon.cinematic.util.collections.OffsetPagedIterable;
 import de.llalon.cinematic.util.collections.PagePagedIterable;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.experimental.Delegate;
 
@@ -58,9 +57,8 @@ public class Movie extends DomainModel {
                         .getAllRequests(take, skip, null, null, null)
                         .getResults())
                 .stream()
-                        .filter(r -> r.getMedia() != null
-                                && tmdbId != null
-                                && Objects.equals(r.getMedia().getTmdbId(), tmdbId))
+                        .filter(request -> request.getMedia() != null)
+                        .filter(request -> tmdbId.equals(request.getMedia().getTmdbId()))
                         .map(x -> new Request(ctx, x))
                         .iterator();
     }
