@@ -15,11 +15,13 @@ public class Series extends DomainModel {
     }
 
     public Iterable<Tag> tags() {
-        final Map<Integer, String> tags = ctx.getSonarrClient().getAllTags().stream()
-                .collect(Collectors.toMap(TagResource::getId, TagResource::getLabel));
+        return () -> {
+            final Map<Integer, String> tags = ctx.getSonarrClient().getAllTags().stream()
+                    .collect(Collectors.toMap(TagResource::getId, TagResource::getLabel));
 
-        return sonarrSeries.getTags().stream()
-                .map(tagId -> new Tag(ctx, tags.get(tagId)))
-                .toList();
+            return sonarrSeries.getTags().stream()
+                    .map(tagId -> new Tag(ctx, tags.get(tagId)))
+                    .iterator();
+        };
     }
 }
