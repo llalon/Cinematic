@@ -10,6 +10,9 @@ import org.junit.jupiter.api.*;
  */
 class CinematicIntegrationsTests {
 
+    static int TEST_SERIES_ID = 367;
+    static int TEST_MOVIE_ID = 1290159;
+
     static Library library;
 
     @BeforeAll
@@ -22,6 +25,24 @@ class CinematicIntegrationsTests {
         Assumptions.assumeFalse(library.getContext().getTautulliClient() == null);
         Assumptions.assumeFalse(library.getContext().getSonarrClient() == null);
         Assumptions.assumeFalse(library.getContext().getOverseerrClient() == null);
+    }
+
+    private Series getTestSeries() {
+        for (var series : library.series()) {
+            if (series.getId().equals(TEST_SERIES_ID) || series.getTmdbId().equals(TEST_SERIES_ID)) {
+                return series;
+            }
+        }
+        throw new RuntimeException("No series with id " + TEST_SERIES_ID);
+    }
+
+    private Movie getTestMovie() {
+        for (var movie : library.movies()) {
+            if (movie.getId().equals(TEST_MOVIE_ID) || movie.getTmdbId().equals(TEST_MOVIE_ID)) {
+                return movie;
+            }
+        }
+        throw new RuntimeException("No movie with id " + TEST_MOVIE_ID);
     }
 
     @Test
@@ -56,29 +77,22 @@ class CinematicIntegrationsTests {
 
     @Test
     void canGetMovieTorrents() {
-        Torrent foundTorrent = null;
-        for (var movie : library.movies()) {
-            if (!movie.getTitle().toUpperCase().contains("DYNAMITE")) {
-                continue;
-            }
-
-            var torrent = movie.torrents();
-            foundTorrent = torrent.iterator().next();
-        }
-        assertNotNull(foundTorrent);
+        var movie = getTestMovie();
+        var torrent = movie.torrents();
+        assertNotNull(torrent.iterator().next());
     }
 
     @Test
     void canGetSeriesTorrents() {
-        Torrent foundTorrent = null;
-        for (var series : library.series()) {
-            if (!series.getTitle().toUpperCase().contains("THE PIT")) {
-                continue;
-            }
+        var series = getTestSeries();
+        var torrent = series.torrents();
+        assertNotNull(torrent.iterator().next());
+    }
 
-            var torrent = series.torrents();
-            foundTorrent = torrent.iterator().next();
-        }
-        assertNotNull(foundTorrent);
+    @Test
+    void canGetMovieRequests() {
+        var movie = getTestMovie();
+        var requests = movie.requests();
+        assertNotNull(requests.iterator().next());
     }
 }
