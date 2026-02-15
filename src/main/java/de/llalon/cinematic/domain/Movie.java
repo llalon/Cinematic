@@ -22,11 +22,11 @@ public class Movie extends DomainModel {
     public Iterable<Tag> tags() {
         return () -> {
             final Map<Integer, String> tags = ctx.getRadarrClient().getAllTags().stream()
-                .collect(Collectors.toMap(TagResource::getId, TagResource::getLabel));
+                    .collect(Collectors.toMap(TagResource::getId, TagResource::getLabel));
 
             return radarrMovie.getTags().stream()
-                .map(tagId -> new Tag(ctx, tags.get(tagId)))
-                .iterator();
+                    .map(tagId -> new Tag(ctx, tags.get(tagId)))
+                    .iterator();
         };
     }
 

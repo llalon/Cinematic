@@ -17,36 +17,36 @@ public class Tag extends DomainModel {
         return () -> {
             // find radarr tag id for this label then lazily filter movies
             final Integer tagId = ctx.getRadarrClient().getAllTags().stream()
-                .filter(t -> t.getLabel().equals(this.name))
-                .findFirst()
-                .map(t -> t.getId())
-                .orElse(null);
+                    .filter(t -> t.getLabel().equals(this.name))
+                    .findFirst()
+                    .map(t -> t.getId())
+                    .orElse(null);
 
             return ctx.getRadarrClient().getAllMovies().stream()
-                .filter(m -> tagId == null || m.getTags().contains(tagId))
-                .map(x -> new Movie(ctx, x))
-                .iterator();
+                    .filter(m -> tagId == null || m.getTags().contains(tagId))
+                    .map(x -> new Movie(ctx, x))
+                    .iterator();
         };
     }
 
     public Iterable<Series> series() {
         return () -> {
             final Integer tagId = ctx.getSonarrClient().getAllTags().stream()
-                .filter(t -> t.getLabel().equals(this.name))
-                .findFirst()
-                .map(t -> t.getId())
-                .orElse(null);
+                    .filter(t -> t.getLabel().equals(this.name))
+                    .findFirst()
+                    .map(t -> t.getId())
+                    .orElse(null);
 
             return ctx.getSonarrClient().getAllSeries().stream()
-                .filter(s -> tagId == null || s.getTags().contains(tagId))
-                .map(x -> new Series(ctx, x))
-                .iterator();
+                    .filter(s -> tagId == null || s.getTags().contains(tagId))
+                    .map(x -> new Series(ctx, x))
+                    .iterator();
         };
     }
 
     public Iterable<Torrent> torrents() {
         return () -> ctx.getQbittorrentClient().getTorrents(null, null, this.name).stream()
-            .map(x -> new Torrent(ctx, x))
-            .iterator();
+                .map(x -> new Torrent(ctx, x))
+                .iterator();
     }
 }
