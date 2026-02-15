@@ -8,6 +8,11 @@ public class OffsetPagedIterable<T> extends AbstractPagedIterable<T> {
 
     private final PageFetcher<T> fetcher;
 
+    public OffsetPagedIterable(PageFetcher<T> fetcher, int pageSize) {
+        super(pageSize);
+        this.fetcher = fetcher;
+    }
+
     @Override
     protected List<T> fetchPage(int pageIndex, int pageSize) {
         return fetcher.fetch(pageSize, pageIndex); // here pageIndex acts as skip

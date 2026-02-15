@@ -1,7 +1,10 @@
 package de.llalon.cinematic.util.collections;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public abstract class AbstractPagedIterable<T> implements Iterable<T> {
 
@@ -51,6 +54,55 @@ public abstract class AbstractPagedIterable<T> implements Iterable<T> {
         };
     }
 
+    @Override
+    public Spliterator<T> spliterator() {
+        return new Spliterator<T>() {
+            private int pageIndex = initialPageIndex();
+            private Iterator<T> current = Collections.emptyIterator();
+            private boolean finished = false;
+
+            @Override
+            public boolean tryAdvance(Consumer<? super T> action) {
+                if (finished) return false;
+
+                if (!current.hasNext()) {
+                    List<T> page = fetchPage(pageIndex, pageSize);
+                    if (page == null || page.isEmpty()) {
+                        finished = true;
+                        return false;
+                    }
+                    pageIndex = nextPageIndex(pageIndex, page.size());
+                    current = page.iterator();
+                }
+
+                if (current.hasNext()) {
+                    action.accept(current.next());
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public Spliterator<T> trySplit() {
+                return null; // Sequential paging, not splittable
+            }
+
+            @Override
+            public long estimateSize() {
+                return Long.MAX_VALUE; // Unknown total size
+            }
+
+            @Override
+            public int characteristics() {
+                return Spliterator.ORDERED | Spliterator.NONNULL;
+            }
+        };
+    }
+
+    public Stream<T> stream() {
+        return StreamSupport.stream(spliterator(), false);
+    }
+
     protected int initialPageIndex() {
         return 0;
     } // override for 1-based page numbering
@@ -59,6 +111,7 @@ public abstract class AbstractPagedIterable<T> implements Iterable<T> {
         return currentPageIndex + 1;
     } // override for offset style
 
+    @Deprecated
     public <R> AbstractPagedIterable<R> map(Function<T, R> mapper) {
         return new AbstractPagedIterable<>(pageSize) {
             @Override

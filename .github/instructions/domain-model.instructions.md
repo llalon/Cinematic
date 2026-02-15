@@ -58,7 +58,7 @@ All mapping between transport models and domain models must occur at the boundar
 All relationships returning multiple objects must:
 
 - Return Iterable<T>
-- Support lazy evaluation
+- Support lazy evaluation wherever possible
 - Exhaust paginated APIs transparently
 
 The domain must never expose:

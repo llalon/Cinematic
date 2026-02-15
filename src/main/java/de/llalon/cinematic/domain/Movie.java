@@ -5,11 +5,11 @@ import de.llalon.cinematic.client.radarr.dto.MovieResource;
 import de.llalon.cinematic.client.radarr.dto.QueueResource;
 import de.llalon.cinematic.client.radarr.dto.TagResource;
 import de.llalon.cinematic.util.collections.PagePagedIterable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class Movie extends DomainModel {
 
@@ -30,26 +30,19 @@ public class Movie extends DomainModel {
     }
 
     public Iterable<Torrent> torrents() {
-        Integer movieId = radarrMovie.getId();
+        final Integer movieId = radarrMovie.getId();
 
-        PagePagedIterable<QueueResource> allQueuePaged = new PagePagedIterable<>((take, skip) ->
+        final PagePagedIterable<QueueResource> allQueuePaged = new PagePagedIterable<>((take, skip) ->
                 ctx.getRadarrClient().getQueue(take, skip, false).getRecords());
 
-        List<TorrentInfo> allTorrents = ctx.getQbittorrentClient().getTorrents();
-        List<QueueResource> allQueue = allQueuePaged.toList();
-
-        List<Torrent> torrents = new ArrayList<>();
-
-        allQueue.forEach(queueResource -> {
-            if (queueResource.getMovieId().equals(movieId)) {
-                allTorrents.forEach(torrent -> {
-                    if (Objects.equals(torrent.getHash(), queueResource.getDownloadId())) {
-                        torrents.add(new Torrent(ctx, torrent));
-                    }
-                });
-            }
-        });
-
-        return torrents;
+        return () -> {
+            final List<TorrentInfo> allTorrents = ctx.getQbittorrentClient().getTorrents();
+            return allQueuePaged.stream()
+                    .filter(queueResource -> queueResource.getMovieId().equals(movieId))
+                    .flatMap(queueResource -> allTorrents.stream()
+                            .filter(torrent -> Objects.equals(torrent.getHash(), queueResource.getDownloadId()))
+                            .map(torrent -> new Torrent(ctx, torrent)))
+                    .iterator();
+        };
     }
 }
