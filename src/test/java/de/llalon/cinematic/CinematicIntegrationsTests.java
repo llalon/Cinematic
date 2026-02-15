@@ -5,6 +5,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.llalon.cinematic.domain.*;
 import org.junit.jupiter.api.*;
 
+/**
+ * Tests which require api clients to be configured via environment variables. If not configured they will be skipped.
+ */
 class CinematicIntegrationsTests {
 
     static Library library;

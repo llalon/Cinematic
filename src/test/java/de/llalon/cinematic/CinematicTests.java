@@ -10,6 +10,9 @@ import de.llalon.cinematic.domain.Library;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.*;
 
+/**
+ * Contains tests which do not require access to real APIs. Utilizing mock web server.
+ */
 class CinematicTests {
 
     static MockWebServer server;
