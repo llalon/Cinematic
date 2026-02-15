@@ -10,9 +10,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import lombok.experimental.Delegate;
 
 public class Movie extends DomainModel {
 
+    @Delegate
     private final MovieResource radarrMovie;
 
     public Movie(ClientContext ctx, MovieResource radarrMovie) {
@@ -42,7 +44,8 @@ public class Movie extends DomainModel {
             return allQueuePaged.stream()
                     .filter(queueResource -> queueResource.getMovieId().equals(movieId))
                     .flatMap(queueResource -> allTorrents.stream()
-                            .filter(torrent -> Objects.equals(torrent.getHash(), queueResource.getDownloadId()))
+                            .filter(torrent -> torrent.getHash() != null && queueResource.getDownloadId() != null)
+                            .filter(torrent -> torrent.getHash().equalsIgnoreCase(queueResource.getDownloadId()))
                             .map(torrent -> new Torrent(ctx, torrent)))
                     .iterator();
         };

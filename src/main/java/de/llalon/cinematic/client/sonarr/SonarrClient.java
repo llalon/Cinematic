@@ -247,13 +247,16 @@ public class SonarrClient {
      *
      * @return paginated queue response
      */
-    public QueueResourcePagingResource getQueue() {
-        log.debug("Fetching download queue");
-        HttpUrl url = baseUrl.newBuilder()
+    public QueueResourcePagingResource getQueue(int page, int pageSize, boolean includeSeries) {
+        log.debug("Fetching queue resources for page {} and size {}", page, pageSize);
+
+        final HttpUrl url = baseUrl.newBuilder()
                 .addPathSegments("api/v3/queue")
-                .addQueryParameter("pageSize", "1000")
-                .addQueryParameter("includeSeries", "true")
+                .addQueryParameter("page", String.valueOf(page))
+                .addQueryParameter("pageSize", String.valueOf(pageSize))
+                .addQueryParameter("includeMovie", String.valueOf(includeSeries))
                 .build();
+
         return get(url, QueueResourcePagingResource.class);
     }
 

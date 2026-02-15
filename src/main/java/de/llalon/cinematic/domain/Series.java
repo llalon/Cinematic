@@ -1,14 +1,18 @@
 package de.llalon.cinematic.domain;
 
+import de.llalon.cinematic.client.qbittorrent.dto.TorrentInfo;
+import de.llalon.cinematic.client.sonarr.dto.QueueResource;
 import de.llalon.cinematic.client.sonarr.dto.SeriesResource;
 import de.llalon.cinematic.client.sonarr.dto.TagResource;
-import de.llalon.cinematic.util.collections.OffsetPagedIterable;
+import de.llalon.cinematic.util.collections.PagePagedIterable;
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
+import lombok.experimental.Delegate;
 
 public class Series extends DomainModel {
 
+    @Delegate
     private final SeriesResource sonarrSeries;
 
     Series(ClientContext ctx, SeriesResource seriesResource) {
@@ -27,20 +31,21 @@ public class Series extends DomainModel {
         };
     }
 
-    public Iterable<Request> requests() {
-        final Integer tvdbId = sonarrSeries.getTvdbId();
-        final Integer tmdbId = sonarrSeries.getTmdbId();
+    public Iterable<Torrent> torrents() {
+        final Integer seriesId = sonarrSeries.getId();
 
-        return () -> new OffsetPagedIterable<>((take, skip) -> ctx.getOverseerrClient()
-                        .getAllRequests(take, skip, null, null, null)
-                        .getResults())
-                .stream()
-                        .filter(r -> r.getMedia() != null
-                                && ((tvdbId != null
-                                                && Objects.equals(r.getMedia().getTvdbId(), tvdbId))
-                                        || (tmdbId != null
-                                                && Objects.equals(r.getMedia().getTmdbId(), tmdbId))))
-                        .map(x -> new Request(ctx, x))
-                        .iterator();
+        final PagePagedIterable<QueueResource> allQueuePaged = new PagePagedIterable<>((take, skip) ->
+                ctx.getSonarrClient().getQueue(take, skip, false).getRecords());
+
+        return () -> {
+            final List<TorrentInfo> allTorrents = ctx.getQbittorrentClient().getTorrents();
+            return allQueuePaged.stream()
+                    .filter(queueResource -> queueResource.getSeriesId().equals(seriesId))
+                    .flatMap(queueResource -> allTorrents.stream()
+                            .filter(torrent -> torrent.getHash() != null && queueResource.getDownloadId() != null)
+                            .filter(torrent -> torrent.getHash().equalsIgnoreCase(queueResource.getDownloadId()))
+                            .map(torrent -> new Torrent(ctx, torrent)))
+                    .iterator();
+        };
     }
 }

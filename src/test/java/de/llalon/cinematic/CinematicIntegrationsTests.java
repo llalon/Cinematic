@@ -27,38 +27,58 @@ class CinematicIntegrationsTests {
     @Test
     void canGetMovies() {
         var results = library.movies();
-        assertNotNull(results);
+        assertNotNull(results.iterator().next());
     }
 
     @Test
     void canGetSeries() {
         var results = library.series();
-        assertNotNull(results);
+        assertNotNull(results.iterator().next());
     }
 
     @Test
     void canCanTorrents() {
         var results = library.torrents();
-        assertNotNull(results);
+        assertNotNull(results.iterator().next());
     }
 
     @Test
     void canCanRequests() {
         var results = library.requests();
-        assertNotNull(results);
+        assertNotNull(results.iterator().next());
     }
 
     @Test
     void canGetTags() {
         var results = library.tags();
-        assertNotNull(results);
+        assertNotNull(results.iterator().next());
     }
 
     @Test
     void canGetMovieTorrents() {
-        var movie = library.movies().iterator().next();
-        var torrent = movie.torrents();
+        Torrent foundTorrent = null;
+        for (var movie : library.movies()) {
+            if (!movie.getTitle().toUpperCase().contains("DYNAMITE")) {
+                continue;
+            }
 
-        assertNotNull(torrent);
+            var torrent = movie.torrents();
+            foundTorrent = torrent.iterator().next();
+        }
+        assertNotNull(foundTorrent);
+    }
+
+    @Test
+    void canGetSeriesTorrents() {
+        Torrent foundTorrent = null;
+        for (var series : library.series()) {
+            if (!series.getTitle().toUpperCase().contains("THE PIT")) {
+                continue;
+            }
+
+            var torrent = series.torrents();
+            foundTorrent = torrent.iterator().next();
+        }
+        assertNotNull(foundTorrent);
     }
 }
