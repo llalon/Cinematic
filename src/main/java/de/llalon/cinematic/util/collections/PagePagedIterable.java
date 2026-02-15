@@ -9,6 +9,11 @@ public class PagePagedIterable<T> extends AbstractPagedIterable<T> {
     private final PageFetcher<T> fetcher;
     private boolean lastPageFetched = false; // track if last page returned < pageSize
 
+    public PagePagedIterable(PageFetcher<T> fetcher, int pageSize) {
+        super(pageSize);
+        this.fetcher = fetcher;
+    }
+
     @Override
     protected List<T> fetchPage(int pageIndex, int pageSize) {
         if (lastPageFetched) {
