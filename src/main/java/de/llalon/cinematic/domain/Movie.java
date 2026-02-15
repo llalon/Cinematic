@@ -20,12 +20,14 @@ public class Movie extends DomainModel {
     }
 
     public Iterable<Tag> tags() {
-        final Map<Integer, String> tags = ctx.getRadarrClient().getAllTags().stream()
+        return () -> {
+            final Map<Integer, String> tags = ctx.getRadarrClient().getAllTags().stream()
                 .collect(Collectors.toMap(TagResource::getId, TagResource::getLabel));
 
-        return radarrMovie.getTags().stream()
+            return radarrMovie.getTags().stream()
                 .map(tagId -> new Tag(ctx, tags.get(tagId)))
-                .toList();
+                .iterator();
+        };
     }
 
     public Iterable<Torrent> torrents() {

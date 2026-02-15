@@ -14,20 +14,39 @@ public class Tag extends DomainModel {
     }
 
     public Iterable<Movie> movies() {
-        return ctx.getRadarrClient().getAllMovies().stream()
+        return () -> {
+            // find radarr tag id for this label then lazily filter movies
+            final Integer tagId = ctx.getRadarrClient().getAllTags().stream()
+                .filter(t -> t.getLabel().equals(this.name))
+                .findFirst()
+                .map(t -> t.getId())
+                .orElse(null);
+
+            return ctx.getRadarrClient().getAllMovies().stream()
+                .filter(m -> tagId == null || m.getTags().contains(tagId))
                 .map(x -> new Movie(ctx, x))
-                .toList();
+                .iterator();
+        };
     }
 
     public Iterable<Series> series() {
-        return ctx.getSonarrClient().getAllSeries().stream()
+        return () -> {
+            final Integer tagId = ctx.getSonarrClient().getAllTags().stream()
+                .filter(t -> t.getLabel().equals(this.name))
+                .findFirst()
+                .map(t -> t.getId())
+                .orElse(null);
+
+            return ctx.getSonarrClient().getAllSeries().stream()
+                .filter(s -> tagId == null || s.getTags().contains(tagId))
                 .map(x -> new Series(ctx, x))
-                .toList();
+                .iterator();
+        };
     }
 
     public Iterable<Torrent> torrents() {
-        return ctx.getQbittorrentClient().getTorrents(null, null, this.name).stream()
-                .map(x -> new Torrent(ctx, x))
-                .toList();
+        return () -> ctx.getQbittorrentClient().getTorrents(null, null, this.name).stream()
+            .map(x -> new Torrent(ctx, x))
+            .iterator();
     }
 }
