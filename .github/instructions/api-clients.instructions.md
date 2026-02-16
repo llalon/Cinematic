@@ -9,6 +9,7 @@ applyTo: '**/*.java, **/*.kt'
 - Use synchronous blocking calls - do not use reactive patterns
 - Clients must be thread safe
 - Client API request methods should always return DTOs matching the response body
+- API documentation for each API is available in `docs/`
 
 # JSON serialization/deserialization
 

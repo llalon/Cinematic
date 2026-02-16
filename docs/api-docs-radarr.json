@@ -1,11 +1,3 @@
----
-description: 'Guidelines for client code for radarr api'
-applyTo: '**/*.java, **/*.kt'
----
-
-# API Documentation for Radarr V3
-
-```json
 {
   "openapi": "3.0.4",
   "info": {
@@ -8960,7 +8952,7 @@ applyTo: '**/*.java, **/*.kt'
             "type": "array",
             "items": {
               "type": "object",
-              "additionalProperties": { }
+              "additionalProperties": {}
             },
             "nullable": true
           }
@@ -12842,11 +12834,10 @@ applyTo: '**/*.java, **/*.kt'
   },
   "security": [
     {
-      "X-Api-Key": [ ]
+      "X-Api-Key": []
     },
     {
-      "apikey": [ ]
+      "apikey": []
     }
   ]
 }
-```

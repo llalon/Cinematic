@@ -1,22 +1,21 @@
----
-description: 'Guidelines for client code for tautulli api'
-applyTo: '**/*.java, **/*.kt'
----
-
 # API Documentation for Tautulli API
 
 ## General structure
+
 The API endpoint is
+
 ```
 http://IP_ADDRESS:PORT + [/HTTP_ROOT] + /api/v2?apikey=$apikey&cmd=$command
 ```
 
 Example:
+
 ```
 http://localhost:8181/api/v2?apikey=66198313a092496b8a725867d2223b5f&cmd=get_metadata&rating_key=153037
 ```
 
 Response example (default `json`)
+
 ```
 {
     "response": {
@@ -33,6 +32,7 @@ Response example (default `json`)
     }
 }
 ```
+
 ```
 General optional parameters:
 
@@ -44,6 +44,7 @@ General optional parameters:
 ## API methods
 
 ### add_newsletter_config
+
 Add a new notification agent.
 
 ```
@@ -57,8 +58,8 @@ Returns:
     None
 ```
 
-
 ### add_notifier_config
+
 Add a new notification agent.
 
 ```
@@ -72,20 +73,20 @@ Returns:
     None
 ```
 
-
 ### arnold
+
 Get to the chopper!
 
-
 ### backup_config
+
 Create a manual backup of the `config.ini` file.
 
-
 ### backup_db
+
 Create a manual backup of the `plexpy.db` file.
 
-
 ### delete_all_library_history
+
 Delete all Tautulli history for a specific library.
 
 ```
@@ -100,8 +101,8 @@ Returns:
     None
 ```
 
-
 ### delete_all_user_history
+
 Delete all Tautulli history for a specific user.
 
 ```
@@ -115,12 +116,12 @@ Returns:
     None
 ```
 
-
 ### delete_cache
+
 Delete and recreate the cache directory.
 
-
 ### delete_export
+
 Delete exports from Tautulli.
 
 ```
@@ -134,8 +135,8 @@ Returns:
     None
 ```
 
-
 ### delete_history
+
 Delete history rows from Tautulli.
 
 ```
@@ -149,8 +150,8 @@ Returns:
     None
 ```
 
-
 ### delete_hosted_images
+
 Delete the images uploaded to image hosting services.
 
 ```
@@ -169,12 +170,12 @@ Returns:
          "message": "Deleted hosted images from Imgur."}
 ```
 
-
 ### delete_image_cache
+
 Delete and recreate the image cache directory.
 
-
 ### delete_library
+
 Delete a library section from Tautulli. Also erases all history for the library.
 
 ```
@@ -189,8 +190,8 @@ Returns:
     None
 ```
 
-
 ### delete_login_log
+
 Delete the Tautulli login logs.
 
 ```
@@ -204,8 +205,8 @@ Returns:
     None
 ```
 
-
 ### delete_lookup_info
+
 Delete the 3rd party API lookup info.
 
 ```
@@ -224,8 +225,8 @@ Returns:
          "message": "Deleted lookup info."}
 ```
 
-
 ### delete_media_info_cache
+
 Delete the media info table cache for a specific library.
 
 ```
@@ -239,8 +240,8 @@ Returns:
     None
 ```
 
-
 ### delete_mobile_device
+
 Remove a mobile device from the database.
 
 ```
@@ -255,8 +256,8 @@ Returns:
     None
 ```
 
-
 ### delete_newsletter
+
 Remove a newsletter from the database.
 
 ```
@@ -270,8 +271,8 @@ Returns:
     None
 ```
 
-
 ### delete_newsletter_log
+
 Delete the Tautulli newsletter logs.
 
 ```
@@ -285,8 +286,8 @@ Returns:
     None
 ```
 
-
 ### delete_notification_log
+
 Delete the Tautulli notification logs.
 
 ```
@@ -300,8 +301,8 @@ Returns:
     None
 ```
 
-
 ### delete_notifier
+
 Remove a notifier from the database.
 
 ```
@@ -315,12 +316,12 @@ Returns:
     None
 ```
 
-
 ### delete_recently_added
+
 Flush out all of the recently added items in the database.
 
-
 ### delete_synced_item
+
 Delete a synced item from a device.
 
 ```
@@ -335,12 +336,12 @@ Returns:
     None
 ```
 
-
 ### delete_temp_sessions
+
 Flush out all of the temporary sessions in the database.
 
-
 ### delete_user
+
 Delete a user from Tautulli. Also erases all history for the user.
 
 ```
@@ -354,24 +355,24 @@ Returns:
     None
 ```
 
-
 ### docs
+
 Return the api docs as a dict where commands are keys, docstring are value.
 
-
 ### docs_md
+
 Return the api docs formatted with markdown.
 
-
 ### download_config
+
 Download the Tautulli configuration file.
 
-
 ### download_database
+
 Download the Tautulli database file.
 
-
 ### download_export
+
 Download an exported metadata file
 
 ```
@@ -385,8 +386,8 @@ Returns:
     download
 ```
 
-
 ### download_log
+
 Download the Tautulli log file.
 
 ```
@@ -401,8 +402,8 @@ Returns:
     download
 ```
 
-
 ### download_plex_log
+
 Download the Plex log file.
 
 ```
@@ -417,8 +418,8 @@ Returns:
     download
 ```
 
-
 ### edit_library
+
 Update a library section on Tautulli.
 
 ```
@@ -435,8 +436,8 @@ Returns:
     None
 ```
 
-
 ### edit_user
+
 Update a user on Tautulli.
 
 ```
@@ -454,8 +455,8 @@ Returns:
     None
 ```
 
-
 ### export_metadata
+
 Export library or media metadata to a file
 
 ```
@@ -482,8 +483,8 @@ Returns:
         {"export_id": 1}
 ```
 
-
 ### get_activity
+
 Get the current activity on the PMS.
 
 ```
@@ -747,8 +748,8 @@ Returns:
          }
 ```
 
-
 ### get_apikey
+
 Get the apikey. Username and password are required
 if auth is enabled. Makes and saves the apikey if it does not exist.
 
@@ -764,8 +765,8 @@ Returns:
     string:             "apikey"
 ```
 
-
 ### get_children_metadata
+
 Get the metadata for the children of a media item.
 
 ```
@@ -831,8 +832,8 @@ Returns:
          }
 ```
 
-
 ### get_collections_table
+
 Get the data on the Tautulli collections tables.
 
 ```
@@ -851,8 +852,8 @@ Returns:
          }
 ```
 
-
 ### get_concurrent_streams_by_stream_type
+
 Get graph data for concurrent streams by stream type by date.
 
 ```
@@ -876,8 +877,8 @@ Returns:
          }
 ```
 
-
 ### get_date_formats
+
 Get the date and time formats used by Tautulli.
 
  ```
@@ -894,8 +895,8 @@ Returns:
          }
 ```
 
-
 ### get_export_fields
+
 Get a list of available custom export fields.
 
 ```
@@ -920,8 +921,8 @@ Returns:
         }
 ```
 
-
 ### get_exports_table
+
 Get the data on the Tautulli export tables.
 
 ```
@@ -974,8 +975,8 @@ Returns:
          }
 ```
 
-
 ### get_geoip_lookup
+
 Get the geolocation info for an IP address.
 
 ```
@@ -1000,8 +1001,8 @@ Returns:
          }
 ```
 
-
 ### get_history
+
 Get the Tautulli history.
 
 ```
@@ -1086,8 +1087,8 @@ Returns:
          }
 ```
 
-
 ### get_home_stats
+
 Get the homepage watch statistics.
 
 ```
@@ -1174,8 +1175,8 @@ Returns:
          ]
 ```
 
-
 ### get_item_user_stats
+
 Get the user stats for the media item.
 
 ```
@@ -1208,8 +1209,8 @@ Returns:
         ]
 ```
 
-
 ### get_item_watch_time_stats
+
 Get the watch time stats for the media item.
 
 ```
@@ -1247,8 +1248,8 @@ Returns:
         ]
 ```
 
-
 ### get_libraries
+
 Get a list of all libraries on your server.
 
 ```
@@ -1275,8 +1276,8 @@ Returns:
          ]
 ```
 
-
 ### get_libraries_table
+
 Get the data on the Tautulli libraries table.
 
 ```
@@ -1336,8 +1337,8 @@ Returns:
          }
 ```
 
-
 ### get_library
+
 Get a library's details.
 
 ```
@@ -1368,8 +1369,8 @@ Returns:
          }
 ```
 
-
 ### get_library_media_info
+
 Get the data on the Tautulli media info tables.
 
 ```
@@ -1427,8 +1428,8 @@ Returns:
          }
 ```
 
-
 ### get_library_names
+
 Get a list of library sections and ids on the PMS.
 
 ```
@@ -1447,8 +1448,8 @@ Returns:
          ]
 ```
 
-
 ### get_library_user_stats
+
 Get a library's user statistics.
 
 ```
@@ -1479,8 +1480,8 @@ Returns:
          ]
 ```
 
-
 ### get_library_watch_time_stats
+
 Get a library's watch time statistics.
 
 ```
@@ -1512,8 +1513,8 @@ Returns:
          ]
 ```
 
-
 ### get_logs
+
 Get the Tautulli logs.
 
 ```
@@ -1540,8 +1541,8 @@ Returns:
          ]
 ```
 
-
 ### get_metadata
+
 Get the metadata for a media item.
 
 ```
@@ -1750,8 +1751,8 @@ Returns:
          }
 ```
 
-
 ### get_new_rating_keys
+
 Get a list of new rating keys for the PMS of all of the item's parent/children.
 
 ```
@@ -1767,8 +1768,8 @@ Returns:
         {}
 ```
 
-
 ### get_newsletter_config
+
 Get the configuration for an existing notification agent.
 
 ```
@@ -1806,8 +1807,8 @@ Returns:
          }
 ```
 
-
 ### get_newsletter_log
+
 Get the data on the Tautulli newsletter logs table.
 
 ```
@@ -1846,8 +1847,8 @@ Returns:
          }
 ```
 
-
 ### get_newsletters
+
 Get a list of configured newsletters.
 
 ```
@@ -1870,8 +1871,8 @@ Returns:
          ]
 ```
 
-
 ### get_notification_log
+
 Get the data on the Tautulli notification logs table.
 
 ```
@@ -1911,8 +1912,8 @@ Returns:
          }
 ```
 
-
 ### get_notifier_config
+
 Get the configuration for an existing notification agent.
 
 ```
@@ -1952,8 +1953,8 @@ Returns:
          }
 ```
 
-
 ### get_notifier_parameters
+
 Get the list of available notification parameters.
 
 ```
@@ -1969,8 +1970,8 @@ Returns:
          }
 ```
 
-
 ### get_notifiers
+
 Get a list of configured notifiers.
 
 ```
@@ -1992,8 +1993,8 @@ Returns:
          ]
 ```
 
-
 ### get_old_rating_keys
+
 Get a list of old rating keys from the Tautulli database for all of the item's parent/children.
 
 ```
@@ -2009,8 +2010,8 @@ Returns:
         {}
 ```
 
-
 ### get_playlists_table
+
 Get the data on the Tautulli playlists tables.
 
 ```
@@ -2030,8 +2031,8 @@ Returns:
          }
 ```
 
-
 ### get_plays_by_date
+
 Get graph data by date.
 
 ```
@@ -2057,8 +2058,8 @@ Returns:
          }
 ```
 
-
 ### get_plays_by_dayofweek
+
 Get graph data by day of the week.
 
 ```
@@ -2084,8 +2085,8 @@ Returns:
          }
 ```
 
-
 ### get_plays_by_hourofday
+
 Get graph data by hour of the day.
 
 ```
@@ -2111,8 +2112,8 @@ Returns:
          }
 ```
 
-
 ### get_plays_by_source_resolution
+
 Get graph data by source resolution.
 
 ```
@@ -2137,8 +2138,8 @@ Returns:
          }
 ```
 
-
 ### get_plays_by_stream_resolution
+
 Get graph data by stream resolution.
 
 ```
@@ -2163,8 +2164,8 @@ Returns:
          }
 ```
 
-
 ### get_plays_by_stream_type
+
 Get graph data by stream type by date.
 
 ```
@@ -2189,8 +2190,8 @@ Returns:
          }
 ```
 
-
 ### get_plays_by_top_10_platforms
+
 Get graph data by top 10 platforms.
 
 ```
@@ -2216,8 +2217,8 @@ Returns:
          }
 ```
 
-
 ### get_plays_by_top_10_users
+
 Get graph data by top 10 users.
 
 ```
@@ -2243,8 +2244,8 @@ Returns:
          }
 ```
 
-
 ### get_plays_per_month
+
 Get graph data by month.
 
 ```
@@ -2270,8 +2271,8 @@ Returns:
          }
 ```
 
-
 ### get_plex_log
+
 Get the PMS logs.
 
 ```
@@ -2294,8 +2295,8 @@ Returns:
          ]
 ```
 
-
 ### get_pms_update
+
 Check for updates to the Plex Media Server.
 
 ```
@@ -2322,8 +2323,8 @@ Returns:
          }
 ```
 
-
 ### get_recently_added
+
 Get all items that where recently added to plex.
 
 ```
@@ -2400,8 +2401,8 @@ Returns:
          }
 ```
 
-
 ### get_server_friendly_name
+
 Get the name of the PMS.
 
 ```
@@ -2415,8 +2416,8 @@ Returns:
     string:     "Winterfell-Server"
 ```
 
-
 ### get_server_id
+
 Get the PMS server identifier.
 
 ```
@@ -2433,8 +2434,8 @@ Returns:
         {'identifier': '08u2phnlkdshf890bhdlksghnljsahgleikjfg9t'}
 ```
 
-
 ### get_server_identity
+
 Get info about the local server.
 
 ```
@@ -2452,8 +2453,8 @@ Returns:
          ]
 ```
 
-
 ### get_server_info
+
 Get the PMS server information.
 
 ```
@@ -2479,8 +2480,8 @@ Returns:
         }
 ```
 
-
 ### get_server_list
+
 Get all your servers that are published to Plex.tv.
 
 ```
@@ -2505,8 +2506,8 @@ Returns:
          ]
 ```
 
-
 ### get_server_pref
+
 Get a specified PMS server preference.
 
 ```
@@ -2517,8 +2518,8 @@ Returns:
     string:             Value of preference
 ```
 
-
 ### get_servers_info
+
 Get info about the PMS.
 
 ```
@@ -2539,8 +2540,8 @@ Returns:
          ]
 ```
 
-
 ### get_settings
+
 Gets all settings from the config file.
 
 ```
@@ -2558,8 +2559,8 @@ Returns:
          }
 ```
 
-
 ### get_stream_data
+
 Get the stream details from history or current stream.
 
 ```
@@ -2627,8 +2628,8 @@ Returns:
          }
 ```
 
-
 ### get_stream_type_by_top_10_platforms
+
 Get graph data by stream type by top 10 platforms.
 
 ```
@@ -2653,8 +2654,8 @@ Returns:
          }
 ```
 
-
 ### get_stream_type_by_top_10_users
+
 Get graph data by stream type by top 10 users.
 
 ```
@@ -2679,8 +2680,8 @@ Returns:
          }
 ```
 
-
 ### get_synced_items
+
 Get a list of synced items on the PMS.
 
 ```
@@ -2723,8 +2724,8 @@ Returns:
          ]
 ```
 
-
 ### get_tautulli_info
+
 Get info about the Tautulli server.
 
 ```
@@ -2749,8 +2750,8 @@ Returns:
          }
 ```
 
-
 ### get_user
+
 Get a user's details.
 
 ```
@@ -2782,8 +2783,8 @@ Returns:
          }
 ```
 
-
 ### get_user_ips
+
 Get the data on Tautulli users IP table.
 
 ```
@@ -2832,8 +2833,8 @@ Returns:
          }
 ```
 
-
 ### get_user_logins
+
 Get the data on Tautulli user login table.
 
 ```
@@ -2873,8 +2874,8 @@ Returns:
          }
 ```
 
-
 ### get_user_names
+
 Get a list of all user and user ids.
 
 ```
@@ -2893,8 +2894,8 @@ Returns:
         ]
 ```
 
-
 ### get_user_player_stats
+
 Get a user's player statistics.
 
 ```
@@ -2925,8 +2926,8 @@ Returns:
          ]
 ```
 
-
 ### get_user_watch_time_stats
+
 Get a user's watch time statistics.
 
 ```
@@ -2958,8 +2959,8 @@ Returns:
          ]
 ```
 
-
 ### get_users
+
 Get a list of all users that have access to your server.
 
 ```
@@ -2996,8 +2997,8 @@ Returns:
          ]
 ```
 
-
 ### get_users_table
+
 Get the data on Tautulli users table.
 
 ```
@@ -3056,8 +3057,8 @@ Returns:
          }
 ```
 
-
 ### get_whois_lookup
+
 Get the connection info for an IP address.
 
 ```
@@ -3087,8 +3088,8 @@ Returns:
          }
 ```
 
-
 ### import_config
+
 Import a Tautulli config file.
 
 ```
@@ -3110,8 +3111,8 @@ Returns:
          }
 ```
 
-
 ### import_database
+
 Import a Tautulli, PlexWatch, or Plexivity database into Tautulli.
 
 ```
@@ -3137,8 +3138,8 @@ Returns:
          }
 ```
 
-
 ### logout_user_session
+
 Logout Tautulli user sessions.
 
 ```
@@ -3152,8 +3153,8 @@ Returns:
     None
 ```
 
-
 ### notify
+
 Send a notification using Tautulli.
 
 ```
@@ -3171,8 +3172,8 @@ Returns:
         {"notification_id": 1}
 ```
 
-
 ### notify_newsletter
+
 Send a newsletter using Tautulli.
 
 ```
@@ -3189,8 +3190,8 @@ Returns:
         {"newsletter_notification_id": 1}
 ```
 
-
 ### notify_recently_added
+
 Send a recently added notification using Tautulli.
 
 ```
@@ -3208,8 +3209,8 @@ Returns:
         }
 ```
 
-
 ### pms_image_proxy
+
 Gets an image from the PMS and saves it to the image cache directory.
 
 ```
@@ -3233,16 +3234,16 @@ Returns:
     None
 ```
 
-
 ### refresh_libraries_list
+
 Refresh the Tautulli libraries list.
 
-
 ### refresh_users_list
+
 Refresh the Tautulli users list.
 
-
 ### register_device
+
 Registers the Tautulli Remote App.
 
 ```
@@ -3284,16 +3285,16 @@ Returns:
          }
 ```
 
-
 ### regroup_history
+
 Regroup play history in the database.
 
-
 ### restart
+
 Restart Tautulli.
 
-
 ### search
+
 Get search results from the PMS.
 
 ```
@@ -3321,8 +3322,8 @@ Returns:
          }
 ```
 
-
 ### server_status
+
 Get the current status of Tautulli's connection to the Plex server.
 
 ```
@@ -3339,8 +3340,8 @@ Returns:
          }
 ```
 
-
 ### set_mobile_device_config
+
 Configure an existing notification agent.
 
 ```
@@ -3354,8 +3355,8 @@ Returns:
     None
 ```
 
-
 ### set_newsletter_config
+
 Configure an existing newsletter agent.
 
 ```
@@ -3370,8 +3371,8 @@ Returns:
     None
 ```
 
-
 ### set_notifier_config
+
 Configure an existing notification agent.
 
 ```
@@ -3396,8 +3397,8 @@ Returns:
     None
 ```
 
-
 ### sql
+
 Query the Tautulli database with raw SQL. Automatically makes a backup of
 the database if the latest backup is older then 24h. `api_sql` must be
 manually enabled in the config file while Tautulli is shut down.
@@ -3413,8 +3414,8 @@ Returns:
     None
 ```
 
-
 ### status
+
 Get the current status of Tautulli.
 
 ```
@@ -3431,8 +3432,8 @@ Returns:
          }
 ```
 
-
 ### terminate_session
+
 Stop a streaming session.
 
 ```
@@ -3447,8 +3448,8 @@ Returns:
     None
 ```
 
-
 ### undelete_library
+
 Restore a deleted library section to Tautulli.
 
 ```
@@ -3463,8 +3464,8 @@ Returns:
     None
 ```
 
-
 ### undelete_user
+
 Restore a deleted user to Tautulli.
 
 ```
@@ -3479,12 +3480,12 @@ Returns:
     None
 ```
 
-
 ### update
+
 Update Tautulli.
 
-
 ### update_check
+
 Check for Tautulli updates.
 
 ```
@@ -3502,8 +3503,8 @@ Returns:
         }
 ```
 
-
 ### update_metadata_details
+
 Update the metadata in the Tautulli database by matching rating keys.
 Also updates all parents or children of the media item if it is a show/season/episode
 or artist/album/track.
