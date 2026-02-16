@@ -6,8 +6,8 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class PlexMediaContainerWrapper {
+public class PlexMediaContainerWrapper<T> {
 
     @Json(name = "MediaContainer")
-    private final PlexMetadataContainer mediaContainer;
+    private final T mediaContainer;
 }

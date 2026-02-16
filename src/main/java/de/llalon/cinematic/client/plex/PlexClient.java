@@ -2,9 +2,9 @@ package de.llalon.cinematic.client.plex;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Types;
 import de.llalon.cinematic.client.plex.config.PlexProperties;
-import de.llalon.cinematic.client.plex.dto.PlexMediaItem;
-import de.llalon.cinematic.client.plex.dto.PlexMetadataContainer;
+import de.llalon.cinematic.client.plex.dto.*;
 import de.llalon.cinematic.client.plex.exception.PlexApiException;
 import de.llalon.cinematic.client.plex.exception.PlexClientException;
 import java.io.IOException;
@@ -42,11 +42,18 @@ public class PlexClient {
         }
     }
 
-    private <T> T get(String path, Type responseType) {
+    public PlexMediaContainerWrapper<PlexSectionsContainer> getSections() {
         HttpUrl url = baseUrl.newBuilder()
-                .addPathSegments(path.replaceFirst("^/", ""))
+                .addPathSegments("library")
+                .addPathSegments("sections")
                 .build();
-        return get(url, responseType);
+        Type type = Types.newParameterizedType(PlexMediaContainerWrapper.class, PlexSectionsContainer.class);
+        return get(url, type);
+    }
+
+    public PlexMediaContainerWrapper<PlexMetadataContainer> getMetadata() {
+        // ToDo:
+        return null;
     }
 
     private <T> T get(HttpUrl url, Type responseType) {
