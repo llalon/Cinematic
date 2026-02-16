@@ -111,7 +111,7 @@ class CinematicIntegrationsTests {
     }
 
     @Test
-    void canGetMovieWatches() {
+    void canGetSeriesWatches() {
         var series = getTestSeries();
         var watches = series.watches();
         assertNotNull(watches.iterator().next());

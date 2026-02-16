@@ -67,7 +67,7 @@ public class UtilTests {
                 2);
 
         var mapped = iterable.stream().map(x -> x * 2);
-        List<Integer> result = mapped.toList();
+        List<Integer> result = mapped.collect(Collectors.toList());
         assertEquals(List.of(0, 2, 4, 6), result);
     }
 

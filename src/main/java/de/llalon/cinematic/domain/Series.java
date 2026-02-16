@@ -69,6 +69,6 @@ public class Series extends DomainModel {
         return new OffsetPagedIterable<>((take, skip) ->
                 ctx.getTautulliClient().getHistoryByRatingKey(tmdbId.toString(), skip, take).getData().stream()
                         .map(h -> new Watches(ctx, h))
-                        .toList());
+                        .collect(Collectors.toList()));
     }
 }
