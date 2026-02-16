@@ -293,9 +293,10 @@ public class TautulliClient {
             }
 
             // Parse the raw JSON into TautulliResponse envelope
-            JsonAdapter<TautulliResponse> responseAdapter = moshi.adapter(TautulliResponse.class);
-            TautulliResponse<?> rawResponse = responseAdapter.fromJson(responseBody);
+            var responseAdapter = moshi.adapter(TautulliResponse.class);
+            var rawResponse = responseAdapter.fromJson(responseBody);
 
+            assert rawResponse != null;
             if (!rawResponse.isSuccess()) {
                 String errorMessage = rawResponse.getMessage() != null ? rawResponse.getMessage() : "Unknown error";
                 throw new TautulliApiException("Tautulli API returned error: " + errorMessage, -1, responseBody);
@@ -308,11 +309,11 @@ public class TautulliClient {
             }
 
             // Convert the data object to the target type using Moshi
-            JsonAdapter<Object> dataAdapter = (JsonAdapter<Object>) moshi.adapter(Object.class);
+            JsonAdapter<Object> dataAdapter = moshi.adapter(Object.class);
             String dataJson = dataAdapter.toJson(data);
-            JsonAdapter<T> targetAdapter = (JsonAdapter<T>) moshi.adapter(responseType);
-            return targetAdapter.fromJson(dataJson);
+            JsonAdapter<T> targetAdapter = moshi.adapter(responseType);
 
+            return targetAdapter.fromJson(dataJson);
         } catch (Exception e) {
             log.error("Unexpected error parsing Tautulli response for command: {}", command, e);
             throw new TautulliClientException("Failed to parse Tautulli response: " + command, e);
