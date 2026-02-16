@@ -9,17 +9,23 @@ import de.llalon.cinematic.client.plex.exception.PlexApiException;
 import de.llalon.cinematic.client.plex.exception.PlexClientException;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 
 /**
  * Simple Plex API client.
- *
+ * <p>
  * This client mirrors patterns used by other service clients in the project and
  * provides basic HTTP helpers for calling the Plex API using an X-Plex-Token.
  */
 @Slf4j
 public class PlexClient {
+
+    public static final Map<String, String> AGENT_PREFIXES = Map.of(
+            "tmdb", "com.plexapp.agents.themoviedb",
+            "imdb", "com.plexapp.agents.imdb",
+            "tvdb", "com.plexapp.agents.thetvdb");
 
     private static final String PLEX_TOKEN_HEADER = "X-Plex-Token";
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
@@ -51,9 +57,20 @@ public class PlexClient {
         return get(url, type);
     }
 
-    public PlexMediaContainerWrapper<PlexMetadataContainer> getMetadata() {
-        // ToDo:
-        return null;
+    public PlexMediaContainerWrapper<PlexMetadataContainer> getSection(
+            String sectionId, String mediaType, boolean includeGuids) {
+        HttpUrl url = baseUrl.newBuilder()
+                .addPathSegments("library")
+                .addPathSegments("sections")
+                .addPathSegments(sectionId)
+                .addPathSegments("all")
+                .addQueryParameter("type", String.valueOf(mediaType)) // type=2 = TV shows
+                .addQueryParameter("includeGuids", includeGuids ? "1" : "0") // include all GUIDs
+                .build();
+
+        Type type = Types.newParameterizedType(PlexMediaContainerWrapper.class, PlexMetadataContainer.class);
+
+        return get(url, type);
     }
 
     private <T> T get(HttpUrl url, Type responseType) {
@@ -65,32 +82,6 @@ public class PlexClient {
                 .build();
 
         return executeRequest(request, responseType);
-    }
-
-    /**
-     * Lookup a Plex media item by TMDB ID.
-     * Uses the Plex metadata endpoint with the TMDB GUID (tmdb://{id}).
-     * Returns the first matching metadata entry or null if not found.
-     *
-     * @param tmdbId TMDB ID
-     * @return PlexMediaItem or null
-     */
-    public PlexMediaItem getMediaItemByTmdbId(int tmdbId) {
-        log.debug("Looking up Plex media item by TMDB ID: {}", tmdbId);
-        HttpUrl url = baseUrl.newBuilder()
-                .addPathSegments("library/metadata")
-                .addQueryParameter("guid", "tmdb://" + tmdbId)
-                .addQueryParameter("format", "json")
-                .build();
-
-        PlexMetadataContainer container = get(url, PlexMetadataContainer.class);
-        if (container == null
-                || container.getMetadata() == null
-                || container.getMetadata().isEmpty()) {
-            return null;
-        }
-
-        return container.getMetadata().get(0);
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})

@@ -1,6 +1,7 @@
 package de.llalon.cinematic.client.plex.dto;
 
 import com.squareup.moshi.Json;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -28,4 +29,7 @@ public class PlexMediaItem {
 
     @Json(name = "librarySectionTitle")
     private final String librarySectionTitle;
+
+    @Json(name = "Guid")
+    private final List<PlexId> guids;
 }
