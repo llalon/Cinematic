@@ -7,25 +7,19 @@ applyTo: '**/*.java, **/*.kt'
 
 All code in this library must work in jRuby and other jvm languages with maximum compatibility.
 
-- Do not use records
-- Do not use any reflection at all
 - Do not expose stream API to library consumers
 - Be compiled with bytecode target JVM 11
 - Avoid APIs introduced after Java 11
 - Remain compatible with JRuby
 - Remain compatible with Android (API 26+ baseline unless otherwise specified)
 - Avoid assumptions about JVM vendor or HotSpot-only features
-- Kotlin jvmTarget = 11
 - Java --release 11
 - Do not use Java 17+ APIs
 - Do not use preview features
 - No var in public APIs
 - No record, sealed (Java), or pattern matching
-- Kotlin 2.x language features that compile to JVM 11 bytecode
 - Java 11 standard library
 - Public API must be Java-friendly
-- No Kotlin-only types in public signatures:
-- Avoid kotlin.Result
 - Avoid default interface methods unless explicitly required
 - Avoid inline classes/value classes in public API
 - Prefer simple POJOs / data classes
@@ -33,7 +27,6 @@ All code in this library must work in jRuby and other jvm languages with maximum
 - Avoid static initialization side effects
 - Avoid method overloading ambiguity
 - Prefer distinct method names over overloads
-- Avoid Kotlin default arguments in public APIs
 - Avoid companion-object factory overload confusion
 - Use standard Java collections in public API
 - Avoid use of Optional in public API (JRuby interop is awkward)
@@ -57,19 +50,3 @@ Design for dynamic invocation safety.
 - Use final fields
 - Prefer Iterable/lazy data structures
 - Avoid unnecessary eager loading; prefer lazy evaluation
-
-## Build and Verification
-
-- The project uses maven wrapper
-- After adding or modifying code, verify the project continues to build successfully.
-- Ensure all tests pass as part of the build.
-- Ensure code is formatted using spotless
-
-## Useful Commands
-
-| Maven Command           | Description            |
-|:------------------------|:-----------------------|
-| `./mvnw package`        | Build the application. |
-| `./mvnw test`           | Run tests.             |
-| `./mvnw compile`        | Compile.               |
-| `./mvnw spotless:apply` | Apply code formatting. |

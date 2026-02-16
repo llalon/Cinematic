@@ -26,3 +26,19 @@ The domain has a single entry point: Library. From Library, everything is reacha
 All objects are rich.
 All relations return other domain objects.
 No DTOs escape the domain boundary.
+
+## Build and Verification
+
+- The project uses maven wrapper
+- After adding or modifying code, verify the project continues to build successfully.
+- Ensure all tests pass as part of the build.
+- Ensure code is formatted using spotless
+
+## Useful Commands
+
+| Maven Command           | Description            |
+|:------------------------|:-----------------------|
+| `./mvnw package`        | Build the application. |
+| `./mvnw test`           | Run tests.             |
+| `./mvnw compile`        | Compile.               |
+| `./mvnw spotless:apply` | Apply code formatting. |
