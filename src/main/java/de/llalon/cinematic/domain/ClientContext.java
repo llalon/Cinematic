@@ -113,6 +113,9 @@ public final class ClientContext {
                     : null;
         }
 
+        if (this.plexClient == null) {
+            log.warn("Plex not configured. Some features may not be available");
+        }
         if (this.tautulliClient == null) {
             log.warn("Tautulli not configured. Some features may not be available");
         }

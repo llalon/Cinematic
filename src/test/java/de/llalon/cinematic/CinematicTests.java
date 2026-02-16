@@ -1,6 +1,7 @@
 package de.llalon.cinematic;
 
 import de.llalon.cinematic.client.overseerr.config.OverseerrProperties;
+import de.llalon.cinematic.client.plex.config.PlexProperties;
 import de.llalon.cinematic.client.qbittorrent.config.QBittorrentProperties;
 import de.llalon.cinematic.client.radarr.config.RadarrProperties;
 import de.llalon.cinematic.client.sonarr.config.SonarrProperties;
@@ -22,6 +23,10 @@ class CinematicTests {
     @BeforeAll
     static void setUp() {
         library = new Library(ClientContext.builder()
+                .plexProperties(PlexProperties.builder()
+                        .url("http://localhost:32400")
+                        .token("test")
+                        .build())
                 .sonarrProperties(SonarrProperties.builder()
                         .url("http://localhost:8989")
                         .apiKey("test")
