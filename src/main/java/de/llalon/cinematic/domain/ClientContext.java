@@ -45,7 +45,7 @@ public final class ClientContext {
                 : moshi;
 
         // Plex
-        if (radarrClient != null) {
+        if (plexClient != null) {
             this.plexClient = plexClient;
             this.plexProperties = plexProperties;
         } else {
