@@ -101,13 +101,13 @@ public class Session {
      * Media index (episode number, track number).
      */
     @Json(name = "media_index")
-    private final Integer mediaIndex;
+    private final String mediaIndex;
 
     /**
      * Parent media index (season number, disc number).
      */
     @Json(name = "parent_media_index")
-    private final Integer parentMediaIndex;
+    private final String parentMediaIndex;
 
     /**
      * Thumbnail path for the media item.
