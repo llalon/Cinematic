@@ -258,13 +258,13 @@ public class TautulliClient {
 
         try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
-                String errorBody = response.body() != null ? response.body().string() : "";
+                String errorBody = response.body().string();
                 log.error("Tautulli API error: status={}, body={}", response.code(), errorBody);
                 throw new TautulliApiException(
                         "Tautulli API request failed: HTTP " + response.code(), response.code(), errorBody);
             }
 
-            String responseBody = response.body() != null ? response.body().string() : "";
+            String responseBody = response.body().string();
             return parseResponse(responseBody, responseType, command);
 
         } catch (IOException e) {
@@ -292,9 +292,11 @@ public class TautulliClient {
                 throw new TautulliClientException("Received empty response from Tautulli", null);
             }
 
-            // Parse the raw JSON into TautulliResponse envelope
-            var responseAdapter = moshi.adapter(TautulliResponse.class);
-            var rawResponse = responseAdapter.fromJson(responseBody);
+            Type envelopeType = Types.newParameterizedType(TautulliResponse.class, responseType);
+
+            JsonAdapter<TautulliResponse<T>> adapter = moshi.adapter(envelopeType);
+
+            TautulliResponse<T> rawResponse = adapter.fromJson(responseBody);
 
             assert rawResponse != null;
             if (!rawResponse.isSuccess()) {
@@ -308,12 +310,7 @@ public class TautulliClient {
                 return null;
             }
 
-            // Convert the data object to the target type using Moshi
-            JsonAdapter<Object> dataAdapter = moshi.adapter(Object.class);
-            String dataJson = dataAdapter.toJson(data);
-            JsonAdapter<T> targetAdapter = moshi.adapter(responseType);
-
-            return targetAdapter.fromJson(dataJson);
+            return rawResponse.getData();
         } catch (Exception e) {
             log.error("Unexpected error parsing Tautulli response for command: {}", command, e);
             throw new TautulliClientException("Failed to parse Tautulli response: " + command, e);
