@@ -14,7 +14,7 @@ public class PlexProperties {
     public static PlexProperties fromEnvironment() {
         return PlexProperties.builder()
                 .url(System.getenv("PLEX_URL"))
-                .token(System.getenv("PLEX_TOKEN"))
+                .token(System.getenv("PLEX_API_KEY"))
                 .build();
     }
 }
