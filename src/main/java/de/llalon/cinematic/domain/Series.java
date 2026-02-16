@@ -64,10 +64,10 @@ public class Series extends DomainModel {
     }
 
     public Iterable<Watches> watches() {
-        final Integer tmdbId = sonarrSeries.getTmdbId();
+        final var plexId = "todo";
 
-        return new OffsetPagedIterable<>((take, skip) ->
-                ctx.getTautulliClient().getHistoryByRatingKey(tmdbId.toString(), skip, take).getData().stream()
+        return new OffsetPagedIterable<>(
+                (take, skip) -> ctx.getTautulliClient().getHistoryByRatingKey(plexId, skip, take).getData().stream()
                         .map(h -> new Watches(ctx, h))
                         .collect(Collectors.toList()));
     }
