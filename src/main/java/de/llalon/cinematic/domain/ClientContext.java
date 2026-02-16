@@ -3,6 +3,8 @@ package de.llalon.cinematic.domain;
 import com.squareup.moshi.Moshi;
 import de.llalon.cinematic.client.overseerr.OverseerrClient;
 import de.llalon.cinematic.client.overseerr.config.OverseerrProperties;
+import de.llalon.cinematic.client.plex.PlexClient;
+import de.llalon.cinematic.client.plex.config.PlexProperties;
 import de.llalon.cinematic.client.qbittorrent.QBittorrentClient;
 import de.llalon.cinematic.client.qbittorrent.config.QBittorrentProperties;
 import de.llalon.cinematic.client.radarr.RadarrClient;
@@ -25,11 +27,13 @@ public final class ClientContext {
     public ClientContext(
             OkHttpClient httpClient,
             Moshi moshi,
+            PlexProperties plexProperties,
             RadarrProperties radarrProperties,
             SonarrProperties sonarrProperties,
             QBittorrentProperties qbittorrentProperties,
             OverseerrProperties overseerrProperties,
             TautulliProperties tautulliProperties,
+            PlexClient plexClient,
             RadarrClient radarrClient,
             SonarrClient sonarrClient,
             QBittorrentClient qbittorrentClient,
@@ -39,6 +43,17 @@ public final class ClientContext {
         this.moshi = moshi == null
                 ? new Moshi.Builder().add(new LenientDateTimeAdapter()).build()
                 : moshi;
+
+        // Plex
+        if (radarrClient != null) {
+            this.plexClient = plexClient;
+            this.plexProperties = plexProperties;
+        } else {
+            this.plexProperties = plexProperties != null ? plexProperties : PlexProperties.fromEnvironment();
+            this.plexClient = this.plexProperties.getUrl() != null
+                    ? new PlexClient(this.httpClient, this.plexProperties, this.moshi)
+                    : null;
+        }
 
         // Radarr
         if (radarrClient != null) {
@@ -117,12 +132,14 @@ public final class ClientContext {
 
     private final OkHttpClient httpClient;
     private final Moshi moshi;
+    private final PlexProperties plexProperties;
     private final RadarrProperties radarrProperties;
     private final SonarrProperties sonarrProperties;
     private final QBittorrentProperties qbittorrentProperties;
     private final OverseerrProperties overseerrProperties;
     private final TautulliProperties tautulliProperties;
 
+    private final PlexClient plexClient;
     private final RadarrClient radarrClient;
     private final SonarrClient sonarrClient;
     private final QBittorrentClient qbittorrentClient;
