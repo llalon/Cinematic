@@ -12,6 +12,7 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -292,20 +293,22 @@ public class TautulliClient {
                 throw new TautulliClientException("Received empty response from Tautulli", null);
             }
 
-            Type envelopeType = Types.newParameterizedType(TautulliResponse.class, responseType);
+            final Type envelopeType = Types.newParameterizedType(TautulliResponse.class, responseType);
 
-            JsonAdapter<TautulliResponse<T>> adapter = moshi.adapter(envelopeType);
+            final JsonAdapter<TautulliResponse<T>> adapter = moshi.adapter(envelopeType);
 
-            TautulliResponse<T> rawResponse = adapter.fromJson(responseBody);
+            final TautulliResponse<T> rawResponse = adapter.fromJson(responseBody);
 
-            assert rawResponse != null;
+            Objects.requireNonNull(rawResponse, "rawResponse is null");
+
             if (!rawResponse.isSuccess()) {
                 String errorMessage = rawResponse.getMessage() != null ? rawResponse.getMessage() : "Unknown error";
                 throw new TautulliApiException("Tautulli API returned error: " + errorMessage, -1, responseBody);
             }
 
             // Get the data node and convert it to the expected type
-            Object data = rawResponse.getData();
+            final Object data = rawResponse.getData();
+
             if (data == null) {
                 return null;
             }
