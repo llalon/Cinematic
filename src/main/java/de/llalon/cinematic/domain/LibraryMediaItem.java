@@ -12,15 +12,15 @@ import lombok.RequiredArgsConstructor;
 
 public abstract class LibraryMediaItem extends DomainModel {
 
-//    @Getter
-//    @RequiredArgsConstructor
-//    protected enum LibraryIdType {
-//        TMDB("tmdb"),
-//        IMDB("imdb"),
-//        TVDB("tvdb");
-//
-//        protected final String value;
-//    }
+    //    @Getter
+    //    @RequiredArgsConstructor
+    //    protected enum LibraryIdType {
+    //        TMDB("tmdb"),
+    //        IMDB("imdb"),
+    //        TVDB("tvdb");
+    //
+    //        protected final String value;
+    //    }
 
     @Getter
     @RequiredArgsConstructor
