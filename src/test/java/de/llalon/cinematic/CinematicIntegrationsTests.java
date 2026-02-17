@@ -3,15 +3,13 @@ package de.llalon.cinematic;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.llalon.cinematic.domain.*;
+import de.llalon.cinematic.util.collections.StreamUtils;
 import org.junit.jupiter.api.*;
 
 /**
  * Tests which require api clients to be configured via environment variables. If not configured they will be skipped.
  */
 class CinematicIntegrationsTests {
-
-    static int TEST_SERIES_ID = 367;
-    static int TEST_MOVIE_ID = 763215;
 
     static Library library;
 
@@ -26,24 +24,6 @@ class CinematicIntegrationsTests {
         Assumptions.assumeFalse(library.getContext().getTautulliClient() == null);
         Assumptions.assumeFalse(library.getContext().getSonarrClient() == null);
         Assumptions.assumeFalse(library.getContext().getOverseerrClient() == null);
-    }
-
-    private Series getTestSeries() {
-        for (var series : library.series()) {
-            if (series.getId().equals(TEST_SERIES_ID) || series.getTmdbId().equals(TEST_SERIES_ID)) {
-                return series;
-            }
-        }
-        throw new RuntimeException("No series with id " + TEST_SERIES_ID);
-    }
-
-    private Movie getTestMovie() {
-        for (var movie : library.movies()) {
-            if (movie.getId().equals(TEST_MOVIE_ID) || movie.getTmdbId().equals(TEST_MOVIE_ID)) {
-                return movie;
-            }
-        }
-        throw new RuntimeException("No movie with id " + TEST_MOVIE_ID);
     }
 
     @Test
@@ -78,43 +58,43 @@ class CinematicIntegrationsTests {
 
     @Test
     void canGetMovieTorrents() {
-        var movie = getTestMovie();
+        var movie = library.movies().iterator().next();
         var torrent = movie.torrents();
-        assertNotNull(torrent.iterator().next());
+        assertNotNull(StreamUtils.iterateToList(torrent));
     }
 
     @Test
     void canGetSeriesTorrents() {
-        var series = getTestSeries();
+        var series = library.series().iterator().next();
         var torrent = series.torrents();
-        assertNotNull(torrent.iterator().next());
+        assertNotNull(StreamUtils.iterateToList(torrent));
     }
 
     @Test
     void canGetMovieRequests() {
-        var movie = getTestMovie();
+        var movie = library.movies().iterator().next();
         var requests = movie.requests();
-        assertNotNull(requests.iterator().next());
+        assertNotNull(StreamUtils.iterateToList(requests));
     }
 
     @Test
     void canGetSeriesRequests() {
-        var series = getTestSeries();
+        var series = library.series().iterator().next();
         var requests = series.requests();
-        assertNotNull(requests.iterator().next());
+        assertNotNull(StreamUtils.iterateToList(requests));
     }
 
     @Test
     void canGetMovieWatches() {
-        var movie = getTestMovie();
+        var movie = library.movies().iterator().next();
         var watches = movie.watches();
-        assertNotNull(watches.iterator().next());
+        assertNotNull(StreamUtils.iterateToList(watches));
     }
 
     @Test
     void canGetSeriesWatches() {
-        var series = getTestSeries();
+        var series = library.series().iterator().next();
         var watches = series.watches();
-        assertNotNull(watches.iterator().next());
+        assertNotNull(StreamUtils.iterateToList(watches));
     }
 }
