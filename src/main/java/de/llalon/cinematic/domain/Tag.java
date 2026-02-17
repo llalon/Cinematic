@@ -1,0 +1,81 @@
+package de.llalon.cinematic.domain;
+
+import lombok.Getter;
+
+public class Tag extends DomainModel {
+
+    @Getter
+    private final String name;
+
+    /**
+     * Creates a new Tag instance with the given client context and name.
+     *
+     * @param context the client context
+     * @param name the tag name
+     */
+    public Tag(ClientContext context, String name) {
+        super(context);
+        this.name = name;
+    }
+
+    /**
+     * Returns the name of this tag.
+     *
+     * @return the tag name
+     */
+    public String name() {
+        return name;
+    }
+
+    /**
+     * Returns the movies associated with this tag.
+     *
+     * @return an iterable of Movie objects
+     */
+    public Iterable<Movie> movies() {
+        return () -> {
+            // find radarr tag id for this label then lazily filter movies
+            final Integer tagId = ctx.getRadarrClient().getAllTags().stream()
+                    .filter(t -> t.getLabel().equals(this.name))
+                    .findFirst()
+                    .map(t -> t.getId())
+                    .orElse(null);
+
+            return ctx.getRadarrClient().getAllMovies().stream()
+                    .filter(m -> tagId == null || m.getTags().contains(tagId))
+                    .map(x -> new Movie(ctx, x))
+                    .iterator();
+        };
+    }
+
+    /**
+     * Returns the series associated with this tag.
+     *
+     * @return an iterable of Series objects
+     */
+    public Iterable<Series> series() {
+        return () -> {
+            final Integer tagId = ctx.getSonarrClient().getAllTags().stream()
+                    .filter(t -> t.getLabel().equals(this.name))
+                    .findFirst()
+                    .map(t -> t.getId())
+                    .orElse(null);
+
+            return ctx.getSonarrClient().getAllSeries().stream()
+                    .filter(s -> tagId == null || s.getTags().contains(tagId))
+                    .map(x -> new Series(ctx, x))
+                    .iterator();
+        };
+    }
+
+    /**
+     * Returns the torrents associated with this tag.
+     *
+     * @return an iterable of Torrent objects
+     */
+    public Iterable<Torrent> torrents() {
+        return () -> ctx.getQbittorrentClient().getTorrents(null, null, this.name).stream()
+                .map(x -> new Torrent(ctx, x))
+                .iterator();
+    }
+}
