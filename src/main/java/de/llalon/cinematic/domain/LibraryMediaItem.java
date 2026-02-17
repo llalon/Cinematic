@@ -1,8 +1,6 @@
 package de.llalon.cinematic.domain;
 
-import de.llalon.cinematic.client.plex.dto.PlexMediaContainerWrapper;
 import de.llalon.cinematic.client.plex.dto.PlexMediaItem;
-import de.llalon.cinematic.client.plex.dto.PlexSectionsContainer;
 import de.llalon.cinematic.client.radarr.dto.MovieResource;
 import de.llalon.cinematic.client.sonarr.dto.SeriesResource;
 import de.llalon.cinematic.util.collections.OffsetPagedIterable;
@@ -92,13 +90,14 @@ public abstract class LibraryMediaItem extends DomainModel {
     }
 
     protected Optional<PlexMediaItem> fetchPlexMediaItem() {
-        final PlexMediaContainerWrapper<PlexSectionsContainer> sections =
-                ctx.getPlexClient().getSections();
-        return sections.getMediaContainer().getDirectories().stream()
+        return ctx.getPlexClient().getSections().getMediaContainer().getDirectories().stream()
                 .filter(section -> libraryMediaType.getPlexLibraryType().equalsIgnoreCase(section.getType()))
                 .map(section ->
                         ctx.getPlexClient().getSection(section.getKey(), libraryMediaType.getPlexMediaType(), true))
-                .flatMap(sectionData -> sectionData.getMediaContainer().getMetadata().stream())
+                .filter(section -> section.getMediaContainer() != null
+                        && section.getMediaContainer().getMetadata() != null)
+                .flatMap(section -> section.getMediaContainer().getMetadata().stream())
+                .filter(series -> series.getGuids() != null)
                 .filter(series -> series.getGuids().stream().anyMatch(guid -> {
                     if (guid.getId() == null) {
                         return false;
