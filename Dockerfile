@@ -33,9 +33,4 @@ COPY --from=build /build/target/dependency /usr/share/java/
 
 ENV CLASSPATH=/usr/share/java/*
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    groovy \
-    jruby \
-    && rm -rf /var/lib/apt/lists/*
-
 CMD ["/bin/bash"]
