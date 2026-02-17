@@ -43,10 +43,25 @@ public abstract class LibraryMediaItem extends DomainModel {
         this.libraryMediaType = LibraryMediaType.SERIES;
     }
 
+    /**
+     * Returns the tags associated with this media item.
+     *
+     * @return an iterable of Tag objects
+     */
     public abstract Iterable<Tag> tags();
 
+    /**
+     * Returns the torrents associated with this media item.
+     *
+     * @return an iterable of Torrent objects
+     */
     public abstract Iterable<Torrent> torrents();
 
+    /**
+     * Returns the requests associated with this media item.
+     *
+     * @return an iterable of Request objects
+     */
     public Iterable<Request> requests() {
         return () -> new OffsetPagedIterable<>((take, skip) -> ctx.getOverseerrClient()
                         .getAllRequests(take, skip, null, null, null)
@@ -78,6 +93,11 @@ public abstract class LibraryMediaItem extends DomainModel {
                         .iterator();
     }
 
+    /**
+     * Returns the watch history for this media item.
+     *
+     * @return an iterable of Watches objects
+     */
     public Iterable<Watches> watches() {
         return () -> fetchPlexMediaItem()
                 .map(PlexMediaItem::getRatingKey)

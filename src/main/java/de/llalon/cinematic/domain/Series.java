@@ -16,11 +16,22 @@ public class Series extends LibraryMediaItem {
     @Delegate
     private final SeriesResource sonarrSeries;
 
+    /**
+     * Creates a new Series instance with the given client context and Sonarr series resource.
+     *
+     * @param ctx the client context
+     * @param seriesResource the Sonarr series resource
+     */
     Series(ClientContext ctx, SeriesResource seriesResource) {
         super(ctx, seriesResource);
         this.sonarrSeries = seriesResource;
     }
 
+    /**
+     * Returns the tags associated with this series.
+     *
+     * @return an iterable of Tag objects
+     */
     @Override
     public Iterable<Tag> tags() {
         return () -> {
@@ -33,6 +44,11 @@ public class Series extends LibraryMediaItem {
         };
     }
 
+    /**
+     * Returns the torrents associated with this series.
+     *
+     * @return an iterable of Torrent objects
+     */
     @Override
     public Iterable<Torrent> torrents() {
         return () -> {

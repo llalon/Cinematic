@@ -14,11 +14,22 @@ public class Movie extends LibraryMediaItem {
     @Delegate
     private final MovieResource radarrMovie;
 
+    /**
+     * Creates a new Movie instance with the given client context and Radarr movie resource.
+     *
+     * @param ctx the client context
+     * @param radarrMovie the Radarr movie resource
+     */
     public Movie(ClientContext ctx, MovieResource radarrMovie) {
         super(ctx, radarrMovie);
         this.radarrMovie = radarrMovie;
     }
 
+    /**
+     * Returns the tags associated with this movie.
+     *
+     * @return an iterable of Tag objects
+     */
     @Override
     public Iterable<Tag> tags() {
         return () -> {
@@ -31,6 +42,11 @@ public class Movie extends LibraryMediaItem {
         };
     }
 
+    /**
+     * Returns the torrents associated with this movie.
+     *
+     * @return an iterable of Torrent objects
+     */
     @Override
     public Iterable<Torrent> torrents() {
         return () -> {

@@ -133,19 +133,73 @@ public final class ClientContext {
         }
     }
 
+    /**
+     * The HTTP client used for API calls.
+     */
     private final OkHttpClient httpClient;
+
+    /**
+     * The Moshi instance for JSON serialization/deserialization.
+     */
     private final Moshi moshi;
+
+    /**
+     * The Plex properties for configuration.
+     */
     private final PlexProperties plexProperties;
+
+    /**
+     * The Radarr properties for configuration.
+     */
     private final RadarrProperties radarrProperties;
+
+    /**
+     * The Sonarr properties for configuration.
+     */
     private final SonarrProperties sonarrProperties;
+
+    /**
+     * The QBittorrent properties for configuration.
+     */
     private final QBittorrentProperties qbittorrentProperties;
+
+    /**
+     * The Overseerr properties for configuration.
+     */
     private final OverseerrProperties overseerrProperties;
+
+    /**
+     * The Tautulli properties for configuration.
+     */
     private final TautulliProperties tautulliProperties;
 
+    /**
+     * The Plex client instance.
+     */
     private final PlexClient plexClient;
+
+    /**
+     * The Radarr client instance.
+     */
     private final RadarrClient radarrClient;
+
+    /**
+     * The Sonarr client instance.
+     */
     private final SonarrClient sonarrClient;
+
+    /**
+     * The QBittorrent client instance.
+     */
     private final QBittorrentClient qbittorrentClient;
+
+    /**
+     * The Overseerr client instance.
+     */
     private final OverseerrClient overseerrClient;
+
+    /**
+     * The Tautulli client instance.
+     */
     private final TautulliClient tautulliClient;
 }
