@@ -14,25 +14,34 @@ public abstract class LibraryMediaItem extends DomainModel {
 
     @Getter
     @RequiredArgsConstructor
+    protected enum LibraryIdType {
+        TMDB("tmdb"),
+        IMDB("imdb"),
+        TVDB("tvdb");
+
+        protected final String value;
+    }
+
+    @Getter
+    @RequiredArgsConstructor
     protected enum LibraryMediaType {
         SERIES("show", "2"),
         MOVIE("movie", "1");
 
-        private final String plexLibraryType;
+        protected final String plexLibraryType;
         protected final String plexMediaType;
     }
 
     @Getter
-    private final String tmdbId;
+    protected final String tmdbId;
 
     @Getter
-    private final String tvdbId;
+    protected final String tvdbId;
 
     @Getter // Would be null for movies!
-    private final String imdbId;
+    protected final String imdbId;
 
-    @Getter
-    private final LibraryMediaType libraryMediaType; // show or movie
+    protected final LibraryMediaType libraryMediaType; // show or movie
 
     protected LibraryMediaItem(ClientContext ctx, MovieResource radarrMovie) {
         super(ctx);
