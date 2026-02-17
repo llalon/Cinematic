@@ -101,9 +101,9 @@ public abstract class LibraryMediaItem extends DomainModel {
     public Iterable<Watches> watches() {
         return () -> fetchPlexMediaItem()
                 .map(PlexMediaItem::getRatingKey)
-                .map(s -> new OffsetPagedIterable<>((take, skip) ->
-                                ctx.getTautulliClient().getHistoryByRatingKey(s, skip, take).getData().stream()
-                                        .map(h -> new Watches(ctx, h))
+                .map(ratingKey -> new OffsetPagedIterable<>((take, skip) ->
+                                ctx.getTautulliClient().getHistoryByRatingKey(ratingKey, skip, take).getData().stream()
+                                        .map(history -> new Watches(ctx, history))
                                         .collect(Collectors.toList()))
                         .iterator())
                 .orElse(Collections.emptyIterator());

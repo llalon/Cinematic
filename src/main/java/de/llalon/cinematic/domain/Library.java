@@ -30,7 +30,7 @@ public class Library extends DomainModel {
      */
     public Iterable<Movie> movies() {
         return () -> ctx.getRadarrClient().getAllMovies().stream()
-                .map(x -> new Movie(ctx, x))
+                .map(movie -> new Movie(ctx, movie))
                 .iterator();
     }
 
@@ -41,7 +41,7 @@ public class Library extends DomainModel {
      */
     public Iterable<Series> series() {
         return () -> ctx.getSonarrClient().getAllSeries().stream()
-                .map(x -> new Series(ctx, x))
+                .map(series -> new Series(ctx, series))
                 .iterator();
     }
 
@@ -52,7 +52,7 @@ public class Library extends DomainModel {
      */
     public Iterable<Torrent> torrents() {
         return () -> ctx.getQbittorrentClient().getTorrents().stream()
-                .map(x -> new Torrent(ctx, x))
+                .map(torrent -> new Torrent(ctx, torrent))
                 .iterator();
     }
 
@@ -63,9 +63,9 @@ public class Library extends DomainModel {
      */
     public Iterable<Tag> tags() {
         return () -> {
-            Stream<Tag> s1 = ctx.getQbittorrentClient().getAllTags().stream().map(x -> new Tag(ctx, x));
-            Stream<Tag> s2 = ctx.getRadarrClient().getAllTags().stream().map(x -> new Tag(ctx, x.getLabel()));
-            Stream<Tag> s3 = ctx.getSonarrClient().getAllTags().stream().map(x -> new Tag(ctx, x.getLabel()));
+            Stream<Tag> s1 = ctx.getQbittorrentClient().getAllTags().stream().map(tag -> new Tag(ctx, tag));
+            Stream<Tag> s2 = ctx.getRadarrClient().getAllTags().stream().map(tag -> new Tag(ctx, tag.getLabel()));
+            Stream<Tag> s3 = ctx.getSonarrClient().getAllTags().stream().map(tag -> new Tag(ctx, tag.getLabel()));
             return Stream.concat(Stream.concat(s1, s2), s3).iterator();
         };
     }
