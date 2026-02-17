@@ -1,7 +1,10 @@
 package de.llalon.cinematic.domain;
 
+import lombok.Getter;
+
 public class Tag extends DomainModel {
 
+    @Getter
     private final String name;
 
     /**

@@ -22,9 +22,16 @@ public abstract class LibraryMediaItem extends DomainModel {
         protected final String plexMediaType;
     }
 
+    @Getter
     private final String tmdbId;
-    private final String tvdbId; // Would be null for movies!
+
+    @Getter
+    private final String tvdbId;
+
+    @Getter // Would be null for movies!
     private final String imdbId;
+
+    @Getter
     private final LibraryMediaType libraryMediaType; // show or movie
 
     protected LibraryMediaItem(ClientContext ctx, MovieResource radarrMovie) {
