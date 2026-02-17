@@ -7,11 +7,9 @@ import de.llalon.cinematic.util.collections.PagePagedIterable;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import lombok.experimental.Delegate;
 
 public class Movie extends LibraryMediaItem {
 
-    @Delegate
     private final MovieResource radarrMovie;
 
     /**

@@ -7,13 +7,11 @@ import de.llalon.cinematic.util.collections.PagePagedIterable;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import lombok.experimental.Delegate;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Series extends LibraryMediaItem {
 
-    @Delegate
     private final SeriesResource sonarrSeries;
 
     /**
