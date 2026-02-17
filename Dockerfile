@@ -35,8 +35,7 @@ ENV CLASSPATH=/usr/share/java/*
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     groovy \
-    scala \
-    kotlin \
+    jruby \
     && rm -rf /var/lib/apt/lists/*
 
 CMD ["/bin/bash"]
