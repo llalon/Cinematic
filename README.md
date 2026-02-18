@@ -4,8 +4,14 @@
 
 A JVM library that unifies media server APIs into a single navigable domain model.
 
-It integrates Plex, Tautulli, Overseerr, Sonarr, Radarr, and qBittorrent, enabling powerful automation workflows across
-your entire media stack.
+It integrates:
+
+- Plex
+- Tautulli
+- Overseerr
+- Sonarr
+- Radarr
+- qBittorrent
 
 ## Use Cases
 
@@ -49,7 +55,7 @@ PLEX_API_KEY=your-plex-token
 ```
 
 ```java
-Library library = new Library(ClientContext.builder().build());
+Library library = new Library();
 ```
 
 or provide custom credentials in code:
@@ -86,33 +92,20 @@ Library library = new Library(ClientContext.builder()
 
 ### Examples
 
-```java
-for(Movie movie :library.
+Tag torrents based on tracker:
 
-movies()){
-        for(
-Torrent torrent :movie.
-
-torrents()){
-        System.out.
-
-println("Torrent details: "+torrent);
-    }
-            }
+```
+# ToDo
 ```
 
-```ruby
-#!/usr/bin/env jruby
+Increase priority of torrents for series tagged with 'HighPriority':
 
-require 'java'
-require './target/cinematic-0.0.1-SNAPSHOT.jar'
+```
+# ToDo
+```
 
-java_import 'de.llalon.cinematic.domain.Library'
-java_import 'de.llalon.cinematic.domain.ClientContext'
+Delete movie from Radarr if it has been watched by the user who requested it:
 
-library = Library.new(ClientContext.builder.build)
-
-library.movies.each do |movie|
-  puts "#{movie.tmdb_id}: #{movie.torrents.count} torrents"
-end
+```
+# ToDo
 ```

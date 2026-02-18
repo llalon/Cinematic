@@ -10,4 +10,8 @@ public class Request extends DomainModel {
         super(ctx);
         this.overseerrRequest = overseerrRequest;
     }
+
+    public User user() {
+        return new User(ctx, overseerrRequest.getRequestedBy());
+    }
 }
