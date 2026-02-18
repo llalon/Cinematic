@@ -1,6 +1,7 @@
 package de.llalon.cinematic.domain;
 
 import de.llalon.cinematic.client.qbittorrent.dto.TorrentInfo;
+import java.util.List;
 import lombok.experimental.Delegate;
 
 public class Torrent extends DomainModel {
@@ -14,8 +15,12 @@ public class Torrent extends DomainModel {
     }
 
     public void addTag(String tag) {
-        // ToDo: Add the tag to this torrent
-        final String torrentHash = torrentInfo.getHash();
+        if (tag != null && !tag.isBlank()) {
+            final String torrentHash = torrentInfo.getHash();
+            // Ensure the tag exists, then attach it to this torrent
+            ctx.getQbittorrentClient().createTags(List.of(tag));
+            ctx.getQbittorrentClient().addTorrentTags(List.of(torrentHash), List.of(tag));
+        }
     }
 
     public void addTag(Tag tag) {
