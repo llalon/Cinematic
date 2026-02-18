@@ -1,6 +1,7 @@
 package de.llalon.cinematic.domain;
 
 import de.llalon.cinematic.util.collections.OffsetPagedIterable;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class Library extends DomainModel {
@@ -84,5 +85,31 @@ public class Library extends DomainModel {
                         .getAllRequests(take, skip, null, null, null)
                         .getResults())
                 .stream().map(x -> new Request(ctx, x)).iterator();
+    }
+
+    public Iterable<User> users() {
+        return () -> {
+            final Set<String> userEmails = new HashSet<>();
+
+            final Stream<String> tautulliEmails = ctx.getTautulliClient().getUsers().stream()
+                    .map(de.llalon.cinematic.client.tautulli.dto.User::getEmail);
+            final Stream<String> overseerrEmails = new OffsetPagedIterable<>((take, skip) -> ctx.getOverseerrClient()
+                            .getAllUsers(take, skip, null)
+                            .getResults())
+                    .stream().map(de.llalon.cinematic.client.overseerr.dto.User::getEmail);
+            return Stream.concat(tautulliEmails, overseerrEmails)
+                    .filter(email -> {
+                        if (email == null || email.isEmpty()) {
+                            return false;
+                        }
+
+                        boolean duplicate = userEmails.contains(email);
+                        userEmails.add(email);
+
+                        return !duplicate;
+                    })
+                    .map(email -> new User(ctx, email))
+                    .iterator();
+        };
     }
 }
