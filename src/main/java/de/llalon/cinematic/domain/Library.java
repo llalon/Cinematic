@@ -6,21 +6,25 @@ import java.util.stream.Stream;
 public class Library extends DomainModel {
 
     /**
-     * Returns the client context used by this library.
-     *
-     * @return the client context
-     */
-    public ClientContext getContext() {
-        return super.ctx;
-    }
-
-    /**
      * Creates a new Library instance with the given client context.
      *
      * @param ctx the client context
      */
     public Library(ClientContext ctx) {
         super(ctx);
+    }
+
+    public Library() {
+        super(ClientContext.builder().build());
+    }
+
+    /**
+     * Returns the client context used by this library.
+     *
+     * @return the client context
+     */
+    public ClientContext getContext() {
+        return super.ctx;
     }
 
     /**
