@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 public class Library extends DomainModel {
 
     /**
-     * Creates a new Library instance with the given client context.
+     * Creates a new Library instance with the given configured client context.
      *
      * @param ctx the client context
      */
@@ -15,6 +15,9 @@ public class Library extends DomainModel {
         super(ctx);
     }
 
+    /**
+     * Creates a new Library instance with a default client context created from environment variables.
+     */
     public Library() {
         super(ClientContext.builder().build());
     }
@@ -87,6 +90,11 @@ public class Library extends DomainModel {
                 .stream().map(x -> new Request(ctx, x)).iterator();
     }
 
+    /**
+     * Returns an iterable of all users, deduplicated by email, from Tautulli and Overseerr.
+     *
+     * @return an iterable of User objects
+     */
     public Iterable<User> users() {
         return () -> {
             final Set<String> userEmails = new HashSet<>();

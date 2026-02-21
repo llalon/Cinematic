@@ -150,6 +150,13 @@ public abstract class LibraryMediaItem extends DomainModel {
                 .findFirst();
     }
 
+    /**
+     * Checks whether the given Plex GUID prefix and ID match one of this media item's external identifiers.
+     *
+     * @param prefix the GUID scheme (e.g. {@code "tmdb"}, {@code "imdb"}, {@code "tvdb"})
+     * @param id the identifier value from the Plex GUID
+     * @return {@code true} if the identifier matches this media item
+     */
     protected boolean plexMatchesId(String prefix, String id) {
         switch (prefix) {
             case "tmdb":

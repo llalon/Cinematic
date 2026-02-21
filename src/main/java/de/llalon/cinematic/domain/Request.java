@@ -11,6 +11,11 @@ public class Request extends DomainModel {
         this.overseerrRequest = overseerrRequest;
     }
 
+    /**
+     * Returns the user who submitted this request.
+     *
+     * @return the requesting User
+     */
     public User user() {
         return new User(ctx, overseerrRequest.getRequestedBy());
     }

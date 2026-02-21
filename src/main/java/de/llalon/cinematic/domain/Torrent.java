@@ -16,6 +16,11 @@ public class Torrent extends DomainModel {
         this.torrentInfo = torrentInfo;
     }
 
+    /**
+     * Adds a tag to this torrent by name, creating it in qBittorrent if it does not already exist.
+     *
+     * @param tag the tag name to add; ignored if null or blank
+     */
     public void addTag(String tag) {
         if (tag != null && !tag.isBlank()) {
             final String torrentHash = torrentInfo.getHash();
@@ -25,6 +30,11 @@ public class Torrent extends DomainModel {
         }
     }
 
+    /**
+     * Adds a tag to this torrent.
+     *
+     * @param tag the Tag domain object whose name will be applied
+     */
     public void addTag(Tag tag) {
         addTag(tag.getName());
     }

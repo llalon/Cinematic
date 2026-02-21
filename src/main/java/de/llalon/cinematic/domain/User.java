@@ -37,6 +37,11 @@ public class User extends DomainModel {
                         .findAny();
     }
 
+    /**
+     * Returns the media requests made by this user in Overseerr.
+     *
+     * @return an iterable of Request objects
+     */
     public Iterable<Request> requests() {
         return () -> {
             final Integer userId = this.getOverseerrUserId().get();
@@ -47,6 +52,11 @@ public class User extends DomainModel {
         };
     }
 
+    /**
+     * Returns the watch history for this user.
+     *
+     * @return an iterable of Watches objects
+     */
     public Iterable<Watches> watches() {
         // ToDo
         return null;
