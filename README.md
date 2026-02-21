@@ -90,22 +90,23 @@ Library library = new Library(ClientContext.builder()
         .build());
 ```
 
-### Examples
+The Library is the root of the Cinematic domain model. It acts as the entry point to all your media data—movies, series, requests, torrents, watch history etc. 
 
-Tag torrents based on tracker:
-
-```
-# ToDo
-```
-
-Increase priority of torrents for series tagged with 'HighPriority':
-
-```
-# ToDo
+```java
+Iterable<Movie> movies = library.movies();
+Iterable<Series> series = library.series();
 ```
 
-Delete movie from Radarr if it has been watched by the user who requested it:
+From there, each object is self-referential: every Movie, Series, Request, etc knows how to access its related items. For example, a Movie can provide its associated torrents, requests, and watches directly.
 
+```java
+Iterable<Torrent> torrentsForMovie = movie.torrents();
+Iterable<Request> requestsForMovie = movie.requests();
+Iterable<Watches> movieWatchHistory = movie.watches();
 ```
-# ToDo
-```
+
+This creates a navigable, connected domain, where you can traverse your media ecosystem naturally, without calling APIs manually or managing IDs.
+
+Data is fetched lazily, so each object only loads what you actually use, keeping operations efficient.
+
+See examples in `examples/`.
