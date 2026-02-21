@@ -2,15 +2,21 @@ package de.llalon.cinematic.domain;
 
 import de.llalon.cinematic.util.collections.OffsetPagedIterable;
 import java.util.Optional;
-import lombok.Getter;
 import lombok.experimental.Delegate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class User extends DomainModel {
 
-    @Getter
+    @NotNull
     private final String email;
+
+    public String getEmail() {
+        if (this.overseerrUser == null || this.overseerrUser.getEmail() == null) {
+            return email;
+        }
+        return this.overseerrUser.getEmail();
+    }
 
     @Nullable // ToDo: Lazy load if Plex user is provided. Also possible to be null if the overseer user doesn't exist.
     @Delegate

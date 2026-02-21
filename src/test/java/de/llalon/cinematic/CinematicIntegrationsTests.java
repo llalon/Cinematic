@@ -116,4 +116,87 @@ class CinematicIntegrationsTests {
         var watches = series.watches();
         assertNotNull(StreamUtils.iterateToList(watches));
     }
+
+    @Test
+    void canGetMovieTags() {
+        var movie = library.movies().iterator().next();
+        var tags = movie.tags();
+        assertNotNull(StreamUtils.iterateToList(tags));
+    }
+
+    @Test
+    void canGetSeriesTags() {
+        var series = library.series().iterator().next();
+        var tags = series.tags();
+        assertNotNull(StreamUtils.iterateToList(tags));
+    }
+
+    @Test
+    void canGetTorrentSeries() {
+        var torrent = library.torrents().iterator().next();
+        var series = torrent.series();
+        assertNotNull(StreamUtils.iterateToList(series));
+    }
+
+    @Test
+    void canGetTorrentMovies() {
+        var torrent = library.torrents().iterator().next();
+        var movies = torrent.movies();
+        assertNotNull(StreamUtils.iterateToList(movies));
+    }
+
+    @Test
+    void canGetTagName() {
+        var tag = library.tags().iterator().next();
+        assertNotNull(tag.getName());
+        assertFalse(tag.getName().isBlank());
+    }
+
+    @Test
+    void canGetTagMovies() {
+        var tag = library.tags().iterator().next();
+        var movies = tag.movies();
+        assertNotNull(StreamUtils.iterateToList(movies));
+    }
+
+    @Test
+    void canGetTagSeries() {
+        var tag = library.tags().iterator().next();
+        var series = tag.series();
+        assertNotNull(StreamUtils.iterateToList(series));
+    }
+
+    @Test
+    void canGetTagTorrents() {
+        var tag = library.tags().iterator().next();
+        var torrents = tag.torrents();
+        assertNotNull(StreamUtils.iterateToList(torrents));
+    }
+
+    @Test
+    void canGetRequestUser() {
+        var request = library.requests().iterator().next();
+        var user = request.user();
+        assertNotNull(user);
+        assertNotNull(user.getEmail());
+    }
+
+    @Test
+    void canGetMovieTmdbId() {
+        var movie = library.movies().iterator().next();
+        assertNotNull(movie.getTmdbId());
+    }
+
+    @Test
+    void canGetSeriesTvdbId() {
+        var series = library.series().iterator().next();
+        assertNotNull(series.getTvdbId());
+    }
+
+    @Test
+    void canGetUserEmail() {
+        var user = library.users().iterator().next();
+        assertNotNull(user.getEmail());
+        assertFalse(user.getEmail().isBlank());
+    }
 }
