@@ -17,14 +17,20 @@ class CinematicIntegrationsTests {
     static void setUp() {
         library = new Library(ClientContext.builder().build());
 
-        Assumptions.assumeFalse(library.getContext() == null);
-        Assumptions.assumeFalse(library.getContext().getPlexClient() == null);
-        Assumptions.assumeFalse(library.getContext().getRadarrClient() == null);
-        Assumptions.assumeFalse(library.getContext().getQbittorrentClient() == null);
-        Assumptions.assumeFalse(library.getContext().getTautulliClient() == null);
-        Assumptions.assumeFalse(library.getContext().getSonarrClient() == null);
-        Assumptions.assumeFalse(library.getContext().getOverseerrClient() == null);
+        try {
+            library.getContext().getPlexClient();
+            library.getContext().getRadarrClient();
+            library.getContext().getQbittorrentClient();
+            library.getContext().getSonarrClient();
+            library.getContext().getTautulliClient();
+            library.getContext().getOverseerrClient();
+        } catch (Exception e) {
+            Assumptions.assumeTrue(e instanceof ClientNotConfiguredException);
+        }
     }
+
+    @Test
+    void test() {}
 
     @Test
     void canGetUsers() {

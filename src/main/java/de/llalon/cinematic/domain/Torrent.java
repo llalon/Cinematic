@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 public class Torrent extends DomainModel {
 
     @Delegate
+    @NotNull
     private final TorrentInfo torrentInfo;
 
     Torrent(ClientContext ctx, TorrentInfo torrentInfo) {

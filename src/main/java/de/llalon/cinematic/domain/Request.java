@@ -1,10 +1,13 @@
 package de.llalon.cinematic.domain;
 
 import de.llalon.cinematic.client.overseerr.dto.MediaRequest;
+import lombok.experimental.Delegate;
 import org.jetbrains.annotations.NotNull;
 
 public class Request extends DomainModel {
 
+    @Delegate
+    @NotNull
     private final MediaRequest overseerrRequest;
 
     Request(@NotNull ClientContext ctx, @NotNull MediaRequest overseerrRequest) {

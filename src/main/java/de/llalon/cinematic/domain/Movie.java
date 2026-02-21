@@ -7,11 +7,21 @@ import de.llalon.cinematic.util.collections.PagePagedIterable;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.experimental.Delegate;
 import org.jetbrains.annotations.NotNull;
 
 public class Movie extends LibraryMediaItem {
 
+    @Delegate
+    @NotNull
     private final MovieResource radarrMovie;
+
+    public String getTmdbId() {
+        if (this.radarrMovie.getTmdbId() == null) {
+            return null;
+        }
+        return this.radarrMovie.getTmdbId().toString();
+    }
 
     /**
      * Creates a new Movie instance with the given client context and Radarr movie resource.
