@@ -135,6 +135,8 @@ public final class ClientContext {
         if (this.qbittorrentClient == null) {
             log.warn("QBittorrent not configured. Some features may not be available");
         }
+
+        log.warn("!!! THIS IS BETA SOFTWARE USE AT YOUR OWN RISK !!!");
     }
 
     /**

@@ -1,5 +1,7 @@
 # Cinematic
 
+***!!! THIS IS BETA SOFTWARE USE AT YOUR OWN RISK !!!***
+
 ## About
 
 A JVM library that unifies media server APIs into a single navigable domain model.
