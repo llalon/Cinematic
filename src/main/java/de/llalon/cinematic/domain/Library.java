@@ -71,6 +71,7 @@ public class Library extends DomainModel {
      */
     public Iterable<Tag> tags() {
         return () -> {
+            // combine tags from ALL services which supports tags
             Stream<Tag> s1 = ctx.getQbittorrentClient().getAllTags().stream().map(tag -> new Tag(ctx, tag));
             Stream<Tag> s2 = ctx.getRadarrClient().getAllTags().stream().map(tag -> new Tag(ctx, tag.getLabel()));
             Stream<Tag> s3 = ctx.getSonarrClient().getAllTags().stream().map(tag -> new Tag(ctx, tag.getLabel()));
