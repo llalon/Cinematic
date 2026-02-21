@@ -13,7 +13,8 @@ import de.llalon.cinematic.client.sonarr.SonarrClient;
 import de.llalon.cinematic.client.sonarr.config.SonarrProperties;
 import de.llalon.cinematic.client.tautulli.TautulliClient;
 import de.llalon.cinematic.client.tautulli.config.TautulliProperties;
-import de.llalon.cinematic.util.LenientDateTimeAdapter;
+import de.llalon.cinematic.util.json.LenientDateTimeAdapter;
+import de.llalon.cinematic.util.json.LenientNumberAdapterFactory;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
@@ -41,7 +42,10 @@ public final class ClientContext {
             TautulliClient tautulliClient) {
         this.httpClient = httpClient == null ? new OkHttpClient() : httpClient;
         this.moshi = moshi == null
-                ? new Moshi.Builder().add(new LenientDateTimeAdapter()).build()
+                ? new Moshi.Builder()
+                        .add(new LenientDateTimeAdapter())
+                        .add(new LenientNumberAdapterFactory())
+                        .build()
                 : moshi;
 
         // Plex

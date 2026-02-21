@@ -1,11 +1,14 @@
 package de.llalon.cinematic.domain;
 
 import de.llalon.cinematic.util.collections.OffsetPagedIterable;
+import de.llalon.cinematic.util.collections.StreamUtils;
 import java.util.Optional;
 import lombok.experimental.Delegate;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@Slf4j
 public class User extends DomainModel {
 
     @NotNull
@@ -62,13 +65,33 @@ public class User extends DomainModel {
         };
     }
 
+    private Optional<Integer> getTautulliUserId() {
+        return ctx.getTautulliClient().getUsers().stream()
+                .filter(u -> this.email.equalsIgnoreCase(u.getEmail()))
+                .map(de.llalon.cinematic.client.tautulli.dto.User::getUserId)
+                .findAny();
+    }
+
     /**
-     * Returns the watch history for this user.
+     * Returns the watch history for this user from Tautulli, sorted by most recent first.
+     * All media types are included. Results are lazily paged.
      *
-     * @return an iterable of Watches objects
+     * @return an iterable of Watches objects sorted by date descending
      */
     @NotNull
     public Iterable<Watches> watches() {
-        throw new RuntimeException("Not implemented yet!");
+        return () -> {
+            final var userId = this.getTautulliUserId();
+
+            if (userId.isEmpty()) {
+                log.warn("User {} not found in tautulli. Can't fetch watch history!", this.email);
+                return StreamUtils.emptyIterator();
+            }
+
+            return new OffsetPagedIterable<>((take, skip) -> ctx.getTautulliClient()
+                            .getHistoryByUser(userId.get(), skip, take)
+                            .getData())
+                    .stream().map(history -> new Watches(ctx, history)).iterator();
+        };
     }
 }

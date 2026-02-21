@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.llalon.cinematic.domain.*;
 import de.llalon.cinematic.util.collections.StreamUtils;
 import org.junit.jupiter.api.*;
+import org.opentest4j.TestAbortedException;
 
 /**
  * Tests which require api clients to be configured via environment variables. If not configured they will be skipped.
@@ -25,7 +26,7 @@ class CinematicIntegrationsTests {
             library.getContext().getTautulliClient();
             library.getContext().getOverseerrClient();
         } catch (Exception e) {
-            Assumptions.assumeTrue(e instanceof ClientNotConfiguredException);
+            throw new TestAbortedException("Environment variables for client configuration not set.");
         }
     }
 
@@ -198,5 +199,12 @@ class CinematicIntegrationsTests {
         var user = library.users().iterator().next();
         assertNotNull(user.getEmail());
         assertFalse(user.getEmail().isBlank());
+    }
+
+    @Test
+    void canGetUserWatches() {
+        var user = library.users().iterator().next();
+        var watches = user.watches();
+        assertNotNull(StreamUtils.iterateToList(watches));
     }
 }
