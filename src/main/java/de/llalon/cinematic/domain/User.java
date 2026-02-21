@@ -3,6 +3,7 @@ package de.llalon.cinematic.domain;
 import de.llalon.cinematic.util.collections.OffsetPagedIterable;
 import java.util.Optional;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class User extends DomainModel {
@@ -13,13 +14,13 @@ public class User extends DomainModel {
     @Nullable
     private final de.llalon.cinematic.client.overseerr.dto.User overseerrUser;
 
-    User(ClientContext ctx, de.llalon.cinematic.client.overseerr.dto.User overseerrUser) {
+    User(@NotNull ClientContext ctx, @NotNull de.llalon.cinematic.client.overseerr.dto.User overseerrUser) {
         super(ctx);
         this.email = overseerrUser.getEmail();
         this.overseerrUser = overseerrUser;
     }
 
-    User(ClientContext ctx, String email) {
+    User(@NotNull ClientContext ctx, @NotNull String email) {
         super(ctx);
         this.email = email;
         this.overseerrUser = null;
@@ -42,6 +43,7 @@ public class User extends DomainModel {
      *
      * @return an iterable of Request objects
      */
+    @NotNull
     public Iterable<Request> requests() {
         return () -> {
             final Integer userId = this.getOverseerrUserId().get();
@@ -57,8 +59,8 @@ public class User extends DomainModel {
      *
      * @return an iterable of Watches objects
      */
+    @NotNull
     public Iterable<Watches> watches() {
-        // ToDo
-        return null;
+        throw new RuntimeException("Not implemented yet!");
     }
 }

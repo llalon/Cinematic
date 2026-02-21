@@ -7,6 +7,7 @@ import de.llalon.cinematic.util.collections.PagePagedIterable;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.jetbrains.annotations.NotNull;
 
 public class Movie extends LibraryMediaItem {
 
@@ -18,7 +19,7 @@ public class Movie extends LibraryMediaItem {
      * @param ctx the client context
      * @param radarrMovie the Radarr movie resource
      */
-    public Movie(ClientContext ctx, MovieResource radarrMovie) {
+    public Movie(@NotNull ClientContext ctx, @NotNull MovieResource radarrMovie) {
         super(ctx, radarrMovie);
         this.radarrMovie = radarrMovie;
     }
@@ -29,6 +30,7 @@ public class Movie extends LibraryMediaItem {
      * @return an iterable of Tag objects
      */
     @Override
+    @NotNull
     public Iterable<Tag> tags() {
         return () -> {
             final Map<Integer, String> tags = ctx.getRadarrClient().getAllTags().stream()
@@ -46,6 +48,7 @@ public class Movie extends LibraryMediaItem {
      * @return an iterable of Torrent objects
      */
     @Override
+    @NotNull
     public Iterable<Torrent> torrents() {
         return () -> {
             final List<TorrentInfo> allTorrents = ctx.getQbittorrentClient().getTorrents();

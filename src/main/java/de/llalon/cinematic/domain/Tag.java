@@ -1,6 +1,8 @@
 package de.llalon.cinematic.domain;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class Tag extends DomainModel {
 
@@ -13,7 +15,7 @@ public class Tag extends DomainModel {
      * @param context the client context
      * @param name the tag name
      */
-    public Tag(ClientContext context, String name) {
+    public Tag(@NotNull ClientContext context, @Nullable String name) {
         super(context);
         this.name = name;
     }
@@ -23,6 +25,7 @@ public class Tag extends DomainModel {
      *
      * @return the tag name
      */
+    @Nullable
     public String name() {
         return name;
     }
@@ -32,6 +35,7 @@ public class Tag extends DomainModel {
      *
      * @return an iterable of Movie objects
      */
+    @NotNull
     public Iterable<Movie> movies() {
         return () -> {
             // find radarr tag id for this label then lazily filter movies
@@ -53,6 +57,7 @@ public class Tag extends DomainModel {
      *
      * @return an iterable of Series objects
      */
+    @NotNull
     public Iterable<Series> series() {
         return () -> {
             final Integer tagId = ctx.getSonarrClient().getAllTags().stream()
@@ -73,6 +78,7 @@ public class Tag extends DomainModel {
      *
      * @return an iterable of Torrent objects
      */
+    @NotNull
     public Iterable<Torrent> torrents() {
         return () -> ctx.getQbittorrentClient().getTorrents(null, null, this.name).stream()
                 .map(x -> new Torrent(ctx, x))

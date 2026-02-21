@@ -5,6 +5,8 @@ import de.llalon.cinematic.util.collections.PagePagedIterable;
 import java.util.List;
 import java.util.Objects;
 import lombok.experimental.Delegate;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class Torrent extends DomainModel {
 
@@ -21,7 +23,7 @@ public class Torrent extends DomainModel {
      *
      * @param tag the tag name to add; ignored if null or blank
      */
-    public void addTag(String tag) {
+    public void addTag(@Nullable String tag) {
         if (tag != null && !tag.isBlank()) {
             final String torrentHash = torrentInfo.getHash();
             // Ensure the tag exists, then attach it to this torrent
@@ -35,7 +37,7 @@ public class Torrent extends DomainModel {
      *
      * @param tag the Tag domain object whose name will be applied
      */
-    public void addTag(Tag tag) {
+    public void addTag(@NotNull Tag tag) {
         addTag(tag.getName());
     }
 
@@ -47,6 +49,7 @@ public class Torrent extends DomainModel {
      *
      * @return an iterable of Series objects
      */
+    @NotNull
     public Iterable<Series> series() {
         return () -> new PagePagedIterable<>((take, skip) ->
                         ctx.getSonarrClient().getQueue(take, skip, false).getRecords())
@@ -68,6 +71,7 @@ public class Torrent extends DomainModel {
      *
      * @return an iterable of Movie objects
      */
+    @NotNull
     public Iterable<Movie> movies() {
         return () -> new PagePagedIterable<>((take, skip) ->
                         ctx.getRadarrClient().getQueue(take, skip, false).getRecords())

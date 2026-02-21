@@ -9,6 +9,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class LibraryMediaItem extends DomainModel {
 
@@ -33,17 +35,20 @@ public abstract class LibraryMediaItem extends DomainModel {
     }
 
     @Getter
+    @Nullable
     protected final String tmdbId;
 
     @Getter
+    @Nullable
     protected final String tvdbId;
 
     @Getter // Would be null for movies!
+    @Nullable
     protected final String imdbId;
 
     protected final LibraryMediaType libraryMediaType; // show or movie
 
-    protected LibraryMediaItem(ClientContext ctx, MovieResource radarrMovie) {
+    protected LibraryMediaItem(@NotNull ClientContext ctx, @NotNull MovieResource radarrMovie) {
         super(ctx);
         this.tmdbId = radarrMovie.getTmdbId() == null ? null : String.valueOf(radarrMovie.getTmdbId());
         this.imdbId = radarrMovie.getImdbId() == null ? null : String.valueOf(radarrMovie.getImdbId());
@@ -51,7 +56,7 @@ public abstract class LibraryMediaItem extends DomainModel {
         this.libraryMediaType = LibraryMediaType.MOVIE;
     }
 
-    protected LibraryMediaItem(ClientContext ctx, SeriesResource sonarrSeries) {
+    protected LibraryMediaItem(@NotNull ClientContext ctx, @NotNull SeriesResource sonarrSeries) {
         super(ctx);
         this.tmdbId = sonarrSeries.getTmdbId() == null ? null : String.valueOf(sonarrSeries.getTmdbId());
         this.imdbId = sonarrSeries.getImdbId() == null ? null : String.valueOf(sonarrSeries.getImdbId());
@@ -64,6 +69,7 @@ public abstract class LibraryMediaItem extends DomainModel {
      *
      * @return an iterable of Tag objects
      */
+    @NotNull
     public abstract Iterable<Tag> tags();
 
     /**
@@ -71,6 +77,7 @@ public abstract class LibraryMediaItem extends DomainModel {
      *
      * @return an iterable of Torrent objects
      */
+    @NotNull
     public abstract Iterable<Torrent> torrents();
 
     /**
@@ -78,6 +85,7 @@ public abstract class LibraryMediaItem extends DomainModel {
      *
      * @return an iterable of Request objects
      */
+    @NotNull
     public Iterable<Request> requests() {
         return () -> new OffsetPagedIterable<>((take, skip) -> ctx.getOverseerrClient()
                         .getAllRequests(take, skip, null, null, null)
@@ -114,6 +122,7 @@ public abstract class LibraryMediaItem extends DomainModel {
      *
      * @return an iterable of Watches objects
      */
+    @NotNull
     public Iterable<Watches> watches() {
         return () -> fetchPlexMediaItem()
                 .map(PlexMediaItem::getRatingKey)
@@ -125,6 +134,7 @@ public abstract class LibraryMediaItem extends DomainModel {
                 .orElse(Collections.emptyIterator());
     }
 
+    @NotNull
     protected Optional<PlexMediaItem> fetchPlexMediaItem() {
         return ctx.getPlexClient().getSections().getMediaContainer().getDirectories().stream()
                 .filter(section -> libraryMediaType.getPlexLibraryType().equalsIgnoreCase(section.getType()))
@@ -157,7 +167,7 @@ public abstract class LibraryMediaItem extends DomainModel {
      * @param id the identifier value from the Plex GUID
      * @return {@code true} if the identifier matches this media item
      */
-    protected boolean plexMatchesId(String prefix, String id) {
+    protected boolean plexMatchesId(@NotNull String prefix, @NotNull String id) {
         switch (prefix) {
             case "tmdb":
                 return id.equalsIgnoreCase(String.valueOf(this.tmdbId));

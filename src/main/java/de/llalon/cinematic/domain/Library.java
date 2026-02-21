@@ -3,6 +3,7 @@ package de.llalon.cinematic.domain;
 import de.llalon.cinematic.util.collections.OffsetPagedIterable;
 import java.util.*;
 import java.util.stream.Stream;
+import org.jetbrains.annotations.NotNull;
 
 public class Library extends DomainModel {
 
@@ -11,7 +12,7 @@ public class Library extends DomainModel {
      *
      * @param ctx the client context
      */
-    public Library(ClientContext ctx) {
+    public Library(@NotNull ClientContext ctx) {
         super(ctx);
     }
 
@@ -27,6 +28,7 @@ public class Library extends DomainModel {
      *
      * @return the client context
      */
+    @NotNull
     public ClientContext getContext() {
         return super.ctx;
     }
@@ -36,6 +38,7 @@ public class Library extends DomainModel {
      *
      * @return an iterable of Movie objects
      */
+    @NotNull
     public Iterable<Movie> movies() {
         return () -> ctx.getRadarrClient().getAllMovies().stream()
                 .map(movie -> new Movie(ctx, movie))
@@ -47,6 +50,7 @@ public class Library extends DomainModel {
      *
      * @return an iterable of Series objects
      */
+    @NotNull
     public Iterable<Series> series() {
         return () -> ctx.getSonarrClient().getAllSeries().stream()
                 .map(series -> new Series(ctx, series))
@@ -58,6 +62,7 @@ public class Library extends DomainModel {
      *
      * @return an iterable of Torrent objects
      */
+    @NotNull
     public Iterable<Torrent> torrents() {
         return () -> ctx.getQbittorrentClient().getTorrents().stream()
                 .map(torrent -> new Torrent(ctx, torrent))
@@ -69,6 +74,7 @@ public class Library extends DomainModel {
      *
      * @return an iterable of Tag objects
      */
+    @NotNull
     public Iterable<Tag> tags() {
         return () -> {
             // combine tags from ALL services which supports tags
@@ -84,6 +90,7 @@ public class Library extends DomainModel {
      *
      * @return an iterable of Request objects
      */
+    @NotNull
     public Iterable<Request> requests() {
         return () -> new OffsetPagedIterable<>((take, skip) -> ctx.getOverseerrClient()
                         .getAllRequests(take, skip, null, null, null)
@@ -96,6 +103,7 @@ public class Library extends DomainModel {
      *
      * @return an iterable of User objects
      */
+    @NotNull
     public Iterable<User> users() {
         return () -> {
             final Set<String> userEmails = new HashSet<>();

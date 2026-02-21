@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 
 @Slf4j
 public class Series extends LibraryMediaItem {
@@ -20,7 +21,7 @@ public class Series extends LibraryMediaItem {
      * @param ctx the client context
      * @param seriesResource the Sonarr series resource
      */
-    Series(ClientContext ctx, SeriesResource seriesResource) {
+    Series(@NotNull ClientContext ctx, @NotNull SeriesResource seriesResource) {
         super(ctx, seriesResource);
         this.sonarrSeries = seriesResource;
     }
@@ -31,6 +32,7 @@ public class Series extends LibraryMediaItem {
      * @return an iterable of Tag objects
      */
     @Override
+    @NotNull
     public Iterable<Tag> tags() {
         return () -> {
             final Map<Integer, String> tags = ctx.getSonarrClient().getAllTags().stream()
@@ -48,6 +50,7 @@ public class Series extends LibraryMediaItem {
      * @return an iterable of Torrent objects
      */
     @Override
+    @NotNull
     public Iterable<Torrent> torrents() {
         return () -> {
             final List<TorrentInfo> allTorrents = ctx.getQbittorrentClient().getTorrents();
