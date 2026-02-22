@@ -106,6 +106,8 @@ public class Library extends DomainModel {
     @NotNull
     public Iterable<User> users() {
         return () -> {
+            // ToDo: This could be optimized to create user instances from each type of user tautulli/overseerr.
+            // This way that information won't have to be fetched later if required.
             final Set<String> userEmails = new HashSet<>();
 
             final Stream<String> tautulliEmails = ctx.getTautulliClient().getUsers().stream()
