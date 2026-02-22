@@ -18,7 +18,7 @@ library.movies.each do |movie|
 
   movie.torrents.each do |torrent|
     puts "  [MOVIE] Bumping priority for '#{movie.get_title}' (#{torrent.get_hash})"
-    # TODO: Torrent domain object does not yet expose a set_top_priority / increase_priority method.
+    torrent.setTopPriority()
   end
 end
 
@@ -28,7 +28,7 @@ library.series.each do |series|
 
   series.torrents.each do |torrent|
     puts "  [SERIES] Bumping priority for '#{series.get_title}' (#{torrent.get_hash})"
-    # TODO: Torrent domain object does not yet expose a set_top_priority / increase_priority method.
+    torrent.setTopPriority()
   end
 end
 

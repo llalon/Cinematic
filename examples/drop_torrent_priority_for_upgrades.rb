@@ -9,28 +9,13 @@ library = Library.new
 
 puts "Scanning for upgrade torrents..."
 
+puts " Checking movies..."
 library.movies.each do |movie|
-  next unless movie.get_has_file == true
+  next unless movie.get_has_file
 
   movie.torrents.each do |torrent|
-    hash = torrent.get_hash
-    next if hash.nil?
-
-    puts "  [MOVIE] Dropping priority for upgrade: '#{movie.get_title}' (#{hash})"
-    # TODO: Torrent domain object does not yet expose a set_bottom_priority method.
-  end
-end
-
-library.series.each do |series|
-  series.torrents.each do |torrent|
-    hash = torrent.get_hash
-    next if hash.nil?
-
-    puts "  [SERIES] Dropping priority for upgrade: '#{series.get_title}' (#{hash})"
-    # TODO: Torrent domain object does not yet expose a set_bottom_priority method.
-    # TODO: Episode-level domain objects are not yet available. Currently all series
-    #       torrents are treated as potential upgrades. A future Episode domain object
-    #       with hasFile would allow filtering to true upgrades only.
+    puts "  [MOVIE] Dropping priority for upgrade: '#{movie.get_title}' (#{torrent.get_hash})"
+    torrent.setBottomPriority()
   end
 end
 

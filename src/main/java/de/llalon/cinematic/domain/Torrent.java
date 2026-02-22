@@ -14,9 +14,23 @@ public class Torrent extends DomainModel {
     @NotNull
     private final TorrentInfo torrentInfo;
 
-    Torrent(ClientContext ctx, TorrentInfo torrentInfo) {
+    Torrent(ClientContext ctx, @NotNull TorrentInfo torrentInfo) {
         super(ctx);
         this.torrentInfo = torrentInfo;
+    }
+
+    /**
+     * Sets the priority of the torrent to the top. Only works if queueing is enabled.
+     */
+    public void setTopPriority() {
+        this.ctx.getQbittorrentClient().setTopPriority(List.of(this.torrentInfo.getHash()));
+    }
+
+    /**
+     * Sets the priority of the torrent to the bottom. Only works if queueing is enabled.
+     */
+    public void setBottomPriority() {
+        this.ctx.getQbittorrentClient().setBottomPriority(List.of(this.torrentInfo.getHash()));
     }
 
     /**

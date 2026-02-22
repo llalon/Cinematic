@@ -1,6 +1,7 @@
 #!/usr/bin/env jruby
 # This script will tag torrents that do not have any hard links on them.
 # This can be useful if sonarr and radarr are configured to use hardlinks.
+# Warning: This script only works if run with access to the same file system as qBitTorrent and using the same mount paths if in docker
 
 require 'java'
 java_import 'de.llalon.cinematic.domain.Library'
