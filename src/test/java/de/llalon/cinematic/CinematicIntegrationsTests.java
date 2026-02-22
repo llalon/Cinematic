@@ -325,7 +325,7 @@ class CinematicIntegrationsTests {
     void canGetRequestUserById() {
         var request = library.requests().iterator().next();
         var user = request.user();
-        assertNotNull(user.getId());
+        assertNotNull(user.getEmail());
     }
 
     // ----- Tag name() method test -----
