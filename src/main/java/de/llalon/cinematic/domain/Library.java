@@ -1,26 +1,36 @@
 package de.llalon.cinematic.domain;
 
 import de.llalon.cinematic.util.collections.OffsetPagedIterable;
+import java.util.*;
 import java.util.stream.Stream;
+import org.jetbrains.annotations.NotNull;
 
 public class Library extends DomainModel {
+
+    /**
+     * Creates a new Library instance with the given configured client context.
+     *
+     * @param ctx the client context
+     */
+    public Library(@NotNull ClientContext ctx) {
+        super(ctx);
+    }
+
+    /**
+     * Creates a new Library instance with a default client context created from environment variables.
+     */
+    public Library() {
+        super(ClientContext.builder().build());
+    }
 
     /**
      * Returns the client context used by this library.
      *
      * @return the client context
      */
+    @NotNull
     public ClientContext getContext() {
         return super.ctx;
-    }
-
-    /**
-     * Creates a new Library instance with the given client context.
-     *
-     * @param ctx the client context
-     */
-    public Library(ClientContext ctx) {
-        super(ctx);
     }
 
     /**
@@ -28,6 +38,7 @@ public class Library extends DomainModel {
      *
      * @return an iterable of Movie objects
      */
+    @NotNull
     public Iterable<Movie> movies() {
         return () -> ctx.getRadarrClient().getAllMovies().stream()
                 .map(movie -> new Movie(ctx, movie))
@@ -39,6 +50,7 @@ public class Library extends DomainModel {
      *
      * @return an iterable of Series objects
      */
+    @NotNull
     public Iterable<Series> series() {
         return () -> ctx.getSonarrClient().getAllSeries().stream()
                 .map(series -> new Series(ctx, series))
@@ -50,6 +62,7 @@ public class Library extends DomainModel {
      *
      * @return an iterable of Torrent objects
      */
+    @NotNull
     public Iterable<Torrent> torrents() {
         return () -> ctx.getQbittorrentClient().getTorrents().stream()
                 .map(torrent -> new Torrent(ctx, torrent))
@@ -61,8 +74,10 @@ public class Library extends DomainModel {
      *
      * @return an iterable of Tag objects
      */
+    @NotNull
     public Iterable<Tag> tags() {
         return () -> {
+            // combine tags from ALL services which supports tags
             Stream<Tag> s1 = ctx.getQbittorrentClient().getAllTags().stream().map(tag -> new Tag(ctx, tag));
             Stream<Tag> s2 = ctx.getRadarrClient().getAllTags().stream().map(tag -> new Tag(ctx, tag.getLabel()));
             Stream<Tag> s3 = ctx.getSonarrClient().getAllTags().stream().map(tag -> new Tag(ctx, tag.getLabel()));
@@ -75,10 +90,43 @@ public class Library extends DomainModel {
      *
      * @return an iterable of Request objects
      */
+    @NotNull
     public Iterable<Request> requests() {
         return () -> new OffsetPagedIterable<>((take, skip) -> ctx.getOverseerrClient()
                         .getAllRequests(take, skip, null, null, null)
                         .getResults())
                 .stream().map(x -> new Request(ctx, x)).iterator();
+    }
+
+    /**
+     * Returns an iterable of all users, deduplicated by email, from Tautulli and Overseerr.
+     *
+     * @return an iterable of User objects
+     */
+    @NotNull
+    public Iterable<User> users() {
+        return () -> {
+            final Set<String> userEmails = new HashSet<>();
+
+            final Stream<String> tautulliEmails = ctx.getTautulliClient().getUsers().stream()
+                    .map(de.llalon.cinematic.client.tautulli.dto.User::getEmail);
+            final Stream<String> overseerrEmails = new OffsetPagedIterable<>((take, skip) -> ctx.getOverseerrClient()
+                            .getAllUsers(take, skip, null)
+                            .getResults())
+                    .stream().map(de.llalon.cinematic.client.overseerr.dto.User::getEmail);
+            return Stream.concat(tautulliEmails, overseerrEmails)
+                    .filter(email -> {
+                        if (email == null || email.isEmpty()) {
+                            return false;
+                        }
+
+                        boolean duplicate = userEmails.contains(email);
+                        userEmails.add(email);
+
+                        return !duplicate;
+                    })
+                    .map(email -> new User(ctx, email))
+                    .iterator();
+        };
     }
 }

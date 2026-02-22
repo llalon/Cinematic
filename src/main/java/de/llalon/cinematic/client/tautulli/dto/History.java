@@ -214,7 +214,7 @@ public class History {
      * Watched status: 0 = unwatched, 1 = watched.
      */
     @Json(name = "watched_status")
-    private final Integer watchedStatus;
+    private final Float watchedStatus;
 
     /**
      * Total duration of the media in milliseconds.

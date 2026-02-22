@@ -1,7 +1,7 @@
 # ==========================================
 # Build stage
 # ==========================================
-FROM eclipse-temurin:11-jdk-focal AS build
+FROM eclipse-temurin:11-jdk AS build
 
 WORKDIR /build
 
@@ -20,17 +20,19 @@ RUN ./mvnw clean compile
 
 RUN ./mvnw dependency:copy-dependencies -DoutputDirectory=target/dependency
 
-
 # ==========================================
-# Runtime stage
+# Runtime stage (JRuby)
 # ==========================================
-FROM eclipse-temurin:11-jdk-focal
+FROM jruby:9.4-jdk11
 
 WORKDIR /app
 
-COPY --from=build /build/target/classes /usr/share/java/
-COPY --from=build /build/target/dependency /usr/share/java/
+COPY --from=build /build/target/classes /app/classes
+COPY --from=build /build/target/dependency /app/lib
 
-ENV CLASSPATH=/usr/share/java/*
+ENV CLASSPATH=/app/classes:/app/lib/*
 
-CMD ["/bin/bash"]
+ENTRYPOINT ["jruby"]
+
+# Default: interactive shell
+CMD ["-S", "irb"]

@@ -1,11 +1,19 @@
 # Cinematic
 
+***!!! THIS IS BETA SOFTWARE USE AT YOUR OWN RISK !!!***
+
 ## About
 
 A JVM library that unifies media server APIs into a single navigable domain model.
 
-It integrates Plex, Tautulli, Overseerr, Sonarr, Radarr, and qBittorrent, enabling powerful automation workflows across
-your entire media stack.
+It integrates:
+
+- Plex
+- Tautulli
+- Overseerr
+- Sonarr
+- Radarr
+- qBittorrent
 
 ## Use Cases
 
@@ -49,7 +57,7 @@ PLEX_API_KEY=your-plex-token
 ```
 
 ```java
-Library library = new Library(ClientContext.builder().build());
+Library library = new Library();
 ```
 
 or provide custom credentials in code:
@@ -84,35 +92,23 @@ Library library = new Library(ClientContext.builder()
         .build());
 ```
 
-### Examples
+The Library is the root of the Cinematic domain model. It acts as the entry point to all your media data—movies, series, requests, torrents, watch history etc. 
 
 ```java
-for(Movie movie :library.
-
-movies()){
-        for(
-Torrent torrent :movie.
-
-torrents()){
-        System.out.
-
-println("Torrent details: "+torrent);
-    }
-            }
+Iterable<Movie> movies = library.movies();
+Iterable<Series> series = library.series();
 ```
 
-```ruby
-#!/usr/bin/env jruby
+From there, each object is self-referential: every Movie, Series, Request, etc knows how to access its related items. For example, a Movie can provide its associated torrents, requests, and watches directly.
 
-require 'java'
-require './target/cinematic-0.0.1-SNAPSHOT.jar'
-
-java_import 'de.llalon.cinematic.domain.Library'
-java_import 'de.llalon.cinematic.domain.ClientContext'
-
-library = Library.new(ClientContext.builder.build)
-
-library.movies.each do |movie|
-  puts "#{movie.tmdb_id}: #{movie.torrents.count} torrents"
-end
+```java
+Iterable<Torrent> torrentsForMovie = movie.torrents();
+Iterable<Request> requestsForMovie = movie.requests();
+Iterable<Watches> movieWatchHistory = movie.watches();
 ```
+
+This creates a navigable, connected domain, where you can traverse your media ecosystem naturally, without calling APIs manually or managing IDs.
+
+Data is fetched lazily, so each object only loads what you actually use, keeping operations efficient.
+
+See examples in `examples/`.

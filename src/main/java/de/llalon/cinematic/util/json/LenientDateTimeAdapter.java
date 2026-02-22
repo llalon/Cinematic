@@ -1,4 +1,4 @@
-package de.llalon.cinematic.util;
+package de.llalon.cinematic.util.json;
 
 import com.squareup.moshi.FromJson;
 import com.squareup.moshi.ToJson;

@@ -1,10 +1,14 @@
 package de.llalon.cinematic.domain;
 
+import de.llalon.cinematic.client.radarr.dto.TagResource;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class Tag extends DomainModel {
 
     @Getter
+    @NotNull
     private final String name;
 
     /**
@@ -13,7 +17,7 @@ public class Tag extends DomainModel {
      * @param context the client context
      * @param name the tag name
      */
-    public Tag(ClientContext context, String name) {
+    Tag(@NotNull ClientContext context, @NotNull String name) {
         super(context);
         this.name = name;
     }
@@ -23,6 +27,7 @@ public class Tag extends DomainModel {
      *
      * @return the tag name
      */
+    @Nullable
     public String name() {
         return name;
     }
@@ -32,13 +37,14 @@ public class Tag extends DomainModel {
      *
      * @return an iterable of Movie objects
      */
+    @NotNull
     public Iterable<Movie> movies() {
         return () -> {
             // find radarr tag id for this label then lazily filter movies
             final Integer tagId = ctx.getRadarrClient().getAllTags().stream()
                     .filter(t -> t.getLabel().equals(this.name))
                     .findFirst()
-                    .map(t -> t.getId())
+                    .map(TagResource::getId)
                     .orElse(null);
 
             return ctx.getRadarrClient().getAllMovies().stream()
@@ -53,12 +59,13 @@ public class Tag extends DomainModel {
      *
      * @return an iterable of Series objects
      */
+    @NotNull
     public Iterable<Series> series() {
         return () -> {
             final Integer tagId = ctx.getSonarrClient().getAllTags().stream()
                     .filter(t -> t.getLabel().equals(this.name))
                     .findFirst()
-                    .map(t -> t.getId())
+                    .map(de.llalon.cinematic.client.sonarr.dto.TagResource::getId)
                     .orElse(null);
 
             return ctx.getSonarrClient().getAllSeries().stream()
@@ -73,6 +80,7 @@ public class Tag extends DomainModel {
      *
      * @return an iterable of Torrent objects
      */
+    @NotNull
     public Iterable<Torrent> torrents() {
         return () -> ctx.getQbittorrentClient().getTorrents(null, null, this.name).stream()
                 .map(x -> new Torrent(ctx, x))

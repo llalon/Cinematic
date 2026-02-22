@@ -13,14 +13,15 @@ import de.llalon.cinematic.client.sonarr.SonarrClient;
 import de.llalon.cinematic.client.sonarr.config.SonarrProperties;
 import de.llalon.cinematic.client.tautulli.TautulliClient;
 import de.llalon.cinematic.client.tautulli.config.TautulliProperties;
-import de.llalon.cinematic.util.LenientDateTimeAdapter;
+import de.llalon.cinematic.util.json.LenientDateTimeAdapter;
+import de.llalon.cinematic.util.json.LenientNumberAdapterFactory;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Slf4j
-@Getter
 @Builder
 public final class ClientContext {
 
@@ -41,7 +42,10 @@ public final class ClientContext {
             TautulliClient tautulliClient) {
         this.httpClient = httpClient == null ? new OkHttpClient() : httpClient;
         this.moshi = moshi == null
-                ? new Moshi.Builder().add(new LenientDateTimeAdapter()).build()
+                ? new Moshi.Builder()
+                        .add(new LenientDateTimeAdapter())
+                        .add(new LenientNumberAdapterFactory())
+                        .build()
                 : moshi;
 
         // Plex
@@ -131,6 +135,8 @@ public final class ClientContext {
         if (this.qbittorrentClient == null) {
             log.warn("QBittorrent not configured. Some features may not be available");
         }
+
+        log.warn("!!! THIS IS BETA SOFTWARE USE AT YOUR OWN RISK !!!");
     }
 
     /**
@@ -202,4 +208,99 @@ public final class ClientContext {
      * The Tautulli client instance.
      */
     private final TautulliClient tautulliClient;
+
+    @NotNull
+    public OkHttpClient getHttpClient() {
+        if (this.httpClient == null) {
+            throw new IllegalStateException("Configured http client is invalid");
+        }
+        return this.httpClient;
+    }
+
+    @NotNull
+    public Moshi getMoshi() {
+        if (this.moshi == null) {
+            throw new IllegalStateException("Configured http client is invalid");
+        }
+
+        return this.moshi;
+    }
+
+    @Nullable
+    public PlexProperties getPlexProperties() {
+        return this.plexProperties;
+    }
+
+    @Nullable
+    public RadarrProperties getRadarrProperties() {
+        return this.radarrProperties;
+    }
+
+    @Nullable
+    public SonarrProperties getSonarrProperties() {
+        return this.sonarrProperties;
+    }
+
+    @Nullable
+    public QBittorrentProperties getQbittorrentProperties() {
+        return this.qbittorrentProperties;
+    }
+
+    @Nullable
+    public OverseerrProperties getOverseerrProperties() {
+        return this.overseerrProperties;
+    }
+
+    @Nullable
+    public TautulliProperties getTautulliProperties() {
+        return this.tautulliProperties;
+    }
+
+    @NotNull
+    public PlexClient getPlexClient() {
+        if (this.plexClient == null) {
+            throw new ClientNotConfiguredException("Plex not configured");
+        }
+        return this.plexClient;
+    }
+
+    @NotNull
+    public RadarrClient getRadarrClient() {
+        if (this.radarrClient == null) {
+            throw new ClientNotConfiguredException("Radarr not configured");
+        }
+        return this.radarrClient;
+    }
+
+    @NotNull
+    public SonarrClient getSonarrClient() {
+        if (this.sonarrClient == null) {
+            throw new ClientNotConfiguredException("Sonarr not configured");
+        }
+        return this.sonarrClient;
+    }
+
+    @NotNull
+    public QBittorrentClient getQbittorrentClient() {
+        if (this.qbittorrentClient == null) {
+            throw new ClientNotConfiguredException("QBittorrent not configured");
+        }
+        return this.qbittorrentClient;
+    }
+
+    @NotNull
+    public OverseerrClient getOverseerrClient() {
+        if (this.overseerrClient == null) {
+            throw new ClientNotConfiguredException("Overseerr not configured");
+        }
+        return this.overseerrClient;
+    }
+
+    @NotNull
+    public TautulliClient getTautulliClient() {
+        if (this.tautulliClient == null) {
+            throw new ClientNotConfiguredException("Tautulli not configured");
+        }
+        return this.tautulliClient;
+    }
 }
