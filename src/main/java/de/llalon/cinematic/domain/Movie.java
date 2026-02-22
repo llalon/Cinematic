@@ -6,10 +6,13 @@ import de.llalon.cinematic.client.radarr.dto.TagResource;
 import de.llalon.cinematic.util.collections.PagePagedIterable;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.experimental.Delegate;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
+@Slf4j
 public class Movie extends LibraryMediaItem {
 
     @Delegate
@@ -29,7 +32,7 @@ public class Movie extends LibraryMediaItem {
      * @param ctx the client context
      * @param radarrMovie the Radarr movie resource
      */
-    public Movie(@NotNull ClientContext ctx, @NotNull MovieResource radarrMovie) {
+    Movie(@NotNull ClientContext ctx, @NotNull MovieResource radarrMovie) {
         super(ctx, radarrMovie);
         this.radarrMovie = radarrMovie;
     }
@@ -47,7 +50,18 @@ public class Movie extends LibraryMediaItem {
                     .collect(Collectors.toMap(TagResource::getId, TagResource::getLabel));
 
             return radarrMovie.getTags().stream()
-                    .map(tagId -> new Tag(ctx, tags.get(tagId)))
+                    .map(tagId -> {
+                        if (tags.containsKey(tagId)) {
+                            return new Tag(ctx, tags.get(tagId));
+                        } else {
+                            // This can happen when tags are removed or added. Usually they still exist with a different
+                            // ID.
+                            // For example, tag1 could have id 1, and 2, but 2 doesn't exist.
+                            log.warn("Tag with id {} not found in Radarr", tagId);
+                            return null;
+                        }
+                    })
+                    .filter(Objects::nonNull)
                     .iterator();
         };
     }

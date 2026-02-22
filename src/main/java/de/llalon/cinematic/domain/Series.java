@@ -6,6 +6,7 @@ import de.llalon.cinematic.client.sonarr.dto.TagResource;
 import de.llalon.cinematic.util.collections.PagePagedIterable;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.experimental.Delegate;
 import lombok.extern.slf4j.Slf4j;
@@ -56,7 +57,15 @@ public class Series extends LibraryMediaItem {
                     .collect(Collectors.toMap(TagResource::getId, TagResource::getLabel));
 
             return sonarrSeries.getTags().stream()
-                    .map(tagId -> new Tag(ctx, tags.get(tagId)))
+                    .map(tagId -> {
+                        if (tags.containsKey(tagId)) {
+                            return new Tag(ctx, tags.get(tagId));
+                        } else {
+                            log.warn("Tag with id {} not found in Sonarr", tagId);
+                            return null;
+                        }
+                    })
+                    .filter(Objects::nonNull)
                     .iterator();
         };
     }

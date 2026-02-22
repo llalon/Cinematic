@@ -17,7 +17,7 @@ public class Tag extends DomainModel {
      * @param context the client context
      * @param name the tag name
      */
-    public Tag(@NotNull ClientContext context, @NotNull String name) {
+    Tag(@NotNull ClientContext context, @NotNull String name) {
         super(context);
         this.name = name;
     }

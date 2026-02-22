@@ -1,5 +1,7 @@
 package de.llalon.cinematic.domain;
 
+import static de.llalon.cinematic.util.collections.StreamUtils.streamIterator;
+
 import de.llalon.cinematic.client.plex.dto.PlexMediaItem;
 import de.llalon.cinematic.client.radarr.dto.MovieResource;
 import de.llalon.cinematic.client.sonarr.dto.SeriesResource;
@@ -62,6 +64,14 @@ public abstract class LibraryMediaItem extends DomainModel {
         this.imdbId = sonarrSeries.getImdbId() == null ? null : String.valueOf(sonarrSeries.getImdbId());
         this.tvdbId = sonarrSeries.getTvdbId() == null ? null : String.valueOf(sonarrSeries.getTvdbId());
         this.libraryMediaType = LibraryMediaType.SERIES;
+    }
+
+    public boolean hasTag(Tag tag) {
+        return this.hasTag(tag.getName());
+    }
+
+    public boolean hasTag(@Nullable String tag) {
+        return streamIterator(this.tags()).anyMatch(t -> t.getName().equals(tag));
     }
 
     /**
