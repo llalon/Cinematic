@@ -11,20 +11,22 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@Slf4j
 public abstract class LibraryMediaItem extends DomainModel {
 
-    //    @Getter
-    //    @RequiredArgsConstructor
-    //    protected enum LibraryIdType {
-    //        TMDB("tmdb"),
-    //        IMDB("imdb"),
-    //        TVDB("tvdb");
-    //
-    //        protected final String value;
-    //    }
+    @Getter
+    @RequiredArgsConstructor
+    protected enum LibraryIdType {
+        TMDB("tmdb"),
+        IMDB("imdb"),
+        TVDB("tvdb");
+
+        protected final String value;
+    }
 
     @Getter
     @RequiredArgsConstructor
@@ -158,14 +160,21 @@ public abstract class LibraryMediaItem extends DomainModel {
                     if (guid.getId() == null) {
                         return false;
                     }
-                    String[] parts = guid.getId().split("://");
-                    if (parts.length != 2) {
+
+                    try {
+                        String[] parts = guid.getId().split("://");
+                        if (parts.length != 2) {
+                            return false;
+                        }
+                        String prefix = parts[0];
+                        String id = parts[1];
+
+                        LibraryIdType type = LibraryIdType.valueOf(prefix.toUpperCase());
+                        return plexMatchesId(type, id);
+                    } catch (IllegalArgumentException | NullPointerException e) {
+                        log.warn("Unknown Plex id type: {}", guid.getId());
                         return false;
                     }
-                    String prefix = parts[0];
-                    String id = parts[1];
-
-                    return plexMatchesId(prefix, id);
                 }))
                 .findFirst();
     }
@@ -174,16 +183,16 @@ public abstract class LibraryMediaItem extends DomainModel {
      * Checks whether the given Plex GUID prefix and ID match one of this media item's external identifiers.
      *
      * @param prefix the GUID scheme (e.g. {@code "tmdb"}, {@code "imdb"}, {@code "tvdb"})
-     * @param id the identifier value from the Plex GUID
+     * @param id     the identifier value from the Plex GUID
      * @return {@code true} if the identifier matches this media item
      */
-    protected boolean plexMatchesId(@NotNull String prefix, @NotNull String id) {
+    protected boolean plexMatchesId(@NotNull LibraryIdType prefix, @NotNull String id) {
         switch (prefix) {
-            case "tmdb":
+            case TMDB:
                 return id.equalsIgnoreCase(String.valueOf(this.tmdbId));
-            case "imdb":
+            case IMDB:
                 return id.equalsIgnoreCase(this.imdbId);
-            case "tvdb":
+            case TVDB:
                 // could or could not have "tt" prefix
                 if (id.equalsIgnoreCase(this.tvdbId)) {
                     return true;
