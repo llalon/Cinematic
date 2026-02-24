@@ -1,10 +1,7 @@
 package de.llalon.cinematic.domain;
 
-import de.llalon.cinematic.client.qbittorrent.dto.TorrentInfo;
 import de.llalon.cinematic.client.sonarr.dto.SeriesResource;
 import de.llalon.cinematic.client.sonarr.dto.TagResource;
-import de.llalon.cinematic.util.collections.PagePagedIterable;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -36,7 +33,7 @@ public class Series extends LibraryMediaItem {
     /**
      * Creates a new Series instance with the given client context and Sonarr series resource.
      *
-     * @param ctx the client context
+     * @param ctx            the client context
      * @param seriesResource the Sonarr series resource
      */
     Series(@NotNull ClientContext ctx, @NotNull SeriesResource seriesResource) {
@@ -78,19 +75,14 @@ public class Series extends LibraryMediaItem {
     @Override
     @NotNull
     public Iterable<Torrent> torrents() {
-        return () -> {
-            final List<TorrentInfo> allTorrents = ctx.getQbittorrentClient().getTorrents();
-            return new PagePagedIterable<>((take, skip) ->
-                            ctx.getSonarrClient().getQueue(take, skip, false).getRecords())
-                    .stream()
-                            .filter(queueResource -> queueResource.getSeriesId().equals(sonarrSeries.getId()))
-                            .flatMap(queueResource -> allTorrents.stream()
-                                    .filter(torrent ->
-                                            torrent.getHash() != null && queueResource.getDownloadId() != null)
-                                    .filter(torrent ->
-                                            torrent.getHash().equalsIgnoreCase(queueResource.getDownloadId()))
-                                    .map(torrent -> new Torrent(ctx, torrent)))
-                            .iterator();
-        };
+        return () -> ctx.getCache()
+                .sonarrQueue()
+                .filter(queueResource -> queueResource.getSeriesId().equals(sonarrSeries.getId()))
+                .flatMap(queueResource -> ctx.getCache()
+                        .qbittorrentTorrents()
+                        .filter(torrent -> torrent.getHash() != null && queueResource.getDownloadId() != null)
+                        .filter(torrent -> torrent.getHash().equalsIgnoreCase(queueResource.getDownloadId()))
+                        .map(torrent -> new Torrent(ctx, torrent)))
+                .iterator();
     }
 }

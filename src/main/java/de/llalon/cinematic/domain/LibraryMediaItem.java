@@ -99,34 +99,32 @@ public abstract class LibraryMediaItem extends DomainModel {
      */
     @NotNull
     public Iterable<Request> requests() {
-        return () -> new OffsetPagedIterable<>((take, skip) -> ctx.getOverseerrClient()
-                        .getAllRequests(take, skip, null, null, null)
-                        .getResults())
-                .stream()
-                        .filter(request -> request.getMedia() != null)
-                        .filter(request -> {
-                            if (this.tvdbId != null && this.tvdbId.equalsIgnoreCase(request.getTvdbId())) {
-                                return true;
-                            }
+        return () -> ctx.getCache()
+                .overseerrRequests()
+                .filter(request -> request.getMedia() != null)
+                .filter(request -> {
+                    if (this.tvdbId != null && this.tvdbId.equalsIgnoreCase(request.getTvdbId())) {
+                        return true;
+                    }
 
-                            if (this.tvdbId != null
-                                    && this.tvdbId.equalsIgnoreCase(
-                                            String.valueOf(request.getMedia().getTvdbId()))) {
-                                return true;
-                            }
+                    if (this.tvdbId != null
+                            && this.tvdbId.equalsIgnoreCase(
+                                    String.valueOf(request.getMedia().getTvdbId()))) {
+                        return true;
+                    }
 
-                            if (this.tmdbId != null
-                                    && this.tmdbId.equalsIgnoreCase(
-                                            String.valueOf(request.getMedia().getTmdbId()))) {
-                                return true;
-                            }
+                    if (this.tmdbId != null
+                            && this.tmdbId.equalsIgnoreCase(
+                                    String.valueOf(request.getMedia().getTmdbId()))) {
+                        return true;
+                    }
 
-                            // ToDo: Try to match IMDB id too..
+                    // ToDo: Try to match IMDB id too..
 
-                            return false;
-                        })
-                        .map(x -> new Request(ctx, x))
-                        .iterator();
+                    return false;
+                })
+                .map(x -> new Request(ctx, x))
+                .iterator();
     }
 
     /**

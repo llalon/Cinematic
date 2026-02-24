@@ -48,7 +48,7 @@ public class CachingIterable<T> implements Iterable<T> {
                     finished = true;
 
                     // Cache only after full iteration
-                    cache.put(cacheKey, List.copyOf(buffer));
+                    cache.put(cacheKey, new ArrayList<>(buffer));
                     nextItem = null;
                 }
 

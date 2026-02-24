@@ -145,6 +145,9 @@ public final class ClientContext {
         log.warn("!!! THIS IS BETA SOFTWARE USE AT YOUR OWN RISK !!!");
     }
 
+    @Getter
+    private final CacheRepository cache = new CacheRepository(this);
+
     /**
      * The HTTP client used for API calls.
      */
