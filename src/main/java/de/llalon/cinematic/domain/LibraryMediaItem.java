@@ -99,8 +99,7 @@ public abstract class LibraryMediaItem extends DomainModel {
      */
     @NotNull
     public Iterable<Request> requests() {
-        return () -> ctx.getCache()
-                .overseerrRequests()
+        return () -> super.overseerrRequests()
                 .filter(request -> request.getMedia() != null)
                 .filter(request -> {
                     if (this.tvdbId != null && this.tvdbId.equalsIgnoreCase(request.getTvdbId())) {

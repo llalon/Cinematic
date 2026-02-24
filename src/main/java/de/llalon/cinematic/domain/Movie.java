@@ -71,11 +71,9 @@ public class Movie extends LibraryMediaItem {
     @Override
     @NotNull
     public Iterable<Torrent> torrents() {
-        return () -> ctx.getCache()
-                .radarrQueue()
+        return () -> super.radarrQueue()
                 .filter(queueResource -> queueResource.getMovieId().equals(radarrMovie.getId()))
-                .flatMap(queueResource -> ctx.getCache()
-                        .qbittorrentTorrents()
+                .flatMap(queueResource -> super.qbittorrentTorrents()
                         .filter(torrent -> torrent.getHash() != null && queueResource.getDownloadId() != null)
                         .filter(torrent -> torrent.getHash().equalsIgnoreCase(queueResource.getDownloadId()))
                         .map(torrent -> new Torrent(ctx, torrent)))

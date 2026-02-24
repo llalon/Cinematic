@@ -29,6 +29,13 @@ import org.jetbrains.annotations.Nullable;
 @Builder
 public final class ClientContext {
 
+    public enum Caches {
+        QBITTORRENT_TORRENT,
+        SONARR_QUEUE,
+        RADARR_QUEUE,
+        OVERSEERR_REQUESTS;
+    }
+
     public ClientContext(
             OkHttpClient httpClient,
             Moshi moshi,
@@ -144,9 +151,6 @@ public final class ClientContext {
 
         log.warn("!!! THIS IS BETA SOFTWARE USE AT YOUR OWN RISK !!!");
     }
-
-    @Getter
-    private final CacheRepository cache = new CacheRepository(this);
 
     /**
      * The HTTP client used for API calls.
