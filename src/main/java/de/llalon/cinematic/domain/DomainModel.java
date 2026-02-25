@@ -13,6 +13,7 @@ import de.llalon.cinematic.util.collections.CachingIterable;
 import de.llalon.cinematic.util.collections.OffsetPagedIterable;
 import de.llalon.cinematic.util.collections.PagePagedIterable;
 import de.llalon.cinematic.util.collections.StreamUtils;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 import javax.cache.Cache;
 import javax.cache.CacheException;
@@ -106,21 +107,25 @@ public abstract class DomainModel {
 
     @NotNull
     protected de.llalon.cinematic.client.tautulli.dto.User tautulliUserById(@NotNull Integer userId) {
-        Cache<String, de.llalon.cinematic.client.tautulli.dto.User> cache = getOrCreateCache(TAUTULLI_USER);
+        return supplyWithCache(
+                TAUTULLI_USER, "user:" + userId, () -> ctx.getTautulliClient().getUser(userId));
+    }
 
-        String key = "user:" + userId;
+    @NotNull
+    protected <T> T supplyWithCache(@NotNull Caches caches, @NotNull String key, @NotNull Supplier<T> supplier) {
+        final Cache<String, T> cache = getOrCreateCache(caches);
 
-        var existing = cache.get(key);
+        final T existing = cache.get(key);
         if (existing != null) {
             return existing;
         }
 
-        var loaded = ctx.getTautulliClient().getUser(userId);
+        final T loaded = supplier.get();
         if (loaded == null) {
-            throw new IllegalStateException("User not found: " + userId);
+            throw new IllegalStateException("Key not found: " + key);
         }
 
-        var prior = cache.getAndPut(key, loaded);
+        final T prior = cache.getAndPut(key, loaded);
 
         return prior != null ? prior : loaded;
     }
