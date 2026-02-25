@@ -17,7 +17,6 @@ public class Watches extends DomainModel {
 
     @NotNull
     public User user() {
-        final var tautulliUser = ctx.getTautulliClient().getUser(tautulliHistory.getUserId());
-        return new User(ctx, tautulliUser);
+        return new User(ctx, tautulliUserById(this.tautulliHistory.getUserId()));
     }
 }

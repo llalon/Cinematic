@@ -75,7 +75,7 @@ public class Series extends LibraryMediaItem {
     @Override
     @NotNull
     public Iterable<Torrent> torrents() {
-        return () -> super.sonarrQueue()
+        return () -> sonarrQueue()
                 .filter(queueResource -> queueResource.getSeriesId().equals(sonarrSeries.getId()))
                 .flatMap(queueResource -> super.qbittorrentTorrents()
                         .filter(torrent -> torrent.getHash() != null && queueResource.getDownloadId() != null)

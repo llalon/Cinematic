@@ -15,6 +15,7 @@ import de.llalon.cinematic.client.tautulli.TautulliClient;
 import de.llalon.cinematic.client.tautulli.config.TautulliProperties;
 import de.llalon.cinematic.util.json.LenientDateTimeAdapter;
 import de.llalon.cinematic.util.json.LenientNumberAdapterFactory;
+import javax.cache.CacheException;
 import javax.cache.CacheManager;
 import javax.cache.Caching;
 import lombok.AccessLevel;
@@ -30,10 +31,20 @@ import org.jetbrains.annotations.Nullable;
 public final class ClientContext {
 
     public enum Caches {
+        SONARR_TAG,
+        RADARR_TAG,
+        QBITTORRENT_TAG,
+        SONARR_SERIE,
+        RADARR_MOVIE,
+        SONARR_USER,
+        RADARR_USER,
         QBITTORRENT_TORRENT,
         SONARR_QUEUE,
         RADARR_QUEUE,
-        OVERSEERR_REQUESTS;
+        OVERSEERR_REQUEST,
+        OVERSEERR_USER,
+        TAUTULLI_HISTORY,
+        TAUTULLI_USER;
     }
 
     public ClientContext(
@@ -321,5 +332,17 @@ public final class ClientContext {
             throw new ClientNotConfiguredException("Tautulli not configured");
         }
         return this.tautulliClient;
+    }
+
+    public void invalidateCache() {
+        for (Caches value : Caches.values()) {
+            try {
+                cacheManager.getCache(value.name()).clear();
+            } catch (NullPointerException e) {
+                log.debug("Cache does not exist");
+            } catch (CacheException e) {
+                log.error("Error clearing cache: {}", value, e);
+            }
+        }
     }
 }

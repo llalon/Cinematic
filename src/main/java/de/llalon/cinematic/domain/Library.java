@@ -1,5 +1,6 @@
 package de.llalon.cinematic.domain;
 
+import de.llalon.cinematic.client.radarr.dto.TagResource;
 import de.llalon.cinematic.util.collections.OffsetPagedIterable;
 import java.util.*;
 import java.util.stream.Stream;
@@ -40,9 +41,7 @@ public class Library extends DomainModel {
      */
     @NotNull
     public Iterable<Movie> movies() {
-        return () -> ctx.getRadarrClient().getAllMovies().stream()
-                .map(movie -> new Movie(ctx, movie))
-                .iterator();
+        return () -> super.radarrMovies().map(movie -> new Movie(ctx, movie)).iterator();
     }
 
     /**
@@ -52,9 +51,7 @@ public class Library extends DomainModel {
      */
     @NotNull
     public Iterable<Series> series() {
-        return () -> ctx.getSonarrClient().getAllSeries().stream()
-                .map(series -> new Series(ctx, series))
-                .iterator();
+        return () -> super.sonarrSeries().map(series -> new Series(ctx, series)).iterator();
     }
 
     /**
@@ -64,7 +61,7 @@ public class Library extends DomainModel {
      */
     @NotNull
     public Iterable<Torrent> torrents() {
-        return () -> ctx.getQbittorrentClient().getTorrents().stream()
+        return () -> super.qbittorrentTorrents()
                 .map(torrent -> new Torrent(ctx, torrent))
                 .iterator();
     }
@@ -76,13 +73,13 @@ public class Library extends DomainModel {
      */
     @NotNull
     public Iterable<Tag> tags() {
-        return () -> {
-            // combine tags from ALL services which supports tags
-            Stream<Tag> s1 = ctx.getQbittorrentClient().getAllTags().stream().map(tag -> new Tag(ctx, tag));
-            Stream<Tag> s2 = ctx.getRadarrClient().getAllTags().stream().map(tag -> new Tag(ctx, tag.getLabel()));
-            Stream<Tag> s3 = ctx.getSonarrClient().getAllTags().stream().map(tag -> new Tag(ctx, tag.getLabel()));
-            return Stream.concat(Stream.concat(s1, s2), s3).iterator();
-        };
+        return () -> Stream.concat(
+                        Stream.concat(
+                                super.radarrTags().map(TagResource::getLabel),
+                                super.sonarrTags().map(de.llalon.cinematic.client.sonarr.dto.TagResource::getLabel)),
+                        super.qbittorrentTags())
+                .map(tag -> new Tag(ctx, tag))
+                .iterator();
     }
 
     /**
@@ -92,10 +89,9 @@ public class Library extends DomainModel {
      */
     @NotNull
     public Iterable<Request> requests() {
-        return () -> new OffsetPagedIterable<>((take, skip) -> ctx.getOverseerrClient()
-                        .getAllRequests(take, skip, null, null, null)
-                        .getResults())
-                .stream().map(x -> new Request(ctx, x)).iterator();
+        return () -> super.overseerrRequests()
+                .map(request -> new Request(ctx, request))
+                .iterator();
     }
 
     /**

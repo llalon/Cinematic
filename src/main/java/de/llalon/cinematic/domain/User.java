@@ -64,10 +64,9 @@ public class User extends DomainModel {
             try {
                 final Integer userId =
                         Objects.requireNonNull(this.fetchOverseerrUser()).getId();
-                return new OffsetPagedIterable<>((take, skip) -> ctx.getOverseerrClient()
-                                .getAllRequests(take, skip, null, null, userId)
-                                .getResults())
-                        .stream().map(request -> new Request(ctx, request)).iterator();
+                return overseerrRequestsByUser(userId)
+                        .map(request -> new Request(ctx, request))
+                        .iterator();
             } catch (NullPointerException e) {
                 log.warn("User {} does not exist in overseer.", this.email);
                 return StreamUtils.emptyIterator();

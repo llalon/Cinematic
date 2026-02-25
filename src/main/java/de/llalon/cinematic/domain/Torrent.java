@@ -1,7 +1,6 @@
 package de.llalon.cinematic.domain;
 
 import de.llalon.cinematic.client.qbittorrent.dto.TorrentInfo;
-import de.llalon.cinematic.util.collections.PagePagedIterable;
 import java.util.List;
 import java.util.Objects;
 import lombok.experimental.Delegate;
@@ -66,16 +65,14 @@ public class Torrent extends DomainModel {
      */
     @NotNull
     public Iterable<Series> series() {
-        return () -> new PagePagedIterable<>((take, skip) ->
-                        ctx.getSonarrClient().getQueue(take, skip, false).getRecords())
-                .stream()
-                        .filter(queueResource -> queueResource.getDownloadId() != null
-                                && queueResource.getDownloadId().equalsIgnoreCase(getHash()))
-                        .map(de.llalon.cinematic.client.sonarr.dto.QueueResource::getSeriesId)
-                        .filter(Objects::nonNull)
-                        .distinct()
-                        .map(seriesId -> new Series(ctx, ctx.getSonarrClient().getSeries(seriesId)))
-                        .iterator();
+        return () -> sonarrQueue()
+                .filter(queueResource -> queueResource.getDownloadId() != null
+                        && queueResource.getDownloadId().equalsIgnoreCase(getHash()))
+                .map(de.llalon.cinematic.client.sonarr.dto.QueueResource::getSeriesId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .map(seriesId -> new Series(ctx, ctx.getSonarrClient().getSeries(seriesId)))
+                .iterator();
     }
 
     /**
@@ -88,15 +85,13 @@ public class Torrent extends DomainModel {
      */
     @NotNull
     public Iterable<Movie> movies() {
-        return () -> new PagePagedIterable<>((take, skip) ->
-                        ctx.getRadarrClient().getQueue(take, skip, false).getRecords())
-                .stream()
-                        .filter(queueResource -> queueResource.getDownloadId() != null
-                                && queueResource.getDownloadId().equalsIgnoreCase(getHash()))
-                        .map(de.llalon.cinematic.client.radarr.dto.QueueResource::getMovieId)
-                        .filter(Objects::nonNull)
-                        .distinct()
-                        .map(movieId -> new Movie(ctx, ctx.getRadarrClient().getMovie(movieId)))
-                        .iterator();
+        return () -> radarrQueue()
+                .filter(queueResource -> queueResource.getDownloadId() != null
+                        && queueResource.getDownloadId().equalsIgnoreCase(getHash()))
+                .map(de.llalon.cinematic.client.radarr.dto.QueueResource::getMovieId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .map(movieId -> new Movie(ctx, ctx.getRadarrClient().getMovie(movieId)))
+                .iterator();
     }
 }
