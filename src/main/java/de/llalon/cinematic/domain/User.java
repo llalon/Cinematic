@@ -76,7 +76,7 @@ public class User extends DomainModel {
 
     @Nullable
     private de.llalon.cinematic.client.tautulli.dto.User fetchTautulliUser() {
-        return ctx.getTautulliClient().getUsers().stream()
+        return super.tautulliUsers()
                 .filter(u -> this.email.equalsIgnoreCase(u.getEmail()))
                 .findAny()
                 .orElse(null);
@@ -84,11 +84,9 @@ public class User extends DomainModel {
 
     @Nullable
     private de.llalon.cinematic.client.overseerr.dto.User fetchOverseerrUser() {
-        return new OffsetPagedIterable<>((take, skip) ->
-                        ctx.getOverseerrClient().getAllUsers(take, skip, null).getResults())
-                .stream()
-                        .filter(u -> this.email.equalsIgnoreCase(u.getEmail()))
-                        .findAny()
-                        .orElse(null);
+        return super.overseerrUsers()
+                .filter(u -> this.email.equalsIgnoreCase(u.getEmail()))
+                .findAny()
+                .orElse(null);
     }
 }
