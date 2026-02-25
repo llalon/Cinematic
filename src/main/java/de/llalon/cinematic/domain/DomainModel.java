@@ -8,6 +8,7 @@ import de.llalon.cinematic.client.radarr.dto.MovieResource;
 import de.llalon.cinematic.client.radarr.dto.QueueResource;
 import de.llalon.cinematic.client.radarr.dto.TagResource;
 import de.llalon.cinematic.client.sonarr.dto.SeriesResource;
+import de.llalon.cinematic.client.tautulli.dto.User;
 import de.llalon.cinematic.domain.ClientContext.Caches;
 import de.llalon.cinematic.util.collections.CachingIterable;
 import de.llalon.cinematic.util.collections.OffsetPagedIterable;
@@ -33,45 +34,49 @@ public abstract class DomainModel {
 
     @NotNull
     protected Stream<TagResource> radarrTags() {
-        return StreamUtils.streamIterator(
-                new CachingIterable<>(ctx.getRadarrClient().getAllTags(), getOrCreateCache(RADARR_TAG), "all"));
+        return StreamUtils.streamIterator(new CachingIterable<>(
+                () -> ctx.getRadarrClient().getAllTags().iterator(), getOrCreateCache(RADARR_TAG), "all"));
     }
 
     @NotNull
     protected Stream<de.llalon.cinematic.client.sonarr.dto.TagResource> sonarrTags() {
-        return StreamUtils.streamIterator(
-                new CachingIterable<>(ctx.getSonarrClient().getAllTags(), getOrCreateCache(SONARR_TAG), "all"));
+        return StreamUtils.streamIterator(new CachingIterable<>(
+                () -> ctx.getSonarrClient().getAllTags().iterator(), getOrCreateCache(SONARR_TAG), "all"));
     }
 
     @NotNull
     protected Stream<String> qbittorrentTags() {
         return StreamUtils.streamIterator(new CachingIterable<>(
-                ctx.getQbittorrentClient().getAllTags(), getOrCreateCache(QBITTORRENT_TAG), "all"));
+                () -> ctx.getQbittorrentClient().getAllTags().iterator(), getOrCreateCache(QBITTORRENT_TAG), "all"));
     }
 
     @NotNull
     protected Stream<TorrentInfo> qbittorrentTorrents() {
         return StreamUtils.streamIterator(new CachingIterable<>(
-                ctx.getQbittorrentClient().getTorrents(), getOrCreateCache(QBITTORRENT_TORRENT), "all"));
+                () -> ctx.getQbittorrentClient().getTorrents().iterator(),
+                getOrCreateCache(QBITTORRENT_TORRENT),
+                "all"));
     }
 
     @NotNull
     protected Stream<MovieResource> radarrMovies() {
-        return StreamUtils.streamIterator(
-                new CachingIterable<>(ctx.getRadarrClient().getAllMovies(), getOrCreateCache(RADARR_MOVIE), "all"));
+        return StreamUtils.streamIterator(new CachingIterable<>(
+                () -> ctx.getRadarrClient().getAllMovies().iterator(), getOrCreateCache(RADARR_MOVIE), "all"));
     }
 
     @NotNull
     protected Stream<SeriesResource> sonarrSeries() {
-        return StreamUtils.streamIterator(
-                new CachingIterable<>(ctx.getSonarrClient().getAllSeries(), getOrCreateCache(SONARR_SERIE), "all"));
+        return StreamUtils.streamIterator(new CachingIterable<>(
+                () -> ctx.getSonarrClient().getAllSeries().iterator(), getOrCreateCache(SONARR_SERIE), "all"));
     }
 
     @NotNull
     protected Stream<QueueResource> radarrQueue() {
         return StreamUtils.streamIterator(new CachingIterable<>(
-                new PagePagedIterable<>((take, skip) ->
-                        ctx.getRadarrClient().getQueue(take, skip, false).getRecords()),
+                () -> new PagePagedIterable<>((take, skip) -> ctx.getRadarrClient()
+                                .getQueue(take, skip, false)
+                                .getRecords())
+                        .iterator(),
                 getOrCreateCache(RADARR_QUEUE),
                 "all"));
     }
@@ -79,8 +84,10 @@ public abstract class DomainModel {
     @NotNull
     protected Stream<de.llalon.cinematic.client.sonarr.dto.QueueResource> sonarrQueue() {
         return StreamUtils.streamIterator(new CachingIterable<>(
-                new PagePagedIterable<>((take, skip) ->
-                        ctx.getSonarrClient().getQueue(take, skip, false).getRecords()),
+                () -> new PagePagedIterable<>((take, skip) -> ctx.getSonarrClient()
+                                .getQueue(take, skip, false)
+                                .getRecords())
+                        .iterator(),
                 getOrCreateCache(SONARR_QUEUE),
                 "all"));
     }
@@ -88,9 +95,10 @@ public abstract class DomainModel {
     @NotNull
     protected Stream<MediaRequest> overseerrRequests() {
         return StreamUtils.streamIterator(new CachingIterable<>(
-                new OffsetPagedIterable<>((take, skip) -> ctx.getOverseerrClient()
-                        .getAllRequests(take, skip, null, null, null)
-                        .getResults()),
+                () -> new OffsetPagedIterable<>((take, skip) -> ctx.getOverseerrClient()
+                                .getAllRequests(take, skip, null, null, null)
+                                .getResults())
+                        .iterator(),
                 getOrCreateCache(OVERSEERR_REQUEST),
                 "all"));
     }
@@ -98,11 +106,29 @@ public abstract class DomainModel {
     @NotNull
     protected Stream<MediaRequest> overseerrRequestsByUser(@NotNull Integer userId) {
         return StreamUtils.streamIterator(new CachingIterable<>(
-                new OffsetPagedIterable<>((take, skip) -> ctx.getOverseerrClient()
-                        .getAllRequests(take, skip, null, null, userId)
-                        .getResults()),
+                () -> new OffsetPagedIterable<>((take, skip) -> ctx.getOverseerrClient()
+                                .getAllRequests(take, skip, null, null, userId)
+                                .getResults())
+                        .iterator(),
                 getOrCreateCache(OVERSEERR_REQUEST),
                 "user:" + userId));
+    }
+
+    @NotNull
+    protected Stream<de.llalon.cinematic.client.overseerr.dto.User> overseerrUsers() {
+        return StreamUtils.streamIterator(new CachingIterable<>(
+                () -> new OffsetPagedIterable<>((take, skip) -> ctx.getOverseerrClient()
+                                .getAllUsers(take, skip, null)
+                                .getResults())
+                        .iterator(),
+                getOrCreateCache(TAUTULLI_USER),
+                "all"));
+    }
+
+    @NotNull
+    protected Stream<User> tautulliUsers() {
+        return StreamUtils.streamIterator(new CachingIterable<>(
+                () -> ctx.getTautulliClient().getUsers().iterator(), getOrCreateCache(TAUTULLI_USER), "all"));
     }
 
     @NotNull

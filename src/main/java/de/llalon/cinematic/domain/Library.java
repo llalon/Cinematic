@@ -1,7 +1,6 @@
 package de.llalon.cinematic.domain;
 
 import de.llalon.cinematic.client.radarr.dto.TagResource;
-import de.llalon.cinematic.util.collections.OffsetPagedIterable;
 import java.util.*;
 import java.util.stream.Stream;
 import org.jetbrains.annotations.NotNull;
@@ -102,17 +101,11 @@ public class Library extends DomainModel {
     @NotNull
     public Iterable<User> users() {
         return () -> {
-            // ToDo: This could be optimized to create user instances from each type of user tautulli/overseerr.
-            // This way that information won't have to be fetched later if required.
             final Set<String> userEmails = new HashSet<>();
 
-            final Stream<String> tautulliEmails = ctx.getTautulliClient().getUsers().stream()
-                    .map(de.llalon.cinematic.client.tautulli.dto.User::getEmail);
-            final Stream<String> overseerrEmails = new OffsetPagedIterable<>((take, skip) -> ctx.getOverseerrClient()
-                            .getAllUsers(take, skip, null)
-                            .getResults())
-                    .stream().map(de.llalon.cinematic.client.overseerr.dto.User::getEmail);
-            return Stream.concat(tautulliEmails, overseerrEmails)
+            return Stream.concat(
+                            super.overseerrUsers().map(de.llalon.cinematic.client.overseerr.dto.User::getEmail),
+                            super.tautulliUsers().map(de.llalon.cinematic.client.tautulli.dto.User::getEmail))
                     .filter(email -> {
                         if (email == null || email.isEmpty()) {
                             return false;
