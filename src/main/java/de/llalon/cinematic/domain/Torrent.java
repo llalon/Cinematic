@@ -6,13 +6,11 @@ import de.llalon.cinematic.client.sonarr.dto.SonarrQueue;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import lombok.experimental.Delegate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class Torrent extends DomainModel {
 
-    @Delegate
     @NotNull
     private final TorrentInfo torrentInfo;
 

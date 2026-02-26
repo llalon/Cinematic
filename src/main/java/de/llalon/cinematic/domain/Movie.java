@@ -5,14 +5,12 @@ import de.llalon.cinematic.client.radarr.dto.RadarrTag;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import lombok.experimental.Delegate;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
 @Slf4j
 public class Movie extends LibraryMediaItem {
 
-    @Delegate
     @NotNull
     private final MovieResource radarrMovie;
 
