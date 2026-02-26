@@ -1,7 +1,10 @@
 package de.llalon.cinematic.domain;
 
 import de.llalon.cinematic.client.qbittorrent.dto.TorrentInfo;
+import de.llalon.cinematic.client.radarr.dto.RadarrQueue;
+import de.llalon.cinematic.client.sonarr.dto.SonarrQueue;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import lombok.experimental.Delegate;
 import org.jetbrains.annotations.NotNull;
@@ -66,16 +69,16 @@ public class Torrent extends DomainModel {
     @NotNull
     public Iterable<Series> series() {
         return () -> sonarrQueue()
-                .filter(queueResource -> queueResource.getDownloadId() != null
-                        && queueResource.getDownloadId().equalsIgnoreCase(getHash()))
-                .map(de.llalon.cinematic.client.sonarr.dto.QueueResource::getSeriesId)
+                .filter(sonarrQueue -> sonarrQueue.getDownloadId() != null
+                        && sonarrQueue.getDownloadId().equalsIgnoreCase(getHash()))
+                .map(SonarrQueue::getSeriesId)
                 .filter(Objects::nonNull)
                 .distinct()
                 .map(seriesId -> sonarrSeries()
                         .filter(s -> s.getId() != null && s.getId().equals(seriesId))
                         .findFirst()
                         .map(s -> new Series(ctx, s))
-                        .orElseThrow(() -> new java.util.NoSuchElementException("Series not found: " + seriesId)))
+                        .orElseThrow(() -> new NoSuchElementException("Series not found: " + seriesId)))
                 .iterator();
     }
 
@@ -92,14 +95,14 @@ public class Torrent extends DomainModel {
         return () -> radarrQueue()
                 .filter(queueResource -> queueResource.getDownloadId() != null
                         && queueResource.getDownloadId().equalsIgnoreCase(getHash()))
-                .map(de.llalon.cinematic.client.radarr.dto.QueueResource::getMovieId)
+                .map(RadarrQueue::getMovieId)
                 .filter(Objects::nonNull)
                 .distinct()
                 .map(movieId -> radarrMovies()
                         .filter(m -> m.getId() != null && m.getId().equals(movieId))
                         .findFirst()
                         .map(m -> new Movie(ctx, m))
-                        .orElseThrow(() -> new java.util.NoSuchElementException("Movie not found: " + movieId)))
+                        .orElseThrow(() -> new NoSuchElementException("Movie not found: " + movieId)))
                 .iterator();
     }
 }

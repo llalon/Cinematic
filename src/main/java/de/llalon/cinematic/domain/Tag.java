@@ -1,6 +1,7 @@
 package de.llalon.cinematic.domain;
 
-import de.llalon.cinematic.client.radarr.dto.TagResource;
+import de.llalon.cinematic.client.radarr.dto.RadarrTag;
+import de.llalon.cinematic.client.sonarr.dto.SonarrTag;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,7 +45,7 @@ public class Tag extends DomainModel {
             final Integer tagId = radarrTags()
                     .filter(t -> t.getLabel().equals(this.name))
                     .findFirst()
-                    .map(TagResource::getId)
+                    .map(RadarrTag::getId)
                     .orElse(null);
 
             return radarrMovies()
@@ -65,7 +66,7 @@ public class Tag extends DomainModel {
             final Integer tagId = sonarrTags()
                     .filter(t -> t.getLabel().equals(this.name))
                     .findFirst()
-                    .map(de.llalon.cinematic.client.sonarr.dto.TagResource::getId)
+                    .map(SonarrTag::getId)
                     .orElse(null);
 
             return sonarrSeries()

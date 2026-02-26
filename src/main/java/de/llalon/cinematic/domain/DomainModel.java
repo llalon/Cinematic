@@ -3,16 +3,19 @@ package de.llalon.cinematic.domain;
 import static de.llalon.cinematic.domain.ClientContext.Caches.*;
 
 import de.llalon.cinematic.client.overseerr.dto.MediaRequest;
+import de.llalon.cinematic.client.overseerr.dto.OverseerrUser;
 import de.llalon.cinematic.client.plex.dto.PlexDirectory;
 import de.llalon.cinematic.client.plex.dto.PlexMediaContainerWrapper;
 import de.llalon.cinematic.client.plex.dto.PlexMetadataContainer;
 import de.llalon.cinematic.client.qbittorrent.dto.TorrentInfo;
 import de.llalon.cinematic.client.radarr.dto.MovieResource;
-import de.llalon.cinematic.client.radarr.dto.QueueResource;
-import de.llalon.cinematic.client.radarr.dto.TagResource;
+import de.llalon.cinematic.client.radarr.dto.RadarrQueue;
+import de.llalon.cinematic.client.radarr.dto.RadarrTag;
 import de.llalon.cinematic.client.sonarr.dto.SeriesResource;
+import de.llalon.cinematic.client.sonarr.dto.SonarrQueue;
+import de.llalon.cinematic.client.sonarr.dto.SonarrTag;
 import de.llalon.cinematic.client.tautulli.dto.History;
-import de.llalon.cinematic.client.tautulli.dto.User;
+import de.llalon.cinematic.client.tautulli.dto.TautulliUser;
 import de.llalon.cinematic.domain.ClientContext.Caches;
 import de.llalon.cinematic.util.collections.CachingIterable;
 import de.llalon.cinematic.util.collections.OffsetPagedIterable;
@@ -38,13 +41,13 @@ public abstract class DomainModel {
     }
 
     @NotNull
-    protected Stream<TagResource> radarrTags() {
+    protected Stream<RadarrTag> radarrTags() {
         return StreamUtils.streamIterator(new CachingIterable<>(
                 () -> ctx.getRadarrClient().getAllTags().iterator(), getOrCreateCache(RADARR_TAG), "all"));
     }
 
     @NotNull
-    protected Stream<de.llalon.cinematic.client.sonarr.dto.TagResource> sonarrTags() {
+    protected Stream<SonarrTag> sonarrTags() {
         return StreamUtils.streamIterator(new CachingIterable<>(
                 () -> ctx.getSonarrClient().getAllTags().iterator(), getOrCreateCache(SONARR_TAG), "all"));
     }
@@ -76,7 +79,7 @@ public abstract class DomainModel {
     }
 
     @NotNull
-    protected Stream<QueueResource> radarrQueue() {
+    protected Stream<RadarrQueue> radarrQueue() {
         return StreamUtils.streamIterator(new CachingIterable<>(
                 () -> new PagePagedIterable<>((take, skip) -> ctx.getRadarrClient()
                                 .getQueue(take, skip, false)
@@ -87,7 +90,7 @@ public abstract class DomainModel {
     }
 
     @NotNull
-    protected Stream<de.llalon.cinematic.client.sonarr.dto.QueueResource> sonarrQueue() {
+    protected Stream<SonarrQueue> sonarrQueue() {
         return StreamUtils.streamIterator(new CachingIterable<>(
                 () -> new PagePagedIterable<>((take, skip) -> ctx.getSonarrClient()
                                 .getQueue(take, skip, false)
@@ -120,7 +123,7 @@ public abstract class DomainModel {
     }
 
     @NotNull
-    protected Stream<de.llalon.cinematic.client.overseerr.dto.User> overseerrUsers() {
+    protected Stream<OverseerrUser> overseerrUsers() {
         return StreamUtils.streamIterator(new CachingIterable<>(
                 () -> new OffsetPagedIterable<>((take, skip) -> ctx.getOverseerrClient()
                                 .getAllUsers(take, skip, null)
@@ -131,13 +134,13 @@ public abstract class DomainModel {
     }
 
     @NotNull
-    protected Stream<User> tautulliUsers() {
+    protected Stream<TautulliUser> tautulliUsers() {
         return StreamUtils.streamIterator(new CachingIterable<>(
                 () -> ctx.getTautulliClient().getUsers().iterator(), getOrCreateCache(TAUTULLI_USER), "all"));
     }
 
     @NotNull
-    protected de.llalon.cinematic.client.tautulli.dto.User tautulliUserById(@NotNull Integer userId) {
+    protected TautulliUser tautulliUserById(@NotNull Integer userId) {
         return supplyWithCache(
                 TAUTULLI_USER, "user:" + userId, () -> ctx.getTautulliClient().getUser(userId));
     }

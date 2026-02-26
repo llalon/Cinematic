@@ -1,6 +1,7 @@
 package de.llalon.cinematic.domain;
 
 import de.llalon.cinematic.client.radarr.dto.MovieResource;
+import de.llalon.cinematic.client.radarr.dto.RadarrTag;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -42,10 +43,8 @@ public class Movie extends LibraryMediaItem {
     @NotNull
     public Iterable<Tag> tags() {
         return () -> {
-            final Map<Integer, String> tags = radarrTags()
-                    .collect(Collectors.toMap(
-                            de.llalon.cinematic.client.radarr.dto.TagResource::getId,
-                            de.llalon.cinematic.client.radarr.dto.TagResource::getLabel));
+            final Map<Integer, String> tags =
+                    radarrTags().collect(Collectors.toMap(RadarrTag::getId, RadarrTag::getLabel));
 
             return radarrMovie.getTags().stream()
                     .map(tagId -> {

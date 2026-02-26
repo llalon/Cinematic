@@ -1,15 +1,15 @@
-package de.llalon.cinematic.client.radarr.dto;
+package de.llalon.cinematic.client.sonarr.dto;
 
 import com.squareup.moshi.Json;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * Represents a tag in Radarr.
+ * Represents a tag in Sonarr.
  */
 @Data
 @AllArgsConstructor
-public class TagResource {
+public class SonarrTag {
 
     @Json(name = "id")
     private final Integer id;

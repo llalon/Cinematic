@@ -10,7 +10,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-public class User {
+public class OverseerrUser {
     private final Integer id;
     private final String email;
     private final String username;

@@ -1,6 +1,9 @@
 package de.llalon.cinematic.domain;
 
-import de.llalon.cinematic.client.radarr.dto.TagResource;
+import de.llalon.cinematic.client.overseerr.dto.OverseerrUser;
+import de.llalon.cinematic.client.radarr.dto.RadarrTag;
+import de.llalon.cinematic.client.sonarr.dto.SonarrTag;
+import de.llalon.cinematic.client.tautulli.dto.TautulliUser;
 import java.util.*;
 import java.util.stream.Stream;
 import org.jetbrains.annotations.NotNull;
@@ -74,8 +77,8 @@ public class Library extends DomainModel {
     public Iterable<Tag> tags() {
         return () -> Stream.concat(
                         Stream.concat(
-                                super.radarrTags().map(TagResource::getLabel),
-                                super.sonarrTags().map(de.llalon.cinematic.client.sonarr.dto.TagResource::getLabel)),
+                                super.radarrTags().map(RadarrTag::getLabel),
+                                super.sonarrTags().map(SonarrTag::getLabel)),
                         super.qbittorrentTags())
                 .map(tag -> new Tag(ctx, tag))
                 .iterator();
@@ -104,8 +107,8 @@ public class Library extends DomainModel {
             final Set<String> userEmails = new HashSet<>();
 
             return Stream.concat(
-                            super.overseerrUsers().map(de.llalon.cinematic.client.overseerr.dto.User::getEmail),
-                            super.tautulliUsers().map(de.llalon.cinematic.client.tautulli.dto.User::getEmail))
+                            super.overseerrUsers().map(OverseerrUser::getEmail),
+                            super.tautulliUsers().map(TautulliUser::getEmail))
                     .filter(email -> {
                         if (email == null || email.isEmpty()) {
                             return false;

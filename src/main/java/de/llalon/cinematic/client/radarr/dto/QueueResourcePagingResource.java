@@ -28,5 +28,5 @@ public class QueueResourcePagingResource {
     private final Integer totalRecords;
 
     @Json(name = "records")
-    private final List<QueueResource> records;
+    private final List<RadarrQueue> records;
 }

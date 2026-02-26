@@ -36,10 +36,10 @@ public class MediaRequest {
     private final LocalDateTime updatedAt;
 
     @Json(name = "requestedBy")
-    private final User requestedBy;
+    private final OverseerrUser requestedBy;
 
     @Json(name = "modifiedBy")
-    private final User modifiedBy;
+    private final OverseerrUser modifiedBy;
 
     @Json(name = "is4k")
     private final Boolean is4k;

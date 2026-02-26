@@ -6,10 +6,10 @@ import com.squareup.moshi.Types;
 import de.llalon.cinematic.client.sonarr.config.SonarrProperties;
 import de.llalon.cinematic.client.sonarr.dto.EpisodeFileResource;
 import de.llalon.cinematic.client.sonarr.dto.EpisodeResource;
-import de.llalon.cinematic.client.sonarr.dto.QueueResource;
 import de.llalon.cinematic.client.sonarr.dto.QueueResourcePagingResource;
 import de.llalon.cinematic.client.sonarr.dto.SeriesResource;
-import de.llalon.cinematic.client.sonarr.dto.TagResource;
+import de.llalon.cinematic.client.sonarr.dto.SonarrQueue;
+import de.llalon.cinematic.client.sonarr.dto.SonarrTag;
 import de.llalon.cinematic.client.sonarr.exception.SonarrApiException;
 import de.llalon.cinematic.client.sonarr.exception.SonarrClientException;
 import java.io.IOException;
@@ -266,14 +266,14 @@ public class SonarrClient {
      * @param seriesId Series ID
      * @return list of queue items for the series
      */
-    public List<QueueResource> getQueueForSeries(int seriesId) {
+    public List<SonarrQueue> getQueueForSeries(int seriesId) {
         log.debug("Fetching queue items for series ID: {}", seriesId);
         HttpUrl url = baseUrl.newBuilder()
                 .addPathSegments("api/v3/queue/details")
                 .addQueryParameter("seriesId", String.valueOf(seriesId))
                 .addQueryParameter("includeSeries", "true")
                 .build();
-        Type type = Types.newParameterizedType(List.class, QueueResource.class);
+        Type type = Types.newParameterizedType(List.class, SonarrQueue.class);
         return get(url, type);
     }
 
@@ -285,9 +285,9 @@ public class SonarrClient {
      *
      * @return list of all tags
      */
-    public List<TagResource> getAllTags() {
+    public List<SonarrTag> getAllTags() {
         log.debug("Fetching all tags");
-        Type type = Types.newParameterizedType(List.class, TagResource.class);
+        Type type = Types.newParameterizedType(List.class, SonarrTag.class);
         return get("/api/v3/tag", type);
     }
 
@@ -297,9 +297,9 @@ public class SonarrClient {
      * @param tagId Tag ID
      * @return tag details
      */
-    public TagResource getTag(int tagId) {
+    public SonarrTag getTag(int tagId) {
         log.debug("Fetching tag with ID: {}", tagId);
-        return get("/api/v3/tag/" + tagId, TagResource.class);
+        return get("/api/v3/tag/" + tagId, SonarrTag.class);
     }
 
     /**
@@ -309,9 +309,9 @@ public class SonarrClient {
      * @param tag Tag resource to create
      * @return created tag with ID
      */
-    public TagResource createTag(TagResource tag) {
+    public SonarrTag createTag(SonarrTag tag) {
         log.debug("Creating tag: {}", tag.getLabel());
-        return post("/api/v3/tag", tag, TagResource.class);
+        return post("/api/v3/tag", tag, SonarrTag.class);
     }
 
     /**
@@ -321,9 +321,9 @@ public class SonarrClient {
      * @param tag Tag resource to update
      * @return updated tag
      */
-    public TagResource updateTag(TagResource tag) {
+    public SonarrTag updateTag(SonarrTag tag) {
         log.debug("Updating tag with ID: {}", tag.getId());
-        return put("/api/v3/tag/" + tag.getId(), tag, TagResource.class);
+        return put("/api/v3/tag/" + tag.getId(), tag, SonarrTag.class);
     }
 
     /**

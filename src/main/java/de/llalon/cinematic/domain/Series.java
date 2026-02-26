@@ -1,6 +1,7 @@
 package de.llalon.cinematic.domain;
 
 import de.llalon.cinematic.client.sonarr.dto.SeriesResource;
+import de.llalon.cinematic.client.sonarr.dto.SonarrTag;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -49,10 +50,8 @@ public class Series extends LibraryMediaItem {
     @NotNull
     public Iterable<Tag> tags() {
         return () -> {
-            final Map<Integer, String> tags = sonarrTags()
-                    .collect(Collectors.toMap(
-                            de.llalon.cinematic.client.sonarr.dto.TagResource::getId,
-                            de.llalon.cinematic.client.sonarr.dto.TagResource::getLabel));
+            final Map<Integer, String> tags =
+                    sonarrTags().collect(Collectors.toMap(SonarrTag::getId, SonarrTag::getLabel));
 
             return sonarrSeries.getTags().stream()
                     .map(tagId -> {

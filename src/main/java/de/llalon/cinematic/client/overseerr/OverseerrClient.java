@@ -63,7 +63,7 @@ public class OverseerrClient {
      * @param sort Sort order: created, updated, requests, displayname (optional)
      * @return paged results of users
      */
-    public PagedResults<User> getAllUsers(Integer take, Integer skip, String sort) {
+    public PagedResults<OverseerrUser> getAllUsers(Integer take, Integer skip, String sort) {
         log.debug("Fetching all users with take={}, skip={}, sort={}", take, skip, sort);
         HttpUrl.Builder urlBuilder = baseUrl.newBuilder().addPathSegments("api/v1/user");
         if (take != null) {
@@ -75,7 +75,7 @@ public class OverseerrClient {
         if (sort != null) {
             urlBuilder.addQueryParameter("sort", sort);
         }
-        Type type = Types.newParameterizedType(PagedResults.class, User.class);
+        Type type = Types.newParameterizedType(PagedResults.class, OverseerrUser.class);
         return get(urlBuilder.build(), type);
     }
 
@@ -84,7 +84,7 @@ public class OverseerrClient {
      *
      * @return paged results of users
      */
-    public PagedResults<User> getAllUsers() {
+    public PagedResults<OverseerrUser> getAllUsers() {
         return getAllUsers(null, null, null);
     }
 
@@ -94,21 +94,21 @@ public class OverseerrClient {
      * @param userId User ID
      * @return user details
      */
-    public User getUser(int userId) {
+    public OverseerrUser getUser(int userId) {
         log.debug("Fetching user with ID: {}", userId);
-        return get("/api/v1/user/" + userId, User.class);
+        return get("/api/v1/user/" + userId, OverseerrUser.class);
     }
 
     /**
      * Create a new user.
      * Requires MANAGE_USERS permission.
      *
-     * @param user User object with email, username, and permissions
+     * @param overseerrUser User object with email, username, and permissions
      * @return created user with ID
      */
-    public User createUser(User user) {
-        log.debug("Creating user: {}", user.getEmail());
-        return post("/api/v1/user", user, User.class);
+    public OverseerrUser createUser(OverseerrUser overseerrUser) {
+        log.debug("Creating user: {}", overseerrUser.getEmail());
+        return post("/api/v1/user", overseerrUser, OverseerrUser.class);
     }
 
     /**
@@ -117,12 +117,12 @@ public class OverseerrClient {
      * Requires MANAGE_USERS permission.
      *
      * @param userId User ID
-     * @param user User object with updated fields
+     * @param overseerrUser User object with updated fields
      * @return updated user
      */
-    public User updateUser(int userId, User user) {
+    public OverseerrUser updateUser(int userId, OverseerrUser overseerrUser) {
         log.debug("Updating user with ID: {}", userId);
-        return put("/api/v1/user/" + userId, user, User.class);
+        return put("/api/v1/user/" + userId, overseerrUser, OverseerrUser.class);
     }
 
     /**
@@ -132,9 +132,9 @@ public class OverseerrClient {
      * @param userId User ID
      * @return deleted user details
      */
-    public User deleteUser(int userId) {
+    public OverseerrUser deleteUser(int userId) {
         log.debug("Deleting user with ID: {}", userId);
-        Type type = Types.newParameterizedType(PagedResults.class, User.class);
+        Type type = Types.newParameterizedType(PagedResults.class, OverseerrUser.class);
         return delete("/api/v1/user/" + userId, type);
     }
 
