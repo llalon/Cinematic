@@ -1,42 +1,23 @@
 package de.llalon.cinematic.domain;
 
-import de.llalon.cinematic.client.qbittorrent.dto.TorrentInfo;
 import de.llalon.cinematic.client.sonarr.dto.SeriesResource;
-import de.llalon.cinematic.client.sonarr.dto.TagResource;
-import de.llalon.cinematic.util.collections.PagePagedIterable;
-import java.util.List;
+import de.llalon.cinematic.client.sonarr.dto.SonarrTag;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import lombok.experimental.Delegate;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
 @Slf4j
 public class Series extends LibraryMediaItem {
 
-    @Delegate
     @NotNull
     private final SeriesResource sonarrSeries;
-
-    public String getTvdbId() {
-        if (this.sonarrSeries.getTvdbId() == null) {
-            return null;
-        }
-        return this.sonarrSeries.getTvdbId().toString();
-    }
-
-    public String getTmdbId() {
-        if (this.sonarrSeries.getTmdbId() == null) {
-            return null;
-        }
-        return this.sonarrSeries.getTmdbId().toString();
-    }
 
     /**
      * Creates a new Series instance with the given client context and Sonarr series resource.
      *
-     * @param ctx the client context
+     * @param ctx            the client context
      * @param seriesResource the Sonarr series resource
      */
     Series(@NotNull ClientContext ctx, @NotNull SeriesResource seriesResource) {
@@ -53,8 +34,8 @@ public class Series extends LibraryMediaItem {
     @NotNull
     public Iterable<Tag> tags() {
         return () -> {
-            final Map<Integer, String> tags = ctx.getSonarrClient().getAllTags().stream()
-                    .collect(Collectors.toMap(TagResource::getId, TagResource::getLabel));
+            final Map<Integer, String> tags =
+                    sonarrTags().collect(Collectors.toMap(SonarrTag::getId, SonarrTag::getLabel));
 
             return sonarrSeries.getTags().stream()
                     .map(tagId -> {
@@ -78,19 +59,24 @@ public class Series extends LibraryMediaItem {
     @Override
     @NotNull
     public Iterable<Torrent> torrents() {
-        return () -> {
-            final List<TorrentInfo> allTorrents = ctx.getQbittorrentClient().getTorrents();
-            return new PagePagedIterable<>((take, skip) ->
-                            ctx.getSonarrClient().getQueue(take, skip, false).getRecords())
-                    .stream()
-                            .filter(queueResource -> queueResource.getSeriesId().equals(sonarrSeries.getId()))
-                            .flatMap(queueResource -> allTorrents.stream()
-                                    .filter(torrent ->
-                                            torrent.getHash() != null && queueResource.getDownloadId() != null)
-                                    .filter(torrent ->
-                                            torrent.getHash().equalsIgnoreCase(queueResource.getDownloadId()))
-                                    .map(torrent -> new Torrent(ctx, torrent)))
-                            .iterator();
-        };
+        return () -> sonarrQueue()
+                .filter(queueResource -> queueResource.getSeriesId().equals(sonarrSeries.getId()))
+                .flatMap(queueResource -> super.qbittorrentTorrents()
+                        .filter(torrent -> torrent.getHash() != null && queueResource.getDownloadId() != null)
+                        .filter(torrent -> torrent.getHash().equalsIgnoreCase(queueResource.getDownloadId()))
+                        .map(torrent -> new Torrent(ctx, torrent)))
+                .iterator();
+    }
+
+    public String getTitle() {
+        return this.sonarrSeries.getTitle();
+    }
+
+    public Integer getYear() {
+        return this.sonarrSeries.getYear();
+    }
+
+    public String getStatus() {
+        return this.sonarrSeries.getStatus();
     }
 }

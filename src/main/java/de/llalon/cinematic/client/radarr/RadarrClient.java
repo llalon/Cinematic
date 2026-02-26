@@ -7,7 +7,7 @@ import de.llalon.cinematic.client.radarr.config.RadarrProperties;
 import de.llalon.cinematic.client.radarr.dto.MovieFileResource;
 import de.llalon.cinematic.client.radarr.dto.MovieResource;
 import de.llalon.cinematic.client.radarr.dto.QueueResourcePagingResource;
-import de.llalon.cinematic.client.radarr.dto.TagResource;
+import de.llalon.cinematic.client.radarr.dto.RadarrTag;
 import de.llalon.cinematic.client.radarr.exception.RadarrApiException;
 import de.llalon.cinematic.client.radarr.exception.RadarrClientException;
 import java.io.IOException;
@@ -270,9 +270,9 @@ public class RadarrClient {
      *
      * @return list of all tags
      */
-    public List<TagResource> getAllTags() {
+    public List<RadarrTag> getAllTags() {
         log.debug("Fetching all tags");
-        Type type = Types.newParameterizedType(List.class, TagResource.class);
+        Type type = Types.newParameterizedType(List.class, RadarrTag.class);
         return get("/api/v3/tag", type);
     }
 
@@ -282,9 +282,9 @@ public class RadarrClient {
      * @param tagId Tag ID
      * @return tag details
      */
-    public TagResource getTag(int tagId) {
+    public RadarrTag getTag(int tagId) {
         log.debug("Fetching tag with ID: {}", tagId);
-        return get("/api/v3/tag/" + tagId, TagResource.class);
+        return get("/api/v3/tag/" + tagId, RadarrTag.class);
     }
 
     /**
@@ -294,9 +294,9 @@ public class RadarrClient {
      * @param tag Tag resource to create
      * @return created tag with ID
      */
-    public TagResource createTag(TagResource tag) {
+    public RadarrTag createTag(RadarrTag tag) {
         log.debug("Creating tag: {}", tag.getLabel());
-        return post("/api/v3/tag", tag, TagResource.class);
+        return post("/api/v3/tag", tag, RadarrTag.class);
     }
 
     /**
@@ -306,9 +306,9 @@ public class RadarrClient {
      * @param tag Tag resource to update
      * @return updated tag
      */
-    public TagResource updateTag(TagResource tag) {
+    public RadarrTag updateTag(RadarrTag tag) {
         log.debug("Updating tag with ID: {}", tag.getId());
-        return put("/api/v3/tag/" + tag.getId(), tag, TagResource.class);
+        return put("/api/v3/tag/" + tag.getId(), tag, RadarrTag.class);
     }
 
     /**

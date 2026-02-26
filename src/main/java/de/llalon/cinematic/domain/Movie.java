@@ -1,30 +1,18 @@
 package de.llalon.cinematic.domain;
 
-import de.llalon.cinematic.client.qbittorrent.dto.TorrentInfo;
 import de.llalon.cinematic.client.radarr.dto.MovieResource;
-import de.llalon.cinematic.client.radarr.dto.TagResource;
-import de.llalon.cinematic.util.collections.PagePagedIterable;
-import java.util.List;
+import de.llalon.cinematic.client.radarr.dto.RadarrTag;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import lombok.experimental.Delegate;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
 @Slf4j
 public class Movie extends LibraryMediaItem {
 
-    @Delegate
     @NotNull
     private final MovieResource radarrMovie;
-
-    public String getTmdbId() {
-        if (this.radarrMovie.getTmdbId() == null) {
-            return null;
-        }
-        return this.radarrMovie.getTmdbId().toString();
-    }
 
     /**
      * Creates a new Movie instance with the given client context and Radarr movie resource.
@@ -46,8 +34,8 @@ public class Movie extends LibraryMediaItem {
     @NotNull
     public Iterable<Tag> tags() {
         return () -> {
-            final Map<Integer, String> tags = ctx.getRadarrClient().getAllTags().stream()
-                    .collect(Collectors.toMap(TagResource::getId, TagResource::getLabel));
+            final Map<Integer, String> tags =
+                    radarrTags().collect(Collectors.toMap(RadarrTag::getId, RadarrTag::getLabel));
 
             return radarrMovie.getTags().stream()
                     .map(tagId -> {
@@ -74,19 +62,32 @@ public class Movie extends LibraryMediaItem {
     @Override
     @NotNull
     public Iterable<Torrent> torrents() {
-        return () -> {
-            final List<TorrentInfo> allTorrents = ctx.getQbittorrentClient().getTorrents();
-            return new PagePagedIterable<>((take, skip) ->
-                            ctx.getRadarrClient().getQueue(take, skip, false).getRecords())
-                    .stream()
-                            .filter(queueResource -> queueResource.getMovieId().equals(radarrMovie.getId()))
-                            .flatMap(queueResource -> allTorrents.stream()
-                                    .filter(torrent ->
-                                            torrent.getHash() != null && queueResource.getDownloadId() != null)
-                                    .filter(torrent ->
-                                            torrent.getHash().equalsIgnoreCase(queueResource.getDownloadId()))
-                                    .map(torrent -> new Torrent(ctx, torrent)))
-                            .iterator();
-        };
+        return () -> radarrQueue()
+                .filter(queueResource -> queueResource.getMovieId().equals(radarrMovie.getId()))
+                .flatMap(queueResource -> super.qbittorrentTorrents()
+                        .filter(torrent -> torrent.getHash() != null && queueResource.getDownloadId() != null)
+                        .filter(torrent -> torrent.getHash().equalsIgnoreCase(queueResource.getDownloadId()))
+                        .map(torrent -> new Torrent(ctx, torrent)))
+                .iterator();
+    }
+
+    public String getTitle() {
+        return this.radarrMovie.getTitle();
+    }
+
+    public Integer getYear() {
+        return this.radarrMovie.getYear();
+    }
+
+    public String getStatus() {
+        return this.radarrMovie.getStatus();
+    }
+
+    public Boolean getHasFile() {
+        return this.radarrMovie.getHasFile();
+    }
+
+    public String getTitleSlug() {
+        return this.radarrMovie.getTitleSlug();
     }
 }

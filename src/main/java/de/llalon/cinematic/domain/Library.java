@@ -1,10 +1,15 @@
 package de.llalon.cinematic.domain;
 
-import de.llalon.cinematic.util.collections.OffsetPagedIterable;
+import de.llalon.cinematic.client.overseerr.dto.OverseerrUser;
+import de.llalon.cinematic.client.radarr.dto.RadarrTag;
+import de.llalon.cinematic.client.sonarr.dto.SonarrTag;
+import de.llalon.cinematic.client.tautulli.dto.TautulliUser;
 import java.util.*;
 import java.util.stream.Stream;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
+@Slf4j
 public class Library extends DomainModel {
 
     /**
@@ -40,9 +45,7 @@ public class Library extends DomainModel {
      */
     @NotNull
     public Iterable<Movie> movies() {
-        return () -> ctx.getRadarrClient().getAllMovies().stream()
-                .map(movie -> new Movie(ctx, movie))
-                .iterator();
+        return () -> super.radarrMovies().map(movie -> new Movie(ctx, movie)).iterator();
     }
 
     /**
@@ -52,9 +55,7 @@ public class Library extends DomainModel {
      */
     @NotNull
     public Iterable<Series> series() {
-        return () -> ctx.getSonarrClient().getAllSeries().stream()
-                .map(series -> new Series(ctx, series))
-                .iterator();
+        return () -> super.sonarrSeries().map(series -> new Series(ctx, series)).iterator();
     }
 
     /**
@@ -64,7 +65,7 @@ public class Library extends DomainModel {
      */
     @NotNull
     public Iterable<Torrent> torrents() {
-        return () -> ctx.getQbittorrentClient().getTorrents().stream()
+        return () -> super.qbittorrentTorrents()
                 .map(torrent -> new Torrent(ctx, torrent))
                 .iterator();
     }
@@ -76,13 +77,13 @@ public class Library extends DomainModel {
      */
     @NotNull
     public Iterable<Tag> tags() {
-        return () -> {
-            // combine tags from ALL services which supports tags
-            Stream<Tag> s1 = ctx.getQbittorrentClient().getAllTags().stream().map(tag -> new Tag(ctx, tag));
-            Stream<Tag> s2 = ctx.getRadarrClient().getAllTags().stream().map(tag -> new Tag(ctx, tag.getLabel()));
-            Stream<Tag> s3 = ctx.getSonarrClient().getAllTags().stream().map(tag -> new Tag(ctx, tag.getLabel()));
-            return Stream.concat(Stream.concat(s1, s2), s3).iterator();
-        };
+        return () -> Stream.concat(
+                        Stream.concat(
+                                super.radarrTags().map(RadarrTag::getLabel),
+                                super.sonarrTags().map(SonarrTag::getLabel)),
+                        super.qbittorrentTags())
+                .map(tag -> new Tag(ctx, tag))
+                .iterator();
     }
 
     /**
@@ -92,10 +93,9 @@ public class Library extends DomainModel {
      */
     @NotNull
     public Iterable<Request> requests() {
-        return () -> new OffsetPagedIterable<>((take, skip) -> ctx.getOverseerrClient()
-                        .getAllRequests(take, skip, null, null, null)
-                        .getResults())
-                .stream().map(x -> new Request(ctx, x)).iterator();
+        return () -> super.overseerrRequests()
+                .map(request -> new Request(ctx, request))
+                .iterator();
     }
 
     /**
@@ -108,13 +108,9 @@ public class Library extends DomainModel {
         return () -> {
             final Set<String> userEmails = new HashSet<>();
 
-            final Stream<String> tautulliEmails = ctx.getTautulliClient().getUsers().stream()
-                    .map(de.llalon.cinematic.client.tautulli.dto.User::getEmail);
-            final Stream<String> overseerrEmails = new OffsetPagedIterable<>((take, skip) -> ctx.getOverseerrClient()
-                            .getAllUsers(take, skip, null)
-                            .getResults())
-                    .stream().map(de.llalon.cinematic.client.overseerr.dto.User::getEmail);
-            return Stream.concat(tautulliEmails, overseerrEmails)
+            return Stream.concat(
+                            super.overseerrUsers().map(OverseerrUser::getEmail),
+                            super.tautulliUsers().map(TautulliUser::getEmail))
                     .filter(email -> {
                         if (email == null || email.isEmpty()) {
                             return false;

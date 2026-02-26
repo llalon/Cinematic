@@ -155,9 +155,9 @@ public class TautulliClient {
      *
      * @return list of all users
      */
-    public List<User> getUsers() {
+    public List<TautulliUser> getUsers() {
         log.debug("Fetching all users");
-        Type type = Types.newParameterizedType(List.class, User.class);
+        Type type = Types.newParameterizedType(List.class, TautulliUser.class);
         return executeCommand("get_users", Map.of(), type);
     }
 
@@ -167,9 +167,9 @@ public class TautulliClient {
      * @param userId User ID to retrieve
      * @return user details
      */
-    public User getUser(int userId) {
+    public TautulliUser getUser(int userId) {
         log.debug("Fetching user with ID: {}", userId);
-        return executeCommand("get_user", Map.of("user_id", userId), User.class);
+        return executeCommand("get_user", Map.of("user_id", userId), TautulliUser.class);
     }
 
     /**
@@ -178,9 +178,9 @@ public class TautulliClient {
      *
      * @return list of users with just ID and friendly name
      */
-    public List<User> getUserNames() {
+    public List<TautulliUser> getUserNames() {
         log.debug("Fetching user names");
-        Type type = Types.newParameterizedType(List.class, User.class);
+        Type type = Types.newParameterizedType(List.class, TautulliUser.class);
         return executeCommand("get_user_names", Map.of(), type);
     }
 

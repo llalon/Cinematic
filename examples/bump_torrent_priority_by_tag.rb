@@ -5,7 +5,6 @@
 
 require 'java'
 java_import 'de.llalon.cinematic.domain.Library'
-java_import 'de.llalon.cinematic.domain.Tag'
 
 PRIORITY_TAG = 'hp'
 

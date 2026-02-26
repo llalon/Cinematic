@@ -31,9 +31,6 @@ class CinematicIntegrationsTests {
     }
 
     @Test
-    void test() {}
-
-    @Test
     void canGetUsers() {
         var results = library.users();
         assertNotNull(results.iterator().next());
@@ -218,12 +215,6 @@ class CinematicIntegrationsTests {
     }
 
     @Test
-    void canGetMovieId() {
-        var movie = library.movies().iterator().next();
-        assertNotNull(movie.getId());
-    }
-
-    @Test
     void canGetMovieYear() {
         var movie = library.movies().iterator().next();
         assertNotNull(movie.getYear());
@@ -236,6 +227,47 @@ class CinematicIntegrationsTests {
         assertFalse(movie.getStatus().isBlank());
     }
 
+    @Test
+    void canGetMovieHasFile() {
+        var movie = library.movies().iterator().next();
+        assertNotNull(movie.getHasFile());
+    }
+
+    @Test
+    void canGetMovieImdbId() {
+        var movie = library.movies().iterator().next();
+        // imdbId may be null; method must not throw
+        movie.getImdbId();
+    }
+
+    @Test
+    void canGetMovieTvdbId() {
+        var movie = library.movies().iterator().next();
+        // tvdbId is always null for movies by design
+        assertNull(movie.getTvdbId());
+    }
+
+    @Test
+    void canMovieHasTagByString() {
+        var movie = library.movies().iterator().next();
+        var tagList = StreamUtils.iterateToList(movie.tags());
+        assertNotNull(tagList);
+        if (!tagList.isEmpty()) {
+            assertTrue(movie.hasTag(tagList.get(0).getName()));
+            assertFalse(movie.hasTag("nonexistent-tag-xyz-cinematic"));
+        }
+    }
+
+    @Test
+    void canMovieHasTagByTag() {
+        var movie = library.movies().iterator().next();
+        var tagList = StreamUtils.iterateToList(movie.tags());
+        assertNotNull(tagList);
+        if (!tagList.isEmpty()) {
+            assertTrue(movie.hasTag(tagList.get(0)));
+        }
+    }
+
     // ----- Series property tests -----
 
     @Test
@@ -243,12 +275,6 @@ class CinematicIntegrationsTests {
         var series = library.series().iterator().next();
         assertNotNull(series.getTitle());
         assertFalse(series.getTitle().isBlank());
-    }
-
-    @Test
-    void canGetSeriesId() {
-        var series = library.series().iterator().next();
-        assertNotNull(series.getId());
     }
 
     @Test
@@ -269,6 +295,34 @@ class CinematicIntegrationsTests {
         var series = library.series().iterator().next();
         // tmdbId may be null for some series; method must not throw
         series.getTmdbId();
+    }
+
+    @Test
+    void canGetSeriesImdbId() {
+        var series = library.series().iterator().next();
+        // imdbId may be null; method must not throw
+        series.getImdbId();
+    }
+
+    @Test
+    void canSeriesHasTagByString() {
+        var series = library.series().iterator().next();
+        var tagList = StreamUtils.iterateToList(series.tags());
+        assertNotNull(tagList);
+        if (!tagList.isEmpty()) {
+            assertTrue(series.hasTag(tagList.get(0).getName()));
+            assertFalse(series.hasTag("nonexistent-tag-xyz-cinematic"));
+        }
+    }
+
+    @Test
+    void canSeriesHasTagByTag() {
+        var series = library.series().iterator().next();
+        var tagList = StreamUtils.iterateToList(series.tags());
+        assertNotNull(tagList);
+        if (!tagList.isEmpty()) {
+            assertTrue(series.hasTag(tagList.get(0)));
+        }
     }
 
     // ----- Torrent property tests -----
@@ -297,17 +351,16 @@ class CinematicIntegrationsTests {
     @Test
     void canGetTorrentCategory() {
         var torrent = library.torrents().iterator().next();
-        // category may be null or empty for uncategorised torrents; method must not throw
-        torrent.getCategory();
+        assertNotNull(torrent.getCategory());
+    }
+
+    @Test
+    void canGetTorrentTracker() {
+        var torrent = library.torrents().iterator().next();
+        assertNotNull(torrent.getTracker());
     }
 
     // ----- Request property tests -----
-
-    @Test
-    void canGetRequestId() {
-        var request = library.requests().iterator().next();
-        assertNotNull(request.getId());
-    }
 
     @Test
     void canGetRequestStatus() {
@@ -316,26 +369,17 @@ class CinematicIntegrationsTests {
     }
 
     @Test
-    void canGetRequestMedia() {
-        var request = library.requests().iterator().next();
-        assertNotNull(request.getMedia());
-    }
-
-    @Test
     void canGetRequestUserById() {
         var request = library.requests().iterator().next();
         var user = request.user();
-        assertNotNull(user.getId());
+        assertNotNull(user.getEmail());
     }
 
-    // ----- Tag name() method test -----
-
     @Test
-    void canCallTagNameMethod() {
-        var tag = library.tags().iterator().next();
-        // name() is the method variant; it may return null per its @Nullable contract
-        var name = tag.name();
-        assertEquals(tag.getName(), name);
+    void canGetRequestTvdbId() {
+        var request = library.requests().iterator().next();
+        // tvdbId may be null depending on media type; method must not throw
+        request.getTvdbId();
     }
 
     // ----- Watches property tests -----
@@ -348,7 +392,6 @@ class CinematicIntegrationsTests {
         if (!watchesList.isEmpty()) {
             var watches = watchesList.get(0);
             assertNotNull(watches.getTitle());
-            assertNotNull(watches.getMediaType());
             assertNotNull(watches.getRatingKey());
         }
     }
@@ -361,7 +404,6 @@ class CinematicIntegrationsTests {
         if (!watchesList.isEmpty()) {
             var watches = watchesList.get(0);
             assertNotNull(watches.getTitle());
-            assertNotNull(watches.getMediaType());
             assertNotNull(watches.getRatingKey());
         }
     }
@@ -374,8 +416,20 @@ class CinematicIntegrationsTests {
         if (!watchesList.isEmpty()) {
             var watches = watchesList.get(0);
             assertNotNull(watches.getTitle());
-            assertNotNull(watches.getMediaType());
             assertNotNull(watches.getRatingKey());
+        }
+    }
+
+    @Test
+    void canGetWatchesUser() {
+        var user = library.users().iterator().next();
+        var watchesList = StreamUtils.iterateToList(user.watches());
+        assertNotNull(watchesList);
+        if (!watchesList.isEmpty()) {
+            var watchesUser = watchesList.get(0).user();
+            assertNotNull(watchesUser);
+            assertNotNull(watchesUser.getEmail());
+            assertFalse(watchesUser.getEmail().isBlank());
         }
     }
 }

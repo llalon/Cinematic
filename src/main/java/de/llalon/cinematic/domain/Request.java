@@ -1,12 +1,12 @@
 package de.llalon.cinematic.domain;
 
 import de.llalon.cinematic.client.overseerr.dto.MediaRequest;
-import lombok.experimental.Delegate;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
+@Slf4j
 public class Request extends DomainModel {
 
-    @Delegate
     @NotNull
     private final MediaRequest overseerrRequest;
 
@@ -23,5 +23,13 @@ public class Request extends DomainModel {
     @NotNull
     public User user() {
         return new User(ctx, overseerrRequest.getRequestedBy());
+    }
+
+    public String getTvdbId() {
+        return this.overseerrRequest.getTvdbId();
+    }
+
+    public Integer getStatus() {
+        return this.overseerrRequest.getStatus();
     }
 }

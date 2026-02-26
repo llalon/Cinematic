@@ -1,4 +1,4 @@
-package de.llalon.cinematic.client.radarr.dto;
+package de.llalon.cinematic.client.sonarr.dto;
 
 import com.squareup.moshi.Json;
 import java.time.LocalDateTime;
@@ -6,23 +6,32 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * Represents a download queue item in Radarr.
+ * Represents a download queue item in Sonarr.
  *
- * Queue items track active downloads and their association with movies.
+ * Queue items track active downloads and their association with series/episodes.
  * The downloadId field is critical for correlating with download clients (e.g., qBittorrent torrent hash).
  */
 @Data
 @AllArgsConstructor
-public class QueueResource {
+public class SonarrQueue {
 
     @Json(name = "id")
     private final Integer id;
 
-    @Json(name = "movieId")
-    private final Integer movieId;
+    @Json(name = "seriesId")
+    private final Integer seriesId;
 
-    @Json(name = "movie")
-    private final MovieResource movie;
+    @Json(name = "episodeId")
+    private final Integer episodeId;
+
+    @Json(name = "seasonNumber")
+    private final Integer seasonNumber;
+
+    @Json(name = "series")
+    private final SeriesResource series;
+
+    @Json(name = "episode")
+    private final EpisodeResource episode;
 
     @Json(name = "size")
     private final Double size;

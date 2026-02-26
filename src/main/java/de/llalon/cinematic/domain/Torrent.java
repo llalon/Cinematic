@@ -1,16 +1,18 @@
 package de.llalon.cinematic.domain;
 
 import de.llalon.cinematic.client.qbittorrent.dto.TorrentInfo;
-import de.llalon.cinematic.util.collections.PagePagedIterable;
+import de.llalon.cinematic.client.radarr.dto.RadarrQueue;
+import de.llalon.cinematic.client.sonarr.dto.SonarrQueue;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
-import lombok.experimental.Delegate;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@Slf4j
 public class Torrent extends DomainModel {
 
-    @Delegate
     @NotNull
     private final TorrentInfo torrentInfo;
 
@@ -66,16 +68,18 @@ public class Torrent extends DomainModel {
      */
     @NotNull
     public Iterable<Series> series() {
-        return () -> new PagePagedIterable<>((take, skip) ->
-                        ctx.getSonarrClient().getQueue(take, skip, false).getRecords())
-                .stream()
-                        .filter(queueResource -> queueResource.getDownloadId() != null
-                                && queueResource.getDownloadId().equalsIgnoreCase(getHash()))
-                        .map(de.llalon.cinematic.client.sonarr.dto.QueueResource::getSeriesId)
-                        .filter(Objects::nonNull)
-                        .distinct()
-                        .map(seriesId -> new Series(ctx, ctx.getSonarrClient().getSeries(seriesId)))
-                        .iterator();
+        return () -> sonarrQueue()
+                .filter(sonarrQueue -> sonarrQueue.getDownloadId() != null
+                        && sonarrQueue.getDownloadId().equalsIgnoreCase(this.torrentInfo.getHash()))
+                .map(SonarrQueue::getSeriesId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .map(seriesId -> sonarrSeries()
+                        .filter(s -> s.getId() != null && s.getId().equals(seriesId))
+                        .findFirst()
+                        .map(s -> new Series(ctx, s))
+                        .orElseThrow(() -> new NoSuchElementException("Series not found: " + seriesId)))
+                .iterator();
     }
 
     /**
@@ -88,15 +92,37 @@ public class Torrent extends DomainModel {
      */
     @NotNull
     public Iterable<Movie> movies() {
-        return () -> new PagePagedIterable<>((take, skip) ->
-                        ctx.getRadarrClient().getQueue(take, skip, false).getRecords())
-                .stream()
-                        .filter(queueResource -> queueResource.getDownloadId() != null
-                                && queueResource.getDownloadId().equalsIgnoreCase(getHash()))
-                        .map(de.llalon.cinematic.client.radarr.dto.QueueResource::getMovieId)
-                        .filter(Objects::nonNull)
-                        .distinct()
-                        .map(movieId -> new Movie(ctx, ctx.getRadarrClient().getMovie(movieId)))
-                        .iterator();
+        return () -> radarrQueue()
+                .filter(queueResource -> queueResource.getDownloadId() != null
+                        && queueResource.getDownloadId().equalsIgnoreCase(this.torrentInfo.getHash()))
+                .map(RadarrQueue::getMovieId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .map(movieId -> radarrMovies()
+                        .filter(m -> m.getId() != null && m.getId().equals(movieId))
+                        .findFirst()
+                        .map(m -> new Movie(ctx, m))
+                        .orElseThrow(() -> new NoSuchElementException("Movie not found: " + movieId)))
+                .iterator();
+    }
+
+    public String getHash() {
+        return this.torrentInfo.getHash();
+    }
+
+    public String getCategory() {
+        return this.torrentInfo.getCategory();
+    }
+
+    public String getState() {
+        return this.torrentInfo.getState();
+    }
+
+    public String getName() {
+        return this.torrentInfo.getName();
+    }
+
+    public String getTracker() {
+        return this.torrentInfo.getTracker();
     }
 }

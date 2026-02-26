@@ -1,17 +1,34 @@
 package de.llalon.cinematic.domain;
 
 import de.llalon.cinematic.client.tautulli.dto.History;
-import lombok.experimental.Delegate;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
+@Slf4j
 public class Watches extends DomainModel {
 
-    @Delegate
     @NotNull
     private final History tautulliHistory;
 
     Watches(@NotNull ClientContext ctx, @NotNull History tautulliHistory) {
         super(ctx);
         this.tautulliHistory = tautulliHistory;
+    }
+
+    @NotNull
+    public User user() {
+        return new User(ctx, tautulliUserById(this.tautulliHistory.getUserId()));
+    }
+
+    public String getTitle() {
+        return this.tautulliHistory.getTitle();
+    }
+
+    public String getRatingKey() {
+        return this.tautulliHistory.getRatingKey();
+    }
+
+    public Float getWatchedStatus() {
+        return this.tautulliHistory.getWatchedStatus();
     }
 }

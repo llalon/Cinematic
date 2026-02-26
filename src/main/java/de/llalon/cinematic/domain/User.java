@@ -1,9 +1,11 @@
 package de.llalon.cinematic.domain;
 
-import de.llalon.cinematic.util.collections.OffsetPagedIterable;
+import de.llalon.cinematic.client.overseerr.dto.OverseerrUser;
+import de.llalon.cinematic.client.tautulli.dto.TautulliUser;
 import de.llalon.cinematic.util.collections.StreamUtils;
-import java.util.Optional;
-import lombok.experimental.Delegate;
+import java.util.Objects;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -11,65 +13,31 @@ import org.jetbrains.annotations.Nullable;
 @Slf4j
 public class User extends DomainModel {
 
+    @Getter
     @NotNull
     private final String email;
 
-    public String getEmail() {
-        if (this.overseerrUser == null || this.overseerrUser.getEmail() == null) {
-            return email;
-        }
-        return this.overseerrUser.getEmail();
+    @Nullable // if the user does not exist in overseerr
+    @Getter(value = AccessLevel.PROTECTED, lazy = true)
+    private final OverseerrUser overseerrUser = fetchOverseerrUser();
+
+    @Nullable // if the user does not exist in tautulli
+    @Getter(value = AccessLevel.PROTECTED, lazy = true)
+    private final TautulliUser tautulliUser = fetchTautulliUser();
+
+    User(@NotNull ClientContext ctx, @NotNull TautulliUser tautulliUser) {
+        super(ctx);
+        this.email = tautulliUser.getEmail();
     }
 
-    @Nullable // ToDo: Lazy load if Plex user is provided. Also possible to be null if the overseer user doesn't exist.
-    @Delegate
-    private final de.llalon.cinematic.client.overseerr.dto.User overseerrUser;
-
-    User(@NotNull ClientContext ctx, @NotNull de.llalon.cinematic.client.overseerr.dto.User overseerrUser) {
+    User(@NotNull ClientContext ctx, @NotNull OverseerrUser overseerrUser) {
         super(ctx);
         this.email = overseerrUser.getEmail();
-        this.overseerrUser = overseerrUser;
     }
 
     User(@NotNull ClientContext ctx, @NotNull String email) {
         super(ctx);
         this.email = email;
-        this.overseerrUser = null;
-    }
-
-    private Optional<Integer> getOverseerrUserId() {
-        if (Optional.ofNullable(overseerrUser).isPresent()) {
-            return Optional.ofNullable(overseerrUser.getId());
-        }
-        return new OffsetPagedIterable<>((take, skip) ->
-                        ctx.getOverseerrClient().getAllUsers(take, skip, null).getResults())
-                .stream()
-                        .filter(u -> this.email.equalsIgnoreCase(u.getEmail()))
-                        .map(de.llalon.cinematic.client.overseerr.dto.User::getId)
-                        .findAny();
-    }
-
-    /**
-     * Returns the media requests made by this user in Overseerr.
-     *
-     * @return an iterable of Request objects
-     */
-    @NotNull
-    public Iterable<Request> requests() {
-        return () -> {
-            final Integer userId = this.getOverseerrUserId().get();
-            return new OffsetPagedIterable<>((take, skip) -> ctx.getOverseerrClient()
-                            .getAllRequests(take, skip, null, null, userId)
-                            .getResults())
-                    .stream().map(request -> new Request(ctx, request)).iterator();
-        };
-    }
-
-    private Optional<Integer> getTautulliUserId() {
-        return ctx.getTautulliClient().getUsers().stream()
-                .filter(u -> this.email.equalsIgnoreCase(u.getEmail()))
-                .map(de.llalon.cinematic.client.tautulli.dto.User::getUserId)
-                .findAny();
     }
 
     /**
@@ -81,17 +49,53 @@ public class User extends DomainModel {
     @NotNull
     public Iterable<Watches> watches() {
         return () -> {
-            final var userId = this.getTautulliUserId();
-
-            if (userId.isEmpty()) {
-                log.warn("User {} not found in tautulli. Can't fetch watch history!", this.email);
+            try {
+                final var userId =
+                        Objects.requireNonNull(this.fetchTautulliUser()).getUserId();
+                return tautulliHistoryByUser(userId)
+                        .map(history -> new Watches(ctx, history))
+                        .iterator();
+            } catch (NullPointerException e) {
+                log.warn("User {} does not exist in tautulli.", this.email);
                 return StreamUtils.emptyIterator();
             }
-
-            return new OffsetPagedIterable<>((take, skip) -> ctx.getTautulliClient()
-                            .getHistoryByUser(userId.get(), skip, take)
-                            .getData())
-                    .stream().map(history -> new Watches(ctx, history)).iterator();
         };
+    }
+
+    /**
+     * Returns the media requests made by this user in Overseerr.
+     *
+     * @return an iterable of Request objects
+     */
+    @NotNull
+    public Iterable<Request> requests() {
+        return () -> {
+            try {
+                final Integer userId =
+                        Objects.requireNonNull(this.getOverseerrUser()).getId();
+                return overseerrRequestsByUser(userId)
+                        .map(request -> new Request(ctx, request))
+                        .iterator();
+            } catch (NullPointerException e) {
+                log.warn("User {} does not exist in overseer.", this.email);
+                return StreamUtils.emptyIterator();
+            }
+        };
+    }
+
+    @Nullable
+    private TautulliUser fetchTautulliUser() {
+        return super.tautulliUsers()
+                .filter(u -> this.getEmail().equalsIgnoreCase(u.getEmail()))
+                .findAny()
+                .orElse(null);
+    }
+
+    @Nullable
+    private OverseerrUser fetchOverseerrUser() {
+        return super.overseerrUsers()
+                .filter(u -> this.getEmail().equalsIgnoreCase(u.getEmail()))
+                .findAny()
+                .orElse(null);
     }
 }

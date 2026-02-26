@@ -5,26 +5,26 @@ import static de.llalon.cinematic.util.collections.StreamUtils.streamIterator;
 import de.llalon.cinematic.client.plex.dto.PlexMediaItem;
 import de.llalon.cinematic.client.radarr.dto.MovieResource;
 import de.llalon.cinematic.client.sonarr.dto.SeriesResource;
-import de.llalon.cinematic.util.collections.OffsetPagedIterable;
 import java.util.Collections;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@Slf4j
 public abstract class LibraryMediaItem extends DomainModel {
 
-    //    @Getter
-    //    @RequiredArgsConstructor
-    //    protected enum LibraryIdType {
-    //        TMDB("tmdb"),
-    //        IMDB("imdb"),
-    //        TVDB("tvdb");
-    //
-    //        protected final String value;
-    //    }
+    @Getter
+    @RequiredArgsConstructor
+    protected enum LibraryIdType {
+        TMDB("tmdb"),
+        IMDB("imdb"),
+        TVDB("tvdb");
+
+        protected final String value;
+    }
 
     @Getter
     @RequiredArgsConstructor
@@ -40,11 +40,11 @@ public abstract class LibraryMediaItem extends DomainModel {
     @Nullable
     protected final String tmdbId;
 
-    @Getter
+    @Getter // Would be null for movies!
     @Nullable
     protected final String tvdbId;
 
-    @Getter // Would be null for movies!
+    @Getter
     @Nullable
     protected final String imdbId;
 
@@ -97,34 +97,31 @@ public abstract class LibraryMediaItem extends DomainModel {
      */
     @NotNull
     public Iterable<Request> requests() {
-        return () -> new OffsetPagedIterable<>((take, skip) -> ctx.getOverseerrClient()
-                        .getAllRequests(take, skip, null, null, null)
-                        .getResults())
-                .stream()
-                        .filter(request -> request.getMedia() != null)
-                        .filter(request -> {
-                            if (this.tvdbId != null && this.tvdbId.equalsIgnoreCase(request.getTvdbId())) {
-                                return true;
-                            }
+        return () -> overseerrRequests()
+                .filter(request -> request.getMedia() != null)
+                .filter(request -> {
+                    if (this.tvdbId != null && this.tvdbId.equalsIgnoreCase(request.getTvdbId())) {
+                        return true;
+                    }
 
-                            if (this.tvdbId != null
-                                    && this.tvdbId.equalsIgnoreCase(
-                                            String.valueOf(request.getMedia().getTvdbId()))) {
-                                return true;
-                            }
+                    if (this.tvdbId != null
+                            && this.tvdbId.equalsIgnoreCase(
+                                    String.valueOf(request.getMedia().getTvdbId()))) {
+                        return true;
+                    }
 
-                            if (this.tmdbId != null
-                                    && this.tmdbId.equalsIgnoreCase(
-                                            String.valueOf(request.getMedia().getTmdbId()))) {
-                                return true;
-                            }
+                    if (this.tmdbId != null
+                            && this.tmdbId.equalsIgnoreCase(
+                                    String.valueOf(request.getMedia().getTmdbId()))) {
+                        return true;
+                    }
 
-                            // ToDo: Try to match IMDB id too..
+                    // ToDo: Try to match IMDB id too..
 
-                            return false;
-                        })
-                        .map(x -> new Request(ctx, x))
-                        .iterator();
+                    return false;
+                })
+                .map(x -> new Request(ctx, x))
+                .iterator();
     }
 
     /**
@@ -136,20 +133,17 @@ public abstract class LibraryMediaItem extends DomainModel {
     public Iterable<Watches> watches() {
         return () -> fetchPlexMediaItem()
                 .map(PlexMediaItem::getRatingKey)
-                .map(ratingKey -> new OffsetPagedIterable<>((take, skip) ->
-                                ctx.getTautulliClient().getHistoryByRatingKey(ratingKey, skip, take).getData().stream()
-                                        .map(history -> new Watches(ctx, history))
-                                        .collect(Collectors.toList()))
+                .map(ratingKey -> tautulliHistoryByRatingKey(ratingKey)
+                        .map(history -> new Watches(ctx, history))
                         .iterator())
                 .orElse(Collections.emptyIterator());
     }
 
     @NotNull
     protected Optional<PlexMediaItem> fetchPlexMediaItem() {
-        return ctx.getPlexClient().getSections().getMediaContainer().getDirectories().stream()
+        return plexSections()
                 .filter(section -> libraryMediaType.getPlexLibraryType().equalsIgnoreCase(section.getType()))
-                .map(section ->
-                        ctx.getPlexClient().getSection(section.getKey(), libraryMediaType.getPlexMediaType(), true))
+                .map(section -> plexSection(section.getKey(), libraryMediaType.getPlexMediaType()))
                 .filter(section -> section.getMediaContainer() != null
                         && section.getMediaContainer().getMetadata() != null)
                 .flatMap(section -> section.getMediaContainer().getMetadata().stream())
@@ -158,14 +152,21 @@ public abstract class LibraryMediaItem extends DomainModel {
                     if (guid.getId() == null) {
                         return false;
                     }
-                    String[] parts = guid.getId().split("://");
-                    if (parts.length != 2) {
+
+                    try {
+                        String[] parts = guid.getId().split("://");
+                        if (parts.length != 2) {
+                            return false;
+                        }
+                        String prefix = parts[0];
+                        String id = parts[1];
+
+                        LibraryIdType type = LibraryIdType.valueOf(prefix.toUpperCase());
+                        return plexMatchesId(type, id);
+                    } catch (IllegalArgumentException | NullPointerException e) {
+                        log.warn("Unknown Plex id type: {}", guid.getId());
                         return false;
                     }
-                    String prefix = parts[0];
-                    String id = parts[1];
-
-                    return plexMatchesId(prefix, id);
                 }))
                 .findFirst();
     }
@@ -174,16 +175,16 @@ public abstract class LibraryMediaItem extends DomainModel {
      * Checks whether the given Plex GUID prefix and ID match one of this media item's external identifiers.
      *
      * @param prefix the GUID scheme (e.g. {@code "tmdb"}, {@code "imdb"}, {@code "tvdb"})
-     * @param id the identifier value from the Plex GUID
+     * @param id     the identifier value from the Plex GUID
      * @return {@code true} if the identifier matches this media item
      */
-    protected boolean plexMatchesId(@NotNull String prefix, @NotNull String id) {
+    protected boolean plexMatchesId(@NotNull LibraryIdType prefix, @NotNull String id) {
         switch (prefix) {
-            case "tmdb":
+            case TMDB:
                 return id.equalsIgnoreCase(String.valueOf(this.tmdbId));
-            case "imdb":
+            case IMDB:
                 return id.equalsIgnoreCase(this.imdbId);
-            case "tvdb":
+            case TVDB:
                 // could or could not have "tt" prefix
                 if (id.equalsIgnoreCase(this.tvdbId)) {
                     return true;
