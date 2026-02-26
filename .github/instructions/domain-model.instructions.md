@@ -3,26 +3,18 @@ description: 'Guidelines for creating the rich domain model'
 applyTo: '**/*.java, **/*.kt'
 ---
 
-1. Architectural Structure
+# Architectural Structure
 
-The domain must be organized around a single root object called Library.
+- The domain must be organized around a single root object called Library. 
+- All other domain objects must be reachable from the Library through navigation.
 
-The Library is:
-
-- The only entry point into the domain graph
-- Responsible for discovery of aggregates
-- Not responsible for business workflows
-- Not responsible for cross-aggregate orchestration
-
-All other domain objects must be reachable from the Library through navigation.
-
-2. Domain Graph Philosophy
+# Domain Graph Philosophy
 
 The system must behave like a connected object graph over distributed services.
 
-Every aggregate must:
+Every domain object must:
 
-- Expose related aggregates
+- Expose related domain objects
 - Encapsulate its own state
 - Allow controlled mutations of itself
 - Avoid embedding workflow logic
@@ -40,7 +32,7 @@ Navigation must feel natural and composable across:
 
 Traversal depth should not be artificially restricted.
 
-3. Strict DTO Isolation
+# Strict DTO Isolation
 
 API DTOs from external systems must:
 
@@ -53,7 +45,7 @@ The domain layer must not depend on API schemas.
 
 All mapping between transport models and domain models must occur at the boundary.
 
-4. Iterable-Only Collections
+# Iterable-Only Collections
 
 All relationships returning multiple objects must:
 
@@ -61,7 +53,7 @@ All relationships returning multiple objects must:
 - Support lazy evaluation wherever possible
 - Exhaust paginated APIs transparently
 
-The domain must never expose:
+The domain must never publicly expose:
 
 - List
 - Set
@@ -70,9 +62,9 @@ The domain must never expose:
 
 Paging must be handled internally and lazily. No eager full data loading.
 
-5. Aggregate Responsibilities
+# Domain Object Responsibilities
 
-Each aggregate must:
+Each domain object must:
 
 - Represent a meaningful domain concept
 - Own its own identity
@@ -80,14 +72,7 @@ Each aggregate must:
 - Expose navigational relationships
 - Allow self-contained mutations
 
-Aggregates must not:
-
-- Iterate over the entire domain
-- Perform multi-aggregate policy decisions
-- Embed automation workflows
-- Coordinate other aggregates
-
-6. Mutations vs Orchestration
+# Mutations vs Orchestration
 
 Mutations are allowed when they are intrinsic to the aggregate:
 
@@ -99,7 +84,6 @@ Mutations are allowed when they are intrinsic to the aggregate:
 
 Orchestration must remain external:
 
-- Scanning all torrents
 - Enforcing tagging policies
 - Applying conditional bulk deletions
 - Cross-checking watch history
@@ -108,7 +92,16 @@ Orchestration must remain external:
 The domain enables workflows.
 It does not execute workflows.
 
-7. Identity and Value Objects
+# Implementation Details
+
+Domain objects must extend the abstract base class `DomainModel`.
+
+# Caching
+
+- API calls should be cached using the central context jcache.
+- Only API calls should be cached.
+
+# Identity and Value Objects
 
 All identifiers must be represented by meaningful value objects where appropriate.
 
@@ -126,71 +119,7 @@ Value objects must:
 - Contain no behavior beyond identity/state
 - Not depend on infrastructure
 
-8. Client Access
-
-All aggregates must depend on a ClientContext.
-
-The ClientContext:
-
-- Provides access to thin HTTP clients
-- Is injected into aggregates
-- Must not be globally accessed
-- Must not be static
-
-Aggregates use it only to fulfill their own responsibilities.
-
-9. Tag Model
-
-Tags must be represented as domain concepts, not raw strings.
-
-A tag aggregate must:
-
-- Represent a logical grouping
-- Provide navigation to related movies, series, and torrents
-- Avoid containing orchestration logic
-
-Tag identity must be stable and system-agnostic.
-
-10. Torrent Model
-
-A torrent must:
-
-- Expose metadata such as tracker and files
-- Expose related media objects
-- Support tag manipulation
-- Support priority changes
-- Support deletion
-
-It must not determine when those actions should occur.
-
-11. Media Model (Movies and Series)
-
-Media aggregates must:
-
-- Expose watch state
-- Expose related torrents
-- Expose related tags
-- Expose request information
-- Support self-deletion
-- Support release blacklisting
-
-They must not embed decision logic about when those actions should be triggered.
-
-12. Request and User Model
-
-Requests must:
-
-- Represent requester information
-- Represent approval state
-- Provide navigation to related media
-
-Users must:
-
-- Represent watch history
-- Provide identity
-- Remain independent of orchestration logic
-
-13. Design Goals
+# Design Goals
 
 The domain must:
 
@@ -202,7 +131,7 @@ The domain must:
 - Avoid service-layer bloat
 - Remain expressive and rich
 
-14. Anti-Patterns to Avoid
+# Anti-Patterns to Avoid
 
 Do not implement:
 
@@ -214,7 +143,7 @@ Do not implement:
 - Eager full-page data loading
 - Business rules embedded in aggregates
 
-15. Overall Philosophy
+# Overall Philosophy
 
 This domain layer is a rich abstraction over distributed media systems.
 

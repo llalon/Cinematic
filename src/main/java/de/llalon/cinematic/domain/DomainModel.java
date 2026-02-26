@@ -14,6 +14,7 @@ import de.llalon.cinematic.util.collections.CachingIterable;
 import de.llalon.cinematic.util.collections.OffsetPagedIterable;
 import de.llalon.cinematic.util.collections.PagePagedIterable;
 import de.llalon.cinematic.util.collections.StreamUtils;
+import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import javax.cache.Cache;
@@ -148,7 +149,7 @@ public abstract class DomainModel {
 
         final T loaded = supplier.get();
         if (loaded == null) {
-            throw new IllegalStateException("Key not found: " + key);
+            throw new NoSuchElementException("Key not found: " + key);
         }
 
         final T prior = cache.getAndPut(key, loaded);
