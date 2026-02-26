@@ -24,4 +24,12 @@ public class Request extends DomainModel {
     public User user() {
         return new User(ctx, overseerrRequest.getRequestedBy());
     }
+
+    public String getTvdbId() {
+        return this.overseerrRequest.getTvdbId();
+    }
+
+    public Integer getStatus() {
+        return this.overseerrRequest.getStatus();
+    }
 }

@@ -105,4 +105,20 @@ public class Torrent extends DomainModel {
                         .orElseThrow(() -> new NoSuchElementException("Movie not found: " + movieId)))
                 .iterator();
     }
+
+    public String getHash() {
+        return this.torrentInfo.getHash();
+    }
+
+    public String getCategory() {
+        return this.torrentInfo.getCategory();
+    }
+
+    public String getState() {
+        return this.torrentInfo.getState();
+    }
+
+    public String getName() {
+        return this.torrentInfo.getName();
+    }
 }

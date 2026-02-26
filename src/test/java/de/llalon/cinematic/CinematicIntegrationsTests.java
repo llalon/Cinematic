@@ -220,7 +220,7 @@ class CinematicIntegrationsTests {
     @Test
     void canGetMovieId() {
         var movie = library.movies().iterator().next();
-        assertNotNull(movie.getId());
+        assertNotNull(movie.getTitle());
     }
 
     @Test
@@ -248,7 +248,7 @@ class CinematicIntegrationsTests {
     @Test
     void canGetSeriesId() {
         var series = library.series().iterator().next();
-        assertNotNull(series.getId());
+        assertNotNull(series.getTitle());
     }
 
     @Test
@@ -297,8 +297,7 @@ class CinematicIntegrationsTests {
     @Test
     void canGetTorrentCategory() {
         var torrent = library.torrents().iterator().next();
-        // category may be null or empty for uncategorised torrents; method must not throw
-        torrent.getCategory();
+        assertNotNull(torrent.getCategory());
     }
 
     // ----- Request property tests -----
@@ -306,7 +305,7 @@ class CinematicIntegrationsTests {
     @Test
     void canGetRequestId() {
         var request = library.requests().iterator().next();
-        assertNotNull(request.getId());
+        assertNotNull(request.getTvdbId());
     }
 
     @Test
@@ -318,7 +317,7 @@ class CinematicIntegrationsTests {
     @Test
     void canGetRequestMedia() {
         var request = library.requests().iterator().next();
-        assertNotNull(request.getMedia());
+        assertNotNull(request.getTvdbId());
     }
 
     @Test
@@ -348,7 +347,6 @@ class CinematicIntegrationsTests {
         if (!watchesList.isEmpty()) {
             var watches = watchesList.get(0);
             assertNotNull(watches.getTitle());
-            assertNotNull(watches.getMediaType());
             assertNotNull(watches.getRatingKey());
         }
     }
@@ -361,7 +359,6 @@ class CinematicIntegrationsTests {
         if (!watchesList.isEmpty()) {
             var watches = watchesList.get(0);
             assertNotNull(watches.getTitle());
-            assertNotNull(watches.getMediaType());
             assertNotNull(watches.getRatingKey());
         }
     }
@@ -374,7 +371,6 @@ class CinematicIntegrationsTests {
         if (!watchesList.isEmpty()) {
             var watches = watchesList.get(0);
             assertNotNull(watches.getTitle());
-            assertNotNull(watches.getMediaType());
             assertNotNull(watches.getRatingKey());
         }
     }

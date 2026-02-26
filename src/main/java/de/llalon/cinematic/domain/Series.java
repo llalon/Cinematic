@@ -81,4 +81,16 @@ public class Series extends LibraryMediaItem {
                         .map(torrent -> new Torrent(ctx, torrent)))
                 .iterator();
     }
+
+    public String getTitle() {
+        return this.sonarrSeries.getTitle();
+    }
+
+    public Integer getYear() {
+        return this.sonarrSeries.getYear();
+    }
+
+    public String getStatus() {
+        return this.sonarrSeries.getStatus();
+    }
 }

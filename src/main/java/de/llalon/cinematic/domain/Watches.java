@@ -19,4 +19,12 @@ public class Watches extends DomainModel {
     public User user() {
         return new User(ctx, tautulliUserById(this.tautulliHistory.getUserId()));
     }
+
+    public String getTitle() {
+        return this.tautulliHistory.getTitle();
+    }
+
+    public String getRatingKey() {
+        return this.tautulliHistory.getRatingKey();
+    }
 }

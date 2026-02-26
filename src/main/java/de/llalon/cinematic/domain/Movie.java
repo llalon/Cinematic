@@ -77,4 +77,16 @@ public class Movie extends LibraryMediaItem {
                         .map(torrent -> new Torrent(ctx, torrent)))
                 .iterator();
     }
+
+    public String getTitle() {
+        return this.radarrMovie.getTitle();
+    }
+
+    public Integer getYear() {
+        return this.radarrMovie.getYear();
+    }
+
+    public String getStatus() {
+        return this.radarrMovie.getStatus();
+    }
 }
