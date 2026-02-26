@@ -10,6 +10,8 @@ library = Library.new
 
 puts "Finding media watched by requestor"
 
+watched_by_requestor = []
+
 library.movies.each do |movie|
   requests = movie.requests.map { |r| r.user.email }.to_set
   if requests.empty?
@@ -30,8 +32,20 @@ library.movies.each do |movie|
   end
 
   requests.each do |email|
-    puts " !!! Movie #{movie.title} watched by requestor #{email}" if watches.fetch(email, false)
+    if watches.fetch(email, false)
+      puts " !!! Movie #{movie.title} watched by requestor #{email}"
+      watched_by_requestor << { title: movie.title, email: email }
+    end
   end
 end
 
-puts "Done."
+unless watched_by_requestor.empty?
+  puts "\n--- Movies watched by their requestor ---"
+  watched_by_requestor.each do |entry|
+    puts "  #{entry[:title]} (requested and watched by #{entry[:email]})"
+  end
+  puts "-----------------------------------------"
+  puts "Total: #{watched_by_requestor.size} movie(s)"
+end
+
+puts "\nDone."
