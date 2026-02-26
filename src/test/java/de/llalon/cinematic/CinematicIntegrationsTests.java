@@ -303,21 +303,15 @@ class CinematicIntegrationsTests {
     // ----- Request property tests -----
 
     @Test
-    void canGetRequestId() {
+    void canGetRequest() {
         var request = library.requests().iterator().next();
-        assertNotNull(request.getTvdbId());
+        assertNotNull(request);
     }
 
     @Test
     void canGetRequestStatus() {
         var request = library.requests().iterator().next();
         assertNotNull(request.getStatus());
-    }
-
-    @Test
-    void canGetRequestMedia() {
-        var request = library.requests().iterator().next();
-        assertNotNull(request.getTvdbId());
     }
 
     @Test

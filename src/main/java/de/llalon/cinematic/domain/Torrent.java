@@ -121,4 +121,8 @@ public class Torrent extends DomainModel {
     public String getName() {
         return this.torrentInfo.getName();
     }
+
+    public String getTracker() {
+        return this.torrentInfo.getTracker();
+    }
 }

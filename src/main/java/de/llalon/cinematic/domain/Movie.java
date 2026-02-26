@@ -89,4 +89,8 @@ public class Movie extends LibraryMediaItem {
     public String getStatus() {
         return this.radarrMovie.getStatus();
     }
+
+    public Boolean getHasFile() {
+        return this.radarrMovie.getHasFile();
+    }
 }
