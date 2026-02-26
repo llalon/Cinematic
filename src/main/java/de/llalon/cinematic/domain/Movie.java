@@ -93,4 +93,8 @@ public class Movie extends LibraryMediaItem {
     public Boolean getHasFile() {
         return this.radarrMovie.getHasFile();
     }
+
+    public String getTitleSlug() {
+        return this.radarrMovie.getTitleSlug();
+    }
 }

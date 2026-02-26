@@ -27,4 +27,8 @@ public class Watches extends DomainModel {
     public String getRatingKey() {
         return this.tautulliHistory.getRatingKey();
     }
+
+    public Float getWatchedStatus() {
+        return this.tautulliHistory.getWatchedStatus();
+    }
 }

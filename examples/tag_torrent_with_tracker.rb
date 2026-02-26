@@ -7,15 +7,15 @@ require 'java'
 java_import 'de.llalon.cinematic.domain.Library'
 
 TRACKER_TAG_MAP = {
-  'passthepopcorn' => 'ptp',
-  'alpharatio' => 'ar',
-  'torrentleech' => 'tl',
-  'privatehd' => 'phd',
-  'beyond-hd' => 'bhd',
-  'myanonamouse' => 'mam',
-  'redacted.ch' => 'red',
-  'orpheus.network' => 'ops',
-  'morethantv' => 'mtv',
+  'EXAMPLE_passthepopcorn' => 'ptp',
+  'EXAMPLE_alpharatio' => 'ar',
+  'EXAMPLE_torrentleech' => 'tl',
+  'EXAMPLE_privatehd' => 'phd',
+  'EXAMPLE_beyond-hd' => 'bhd',
+  'EXAMPLE_myanonamouse' => 'mam',
+  'EXAMPLE_redacted.ch' => 'red',
+  'EXAMPLE_orpheus.network' => 'ops',
+  'EXAMPLE_morethantv' => 'mtv',
 }
 
 library = Library.new
