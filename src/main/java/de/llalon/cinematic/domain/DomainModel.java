@@ -32,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
 @Slf4j
-public abstract class DomainModel {
+abstract class DomainModel {
 
     protected final ClientContext ctx;
 

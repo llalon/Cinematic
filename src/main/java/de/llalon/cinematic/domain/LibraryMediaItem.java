@@ -40,11 +40,11 @@ public abstract class LibraryMediaItem extends DomainModel {
     @Nullable
     protected final String tmdbId;
 
-    @Getter
+    @Getter // Would be null for movies!
     @Nullable
     protected final String tvdbId;
 
-    @Getter // Would be null for movies!
+    @Getter
     @Nullable
     protected final String imdbId;
 

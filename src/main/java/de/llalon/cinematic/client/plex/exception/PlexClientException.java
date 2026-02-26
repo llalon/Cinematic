@@ -11,4 +11,8 @@ public class PlexClientException extends RuntimeException {
     public PlexClientException(String message) {
         super(message);
     }
+
+    public boolean isRetryable() {
+        return false;
+    }
 }

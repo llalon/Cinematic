@@ -14,20 +14,6 @@ public class Series extends LibraryMediaItem {
     @NotNull
     private final SeriesResource sonarrSeries;
 
-    public String getTvdbId() {
-        if (this.sonarrSeries.getTvdbId() == null) {
-            return null;
-        }
-        return this.sonarrSeries.getTvdbId().toString();
-    }
-
-    public String getTmdbId() {
-        if (this.sonarrSeries.getTmdbId() == null) {
-            return null;
-        }
-        return this.sonarrSeries.getTmdbId().toString();
-    }
-
     /**
      * Creates a new Series instance with the given client context and Sonarr series resource.
      *

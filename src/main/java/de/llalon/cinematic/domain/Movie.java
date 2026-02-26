@@ -14,13 +14,6 @@ public class Movie extends LibraryMediaItem {
     @NotNull
     private final MovieResource radarrMovie;
 
-    public String getTmdbId() {
-        if (this.radarrMovie.getTmdbId() == null) {
-            return null;
-        }
-        return this.radarrMovie.getTmdbId().toString();
-    }
-
     /**
      * Creates a new Movie instance with the given client context and Radarr movie resource.
      *

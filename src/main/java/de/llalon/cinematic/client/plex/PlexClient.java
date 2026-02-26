@@ -22,7 +22,7 @@ import okhttp3.*;
 @Slf4j
 public class PlexClient {
 
-    public static final Map<String, String> AGENT_PREFIXES = Map.of(
+    private static final Map<String, String> AGENT_PREFIXES = Map.of(
             "tmdb", "com.plexapp.agents.themoviedb",
             "imdb", "com.plexapp.agents.imdb",
             "tvdb", "com.plexapp.agents.thetvdb");

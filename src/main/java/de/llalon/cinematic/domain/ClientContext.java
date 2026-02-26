@@ -30,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
 @Builder
 public final class ClientContext {
 
-    public enum Caches {
+    enum Caches {
         SONARR_TAG,
         RADARR_TAG,
         QBITTORRENT_TAG,
