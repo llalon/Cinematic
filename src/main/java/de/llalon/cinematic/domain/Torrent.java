@@ -71,7 +71,11 @@ public class Torrent extends DomainModel {
                 .map(de.llalon.cinematic.client.sonarr.dto.QueueResource::getSeriesId)
                 .filter(Objects::nonNull)
                 .distinct()
-                .map(seriesId -> new Series(ctx, ctx.getSonarrClient().getSeries(seriesId)))
+                .map(seriesId -> sonarrSeries()
+                        .filter(s -> s.getId() != null && s.getId().equals(seriesId))
+                        .findFirst()
+                        .map(s -> new Series(ctx, s))
+                        .orElseThrow(() -> new java.util.NoSuchElementException("Series not found: " + seriesId)))
                 .iterator();
     }
 
@@ -91,7 +95,11 @@ public class Torrent extends DomainModel {
                 .map(de.llalon.cinematic.client.radarr.dto.QueueResource::getMovieId)
                 .filter(Objects::nonNull)
                 .distinct()
-                .map(movieId -> new Movie(ctx, ctx.getRadarrClient().getMovie(movieId)))
+                .map(movieId -> radarrMovies()
+                        .filter(m -> m.getId() != null && m.getId().equals(movieId))
+                        .findFirst()
+                        .map(m -> new Movie(ctx, m))
+                        .orElseThrow(() -> new java.util.NoSuchElementException("Movie not found: " + movieId)))
                 .iterator();
     }
 }

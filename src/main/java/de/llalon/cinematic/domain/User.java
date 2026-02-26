@@ -1,6 +1,5 @@
 package de.llalon.cinematic.domain;
 
-import de.llalon.cinematic.util.collections.OffsetPagedIterable;
 import de.llalon.cinematic.util.collections.StreamUtils;
 import java.util.Objects;
 import lombok.Getter;
@@ -42,10 +41,9 @@ public class User extends DomainModel {
             try {
                 final var userId =
                         Objects.requireNonNull(this.fetchTautulliUser()).getUserId();
-                return new OffsetPagedIterable<>((take, skip) -> ctx.getTautulliClient()
-                                .getHistoryByUser(userId, skip, take)
-                                .getData())
-                        .stream().map(history -> new Watches(ctx, history)).iterator();
+                return tautulliHistoryByUser(userId)
+                        .map(history -> new Watches(ctx, history))
+                        .iterator();
             } catch (NullPointerException e) {
                 log.warn("User {} does not exist in tautulli.", this.email);
                 return StreamUtils.emptyIterator();

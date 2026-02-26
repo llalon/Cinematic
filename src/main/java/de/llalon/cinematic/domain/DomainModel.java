@@ -3,11 +3,15 @@ package de.llalon.cinematic.domain;
 import static de.llalon.cinematic.domain.ClientContext.Caches.*;
 
 import de.llalon.cinematic.client.overseerr.dto.MediaRequest;
+import de.llalon.cinematic.client.plex.dto.PlexDirectory;
+import de.llalon.cinematic.client.plex.dto.PlexMediaContainerWrapper;
+import de.llalon.cinematic.client.plex.dto.PlexMetadataContainer;
 import de.llalon.cinematic.client.qbittorrent.dto.TorrentInfo;
 import de.llalon.cinematic.client.radarr.dto.MovieResource;
 import de.llalon.cinematic.client.radarr.dto.QueueResource;
 import de.llalon.cinematic.client.radarr.dto.TagResource;
 import de.llalon.cinematic.client.sonarr.dto.SeriesResource;
+import de.llalon.cinematic.client.tautulli.dto.History;
 import de.llalon.cinematic.client.tautulli.dto.User;
 import de.llalon.cinematic.domain.ClientContext.Caches;
 import de.llalon.cinematic.util.collections.CachingIterable;
@@ -122,7 +126,7 @@ public abstract class DomainModel {
                                 .getAllUsers(take, skip, null)
                                 .getResults())
                         .iterator(),
-                getOrCreateCache(TAUTULLI_USER),
+                getOrCreateCache(OVERSEERR_USER),
                 "all"));
     }
 
@@ -136,6 +140,46 @@ public abstract class DomainModel {
     protected de.llalon.cinematic.client.tautulli.dto.User tautulliUserById(@NotNull Integer userId) {
         return supplyWithCache(
                 TAUTULLI_USER, "user:" + userId, () -> ctx.getTautulliClient().getUser(userId));
+    }
+
+    @NotNull
+    protected Stream<PlexDirectory> plexSections() {
+        return StreamUtils.streamIterator(new CachingIterable<>(
+                () -> ctx.getPlexClient()
+                        .getSections()
+                        .getMediaContainer()
+                        .getDirectories()
+                        .iterator(),
+                getOrCreateCache(PLEX_SECTION),
+                "all"));
+    }
+
+    @NotNull
+    protected PlexMediaContainerWrapper<PlexMetadataContainer> plexSection(@NotNull String key, @NotNull String type) {
+        return supplyWithCache(PLEX_SECTION, "section:" + key + ":" + type, () -> ctx.getPlexClient()
+                .getSection(key, type, true));
+    }
+
+    @NotNull
+    protected Stream<History> tautulliHistoryByRatingKey(@NotNull String ratingKey) {
+        return StreamUtils.streamIterator(new CachingIterable<>(
+                () -> new OffsetPagedIterable<>((take, skip) -> ctx.getTautulliClient()
+                                .getHistoryByRatingKey(ratingKey, skip, take)
+                                .getData())
+                        .iterator(),
+                getOrCreateCache(TAUTULLI_HISTORY),
+                "ratingKey:" + ratingKey));
+    }
+
+    @NotNull
+    protected Stream<History> tautulliHistoryByUser(int userId) {
+        return StreamUtils.streamIterator(new CachingIterable<>(
+                () -> new OffsetPagedIterable<>((take, skip) -> ctx.getTautulliClient()
+                                .getHistoryByUser(userId, skip, take)
+                                .getData())
+                        .iterator(),
+                getOrCreateCache(TAUTULLI_HISTORY),
+                "user:" + userId));
     }
 
     @NotNull

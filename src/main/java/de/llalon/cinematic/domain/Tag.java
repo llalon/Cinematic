@@ -41,13 +41,13 @@ public class Tag extends DomainModel {
     public Iterable<Movie> movies() {
         return () -> {
             // find radarr tag id for this label then lazily filter movies
-            final Integer tagId = ctx.getRadarrClient().getAllTags().stream()
+            final Integer tagId = radarrTags()
                     .filter(t -> t.getLabel().equals(this.name))
                     .findFirst()
                     .map(TagResource::getId)
                     .orElse(null);
 
-            return ctx.getRadarrClient().getAllMovies().stream()
+            return radarrMovies()
                     .filter(m -> tagId == null || m.getTags().contains(tagId))
                     .map(x -> new Movie(ctx, x))
                     .iterator();
@@ -62,13 +62,13 @@ public class Tag extends DomainModel {
     @NotNull
     public Iterable<Series> series() {
         return () -> {
-            final Integer tagId = ctx.getSonarrClient().getAllTags().stream()
+            final Integer tagId = sonarrTags()
                     .filter(t -> t.getLabel().equals(this.name))
                     .findFirst()
                     .map(de.llalon.cinematic.client.sonarr.dto.TagResource::getId)
                     .orElse(null);
 
-            return ctx.getSonarrClient().getAllSeries().stream()
+            return sonarrSeries()
                     .filter(s -> tagId == null || s.getTags().contains(tagId))
                     .map(x -> new Series(ctx, x))
                     .iterator();

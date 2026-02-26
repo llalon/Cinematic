@@ -5,10 +5,8 @@ import static de.llalon.cinematic.util.collections.StreamUtils.streamIterator;
 import de.llalon.cinematic.client.plex.dto.PlexMediaItem;
 import de.llalon.cinematic.client.radarr.dto.MovieResource;
 import de.llalon.cinematic.client.sonarr.dto.SeriesResource;
-import de.llalon.cinematic.util.collections.OffsetPagedIterable;
 import java.util.Collections;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -135,20 +133,17 @@ public abstract class LibraryMediaItem extends DomainModel {
     public Iterable<Watches> watches() {
         return () -> fetchPlexMediaItem()
                 .map(PlexMediaItem::getRatingKey)
-                .map(ratingKey -> new OffsetPagedIterable<>((take, skip) ->
-                                ctx.getTautulliClient().getHistoryByRatingKey(ratingKey, skip, take).getData().stream()
-                                        .map(history -> new Watches(ctx, history))
-                                        .collect(Collectors.toList()))
+                .map(ratingKey -> tautulliHistoryByRatingKey(ratingKey)
+                        .map(history -> new Watches(ctx, history))
                         .iterator())
                 .orElse(Collections.emptyIterator());
     }
 
     @NotNull
     protected Optional<PlexMediaItem> fetchPlexMediaItem() {
-        return ctx.getPlexClient().getSections().getMediaContainer().getDirectories().stream()
+        return plexSections()
                 .filter(section -> libraryMediaType.getPlexLibraryType().equalsIgnoreCase(section.getType()))
-                .map(section ->
-                        ctx.getPlexClient().getSection(section.getKey(), libraryMediaType.getPlexMediaType(), true))
+                .map(section -> plexSection(section.getKey(), libraryMediaType.getPlexMediaType()))
                 .filter(section -> section.getMediaContainer() != null
                         && section.getMediaContainer().getMetadata() != null)
                 .flatMap(section -> section.getMediaContainer().getMetadata().stream())

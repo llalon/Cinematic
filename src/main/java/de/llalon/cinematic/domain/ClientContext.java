@@ -44,7 +44,8 @@ public final class ClientContext {
         OVERSEERR_REQUEST,
         OVERSEERR_USER,
         TAUTULLI_HISTORY,
-        TAUTULLI_USER;
+        TAUTULLI_USER,
+        PLEX_SECTION;
     }
 
     public ClientContext(
