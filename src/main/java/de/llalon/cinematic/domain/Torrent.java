@@ -6,9 +6,11 @@ import de.llalon.cinematic.client.sonarr.dto.SonarrQueue;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@Slf4j
 public class Torrent extends DomainModel {
 
     @NotNull
@@ -68,7 +70,7 @@ public class Torrent extends DomainModel {
     public Iterable<Series> series() {
         return () -> sonarrQueue()
                 .filter(sonarrQueue -> sonarrQueue.getDownloadId() != null
-                        && sonarrQueue.getDownloadId().equalsIgnoreCase(getHash()))
+                        && sonarrQueue.getDownloadId().equalsIgnoreCase(this.torrentInfo.getHash()))
                 .map(SonarrQueue::getSeriesId)
                 .filter(Objects::nonNull)
                 .distinct()
@@ -92,7 +94,7 @@ public class Torrent extends DomainModel {
     public Iterable<Movie> movies() {
         return () -> radarrQueue()
                 .filter(queueResource -> queueResource.getDownloadId() != null
-                        && queueResource.getDownloadId().equalsIgnoreCase(getHash()))
+                        && queueResource.getDownloadId().equalsIgnoreCase(this.torrentInfo.getHash()))
                 .map(RadarrQueue::getMovieId)
                 .filter(Objects::nonNull)
                 .distinct()

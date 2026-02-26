@@ -1,8 +1,10 @@
 package de.llalon.cinematic.domain;
 
 import de.llalon.cinematic.client.overseerr.dto.MediaRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
+@Slf4j
 public class Request extends DomainModel {
 
     @NotNull

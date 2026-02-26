@@ -2,10 +2,15 @@ package de.llalon.cinematic.domain;
 
 import de.llalon.cinematic.client.radarr.dto.RadarrTag;
 import de.llalon.cinematic.client.sonarr.dto.SonarrTag;
+import de.llalon.cinematic.util.collections.StreamUtils;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
+@Slf4j
 public class Tag extends DomainModel {
 
     @Getter
@@ -24,16 +29,6 @@ public class Tag extends DomainModel {
     }
 
     /**
-     * Returns the name of this tag.
-     *
-     * @return the tag name
-     */
-    @Nullable
-    public String name() {
-        return name;
-    }
-
-    /**
      * Returns the movies associated with this tag.
      *
      * @return an iterable of Movie objects
@@ -41,16 +36,19 @@ public class Tag extends DomainModel {
     @NotNull
     public Iterable<Movie> movies() {
         return () -> {
-            // find radarr tag id for this label then lazily filter movies
-            final Integer tagId = radarrTags()
+            final Set<Integer> tagIds = radarrTags()
                     .filter(t -> t.getLabel().equals(this.name))
-                    .findFirst()
                     .map(RadarrTag::getId)
-                    .orElse(null);
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+
+            if (tagIds.isEmpty()) {
+                return StreamUtils.emptyIterator();
+            }
 
             return radarrMovies()
-                    .filter(m -> tagId == null || m.getTags().contains(tagId))
-                    .map(x -> new Movie(ctx, x))
+                    .filter(radarrMovie -> radarrMovie.getTags().stream().anyMatch(tagIds::contains))
+                    .map(radarrMovie -> new Movie(ctx, radarrMovie))
                     .iterator();
         };
     }
@@ -63,15 +61,19 @@ public class Tag extends DomainModel {
     @NotNull
     public Iterable<Series> series() {
         return () -> {
-            final Integer tagId = sonarrTags()
+            final Set<Integer> tagIds = sonarrTags()
                     .filter(t -> t.getLabel().equals(this.name))
-                    .findFirst()
                     .map(SonarrTag::getId)
-                    .orElse(null);
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+
+            if (tagIds.isEmpty()) {
+                return StreamUtils.emptyIterator();
+            }
 
             return sonarrSeries()
-                    .filter(s -> tagId == null || s.getTags().contains(tagId))
-                    .map(x -> new Series(ctx, x))
+                    .filter(sonarrSeries -> sonarrSeries.getTags().stream().anyMatch(tagIds::contains))
+                    .map(sonarrSeries -> new Series(ctx, sonarrSeries))
                     .iterator();
         };
     }

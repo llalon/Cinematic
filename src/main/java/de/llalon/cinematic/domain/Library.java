@@ -6,8 +6,10 @@ import de.llalon.cinematic.client.sonarr.dto.SonarrTag;
 import de.llalon.cinematic.client.tautulli.dto.TautulliUser;
 import java.util.*;
 import java.util.stream.Stream;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
+@Slf4j
 public class Library extends DomainModel {
 
     /**

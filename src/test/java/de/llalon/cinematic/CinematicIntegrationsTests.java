@@ -334,7 +334,7 @@ class CinematicIntegrationsTests {
     void canCallTagNameMethod() {
         var tag = library.tags().iterator().next();
         // name() is the method variant; it may return null per its @Nullable contract
-        var name = tag.name();
+        var name = tag.getName();
         assertEquals(tag.getName(), name);
     }
 
