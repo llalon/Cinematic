@@ -255,6 +255,10 @@ public class RadarrClient {
      * Get all items in the download queue.
      * Queue items contain downloadId which can be correlated with download client (e.g., qBittorrent hash).
      *
+     * @param page page number
+     * @param pageSize size of page to fetch
+     * @param includeMovie if true will include movie details object
+     *
      * @return paginated queue response
      */
     public QueueResourcePagingResource getQueue(int page, int pageSize, boolean includeMovie) {

@@ -31,6 +31,8 @@ public class ResponseWrapper<T> {
 
     /**
      * Check if the response indicates success.
+     *
+     * @return true if request was successful
      */
     public boolean isSuccess() {
         return "success".equalsIgnoreCase(result);

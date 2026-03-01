@@ -22,6 +22,8 @@ public class TautulliResponse<T> {
 
     /**
      * Convenience method to check if the API call was successful.
+     *
+     * @return true is request was successful
      */
     public boolean isSuccess() {
         return response != null && response.isSuccess();
@@ -29,6 +31,8 @@ public class TautulliResponse<T> {
 
     /**
      * Convenience method to get the data payload.
+     *
+     * @return response object data
      */
     public T getData() {
         return response != null ? response.getData() : null;
@@ -36,6 +40,8 @@ public class TautulliResponse<T> {
 
     /**
      * Convenience method to get the response message.
+     *
+     * @return response message
      */
     public String getMessage() {
         return response != null ? response.getMessage() : null;
