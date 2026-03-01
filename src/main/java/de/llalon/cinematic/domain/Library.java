@@ -1,10 +1,13 @@
 package de.llalon.cinematic.domain;
 
+import static de.llalon.cinematic.domain.DomainModel.Caches.*;
+
 import de.llalon.cinematic.client.overseerr.dto.OverseerrUser;
 import de.llalon.cinematic.client.radarr.dto.RadarrTag;
 import de.llalon.cinematic.client.sonarr.dto.SonarrTag;
 import de.llalon.cinematic.client.tautulli.dto.TautulliUser;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -124,5 +127,9 @@ public class Library extends DomainModel {
                     .map(email -> new User(ctx, email))
                     .iterator();
         };
+    }
+
+    public void invalidateCache() {
+        super.invalidateCache(Caches.values());
     }
 }

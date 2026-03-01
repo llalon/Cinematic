@@ -1,6 +1,6 @@
 package de.llalon.cinematic.domain;
 
-import static de.llalon.cinematic.domain.ClientContext.Caches.*;
+import static de.llalon.cinematic.domain.DomainModel.Caches.*;
 
 import de.llalon.cinematic.client.overseerr.dto.MediaRequest;
 import de.llalon.cinematic.client.overseerr.dto.OverseerrUser;
@@ -16,7 +16,6 @@ import de.llalon.cinematic.client.sonarr.dto.SonarrQueue;
 import de.llalon.cinematic.client.sonarr.dto.SonarrTag;
 import de.llalon.cinematic.client.tautulli.dto.History;
 import de.llalon.cinematic.client.tautulli.dto.TautulliUser;
-import de.llalon.cinematic.domain.ClientContext.Caches;
 import de.llalon.cinematic.util.collections.CachingIterable;
 import de.llalon.cinematic.util.collections.OffsetPagedIterable;
 import de.llalon.cinematic.util.collections.PagePagedIterable;
@@ -33,6 +32,24 @@ import org.jetbrains.annotations.NotNull;
 
 @Slf4j
 abstract class DomainModel {
+
+    protected enum Caches {
+        SONARR_TAG,
+        RADARR_TAG,
+        QBITTORRENT_TAG,
+        SONARR_SERIE,
+        RADARR_MOVIE,
+        SONARR_USER,
+        RADARR_USER,
+        QBITTORRENT_TORRENT,
+        SONARR_QUEUE,
+        RADARR_QUEUE,
+        OVERSEERR_REQUEST,
+        OVERSEERR_USER,
+        TAUTULLI_HISTORY,
+        TAUTULLI_USER,
+        PLEX_SECTION;
+    }
 
     protected final ClientContext ctx;
 
@@ -204,14 +221,6 @@ abstract class DomainModel {
         return prior != null ? prior : loaded;
     }
 
-    protected void invalidateCache(@NotNull Caches cache, @NotNull String key) {
-        getOrCreateCache(cache).remove(key);
-    }
-
-    protected void invalidateCache(@NotNull Caches cache) {
-        getOrCreateCache(cache).clear();
-    }
-
     protected <T, V> Cache<T, V> getOrCreateCache(@NotNull Caches cache) {
         final CacheManager manager = ctx.getCacheManager();
 
@@ -232,6 +241,22 @@ abstract class DomainModel {
         } catch (CacheException e) {
             log.debug("Cache creation error: {}", cache, e);
             return manager.getCache(cache.name());
+        }
+    }
+
+    protected void invalidateCache(@NotNull Caches cache, @NotNull String key) {
+        getOrCreateCache(cache).remove(key);
+    }
+
+    protected void invalidateCache(@NotNull Caches... cache) {
+        for (Caches value : cache) {
+            try {
+                this.ctx.getCacheManager().getCache(value.name()).clear();
+            } catch (NullPointerException e) {
+                log.debug("Cache does not exist");
+            } catch (CacheException e) {
+                log.error("Error clearing cache: {}", value, e);
+            }
         }
     }
 }

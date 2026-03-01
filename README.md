@@ -4,7 +4,7 @@
 
 ## About
 
-A JVM library that unifies media server APIs into a single navigable domain model.
+A JVM library that unifies media server 'arr' APIs into a single navigable domain model.
 
 It integrates:
 
@@ -15,19 +15,10 @@ It integrates:
 - Radarr
 - qBittorrent
 
-## Use Cases
-
-**Automation Workflows**: Build custom automation that spans multiple services—manage torrents based on watch history,
-tag media based on requests, cleanup old downloads.
-
-**Reporting & Analytics**: Aggregate data across your entire media stack without writing API integration code.
-
-**Custom Tooling**: Build CLI tools, web dashboards, or scheduled jobs that orchestrate your media server
-infrastructure.
-
 ## Requirements
 
 - Java JDK 11+
+- 1 or more of integrated services
 
 ## Usage
 
@@ -109,6 +100,18 @@ Iterable<Watches> movieWatchHistory = movie.watches();
 
 This creates a navigable, connected domain, where you can traverse your media ecosystem naturally, without calling APIs manually or managing IDs.
 
-Data is fetched lazily, so each object only loads what you actually use, keeping operations efficient.
+### Caching
+
+Fetched API responses are cached using JCache. The default provider is caffeine, however any JSR 107 compatible implementation can be provided to the context.
+
+```java
+Library library = new Library(ClientContext.builder()
+        .cacheManager(myCacheManagerImpl)
+        .build());
+
+library.invalidateCache();
+```
+
+### Examples
 
 See examples in `examples/`.
