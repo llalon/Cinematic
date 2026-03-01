@@ -4,12 +4,30 @@ import java.util.*;
 import javax.cache.Cache;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * An {@link Iterable} decorator that transparently caches the results of a delegate iterable
+ * in a {@link javax.cache.Cache} after the first full traversal.
+ *
+ * <p>On the first iteration, elements are streamed from the delegate and buffered in memory.
+ * Once the delegate is exhausted the complete buffer is stored under {@code cacheKey}.
+ * Subsequent calls to {@link #iterator()} return the cached list directly, avoiding
+ * re-execution of the delegate.</p>
+ *
+ * @param <T> the element type
+ */
 public class CachingIterable<T> implements Iterable<T> {
 
     private final Iterable<T> delegate;
     private final Cache<String, List<T>> cache;
     private final String cacheKey;
 
+    /**
+     * Constructs a new {@code CachingIterable}.
+     *
+     * @param delegate the underlying iterable whose results will be cached
+     * @param cache the JSR-107 cache used to store results keyed by {@code cacheKey}
+     * @param cacheKey the key under which the cached list is stored and looked up
+     */
     public CachingIterable(
             @NotNull Iterable<T> delegate, @NotNull Cache<String, List<T>> cache, @NotNull String cacheKey) {
 

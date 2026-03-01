@@ -40,6 +40,14 @@ public class OverseerrClient {
     private final Moshi moshi;
     private final HttpUrl baseUrl;
 
+    /**
+     * Constructs a new {@code OverseerrClient}.
+     *
+     * @param httpClient the OkHttp client to use for requests
+     * @param properties the Overseerr connection properties (URL and API key)
+     * @param moshi the Moshi instance for JSON deserialization
+     * @throws IllegalArgumentException if the URL or API key is invalid
+     */
     public OverseerrClient(OkHttpClient httpClient, OverseerrProperties properties, Moshi moshi) {
         this.moshi = moshi;
         this.apiKey = properties.getApiKey();

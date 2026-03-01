@@ -25,6 +25,17 @@ import okhttp3.OkHttpClient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Holds all configured API clients and shared infrastructure used by the domain model.
+ *
+ * <p>Use the builder to supply individual {@link okhttp3.OkHttpClient}, client properties,
+ * or pre-built client instances. Any client that is not provided will be auto-configured
+ * from the corresponding environment variables (e.g. {@code RADARR_URL},
+ * {@code RADARR_API_KEY}). If an environment variable is absent the client is left
+ * {@code null} and the corresponding service features are unavailable at runtime.</p>
+ *
+ * <p>Instances are immutable after construction and safe for use across threads.</p>
+ */
 @Slf4j
 @Builder
 public final class ClientContext {
@@ -221,6 +232,12 @@ public final class ClientContext {
      */
     private final TautulliClient tautulliClient;
 
+    /**
+     * Returns the shared {@link OkHttpClient} used for all API calls.
+     *
+     * @return the HTTP client
+     * @throws IllegalStateException if the client is in an invalid state
+     */
     @NotNull
     public OkHttpClient getHttpClient() {
         if (this.httpClient == null) {
@@ -229,6 +246,12 @@ public final class ClientContext {
         return this.httpClient;
     }
 
+    /**
+     * Returns the {@link Moshi} instance used for JSON serialization/deserialization.
+     *
+     * @return the Moshi instance
+     * @throws IllegalStateException if the Moshi instance is in an invalid state
+     */
     @NotNull
     public Moshi getMoshi() {
         if (this.moshi == null) {
@@ -238,36 +261,72 @@ public final class ClientContext {
         return this.moshi;
     }
 
+    /**
+     * Returns the Plex configuration properties, or {@code null} if Plex is not configured.
+     *
+     * @return the Plex properties, or {@code null}
+     */
     @Nullable
     public PlexProperties getPlexProperties() {
         return this.plexProperties;
     }
 
+    /**
+     * Returns the Radarr configuration properties, or {@code null} if Radarr is not configured.
+     *
+     * @return the Radarr properties, or {@code null}
+     */
     @Nullable
     public RadarrProperties getRadarrProperties() {
         return this.radarrProperties;
     }
 
+    /**
+     * Returns the Sonarr configuration properties, or {@code null} if Sonarr is not configured.
+     *
+     * @return the Sonarr properties, or {@code null}
+     */
     @Nullable
     public SonarrProperties getSonarrProperties() {
         return this.sonarrProperties;
     }
 
+    /**
+     * Returns the qBittorrent configuration properties, or {@code null} if qBittorrent is not configured.
+     *
+     * @return the qBittorrent properties, or {@code null}
+     */
     @Nullable
     public QBittorrentProperties getQbittorrentProperties() {
         return this.qbittorrentProperties;
     }
 
+    /**
+     * Returns the Overseerr configuration properties, or {@code null} if Overseerr is not configured.
+     *
+     * @return the Overseerr properties, or {@code null}
+     */
     @Nullable
     public OverseerrProperties getOverseerrProperties() {
         return this.overseerrProperties;
     }
 
+    /**
+     * Returns the Tautulli configuration properties, or {@code null} if Tautulli is not configured.
+     *
+     * @return the Tautulli properties, or {@code null}
+     */
     @Nullable
     public TautulliProperties getTautulliProperties() {
         return this.tautulliProperties;
     }
 
+    /**
+     * Returns the configured {@link PlexClient}.
+     *
+     * @return the Plex client
+     * @throws ClientNotConfiguredException if Plex is not configured
+     */
     @NotNull
     public PlexClient getPlexClient() {
         if (this.plexClient == null) {
@@ -276,6 +335,12 @@ public final class ClientContext {
         return this.plexClient;
     }
 
+    /**
+     * Returns the configured {@link RadarrClient}.
+     *
+     * @return the Radarr client
+     * @throws ClientNotConfiguredException if Radarr is not configured
+     */
     @NotNull
     public RadarrClient getRadarrClient() {
         if (this.radarrClient == null) {
@@ -284,6 +349,12 @@ public final class ClientContext {
         return this.radarrClient;
     }
 
+    /**
+     * Returns the configured {@link SonarrClient}.
+     *
+     * @return the Sonarr client
+     * @throws ClientNotConfiguredException if Sonarr is not configured
+     */
     @NotNull
     public SonarrClient getSonarrClient() {
         if (this.sonarrClient == null) {
@@ -292,6 +363,12 @@ public final class ClientContext {
         return this.sonarrClient;
     }
 
+    /**
+     * Returns the configured {@link QBittorrentClient}.
+     *
+     * @return the qBittorrent client
+     * @throws ClientNotConfiguredException if qBittorrent is not configured
+     */
     @NotNull
     public QBittorrentClient getQbittorrentClient() {
         if (this.qbittorrentClient == null) {
@@ -300,6 +377,12 @@ public final class ClientContext {
         return this.qbittorrentClient;
     }
 
+    /**
+     * Returns the configured {@link OverseerrClient}.
+     *
+     * @return the Overseerr client
+     * @throws ClientNotConfiguredException if Overseerr is not configured
+     */
     @NotNull
     public OverseerrClient getOverseerrClient() {
         if (this.overseerrClient == null) {
@@ -308,6 +391,12 @@ public final class ClientContext {
         return this.overseerrClient;
     }
 
+    /**
+     * Returns the configured {@link TautulliClient}.
+     *
+     * @return the Tautulli client
+     * @throws ClientNotConfiguredException if Tautulli is not configured
+     */
     @NotNull
     public TautulliClient getTautulliClient() {
         if (this.tautulliClient == null) {

@@ -10,6 +10,12 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Domain representation of a tag that may be applied to movies, series, and torrents.
+ *
+ * <p>Tags are unified across Radarr, Sonarr, and qBittorrent. Navigation methods
+ * return the domain objects that carry this tag in each system.</p>
+ */
 @Slf4j
 public class Tag extends DomainModel {
 

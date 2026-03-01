@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Slf4j
-public abstract class LibraryMediaItem extends DomainModel {
+abstract class LibraryMediaItem extends DomainModel {
 
     @Getter
     @RequiredArgsConstructor
@@ -66,10 +66,18 @@ public abstract class LibraryMediaItem extends DomainModel {
         this.libraryMediaType = LibraryMediaType.SERIES;
     }
 
+    /**
+     * @param tag tag object to check
+     * @return true if item has the given tag
+     */
     public boolean hasTag(Tag tag) {
         return this.hasTag(tag.getName());
     }
 
+    /**
+     * @param tag tag name of check
+     * @return true if item has the given tag name
+     */
     public boolean hasTag(@Nullable String tag) {
         return streamIterator(this.tags()).anyMatch(t -> t.getName().equals(tag));
     }

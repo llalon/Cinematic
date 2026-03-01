@@ -10,6 +10,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Domain representation of a user that may exist in one or both of Overseerr and Tautulli.
+ *
+ * <p>Users are identified by email address which acts as the common key across systems.
+ * Navigation methods expose the user's media {@link Request}s from Overseerr and
+ * their watch history ({@link Watches}) from Tautulli.</p>
+ */
 @Slf4j
 public class User extends DomainModel {
 

@@ -5,16 +5,36 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+/**
+ * Abstract base class for lazy page-by-page iteration over paginated API endpoints.
+ *
+ * <p>Subclasses implement {@link #fetchPage(int, int)} to retrieve individual pages and
+ * may override {@link #initialPageIndex()} and {@link #nextPageIndex(int, int)} to adapt
+ * to different paging schemes (offset-based or page-number-based).</p>
+ *
+ * <p>Iteration stops when {@link #fetchPage(int, int)} returns {@code null} or an empty list.
+ * The default page size is 500 items per request.</p>
+ *
+ * @param <T> the element type
+ */
 public abstract class AbstractPagedIterable<T> implements Iterable<T> {
 
     private static final int DEFAULT_PAGE_SIZE = 500;
 
     protected final int pageSize;
 
+    /**
+     * Constructs a new iterable using the specified page size.
+     *
+     * @param pageSize number of elements to request per page
+     */
     protected AbstractPagedIterable(int pageSize) {
         this.pageSize = pageSize;
     }
 
+    /**
+     * Constructs a new iterable using the default page size (500).
+     */
     protected AbstractPagedIterable() {
         this.pageSize = DEFAULT_PAGE_SIZE;
     }
@@ -98,6 +118,11 @@ public abstract class AbstractPagedIterable<T> implements Iterable<T> {
         };
     }
 
+    /**
+     * Streams all elements of this iterable sequentially.
+     *
+     * @return a sequential stream backed by this iterable's spliterator
+     */
     public Stream<T> stream() {
         return StreamSupport.stream(spliterator(), false);
     }
@@ -112,6 +137,11 @@ public abstract class AbstractPagedIterable<T> implements Iterable<T> {
 
     // Deprecated `map` removed in favor of using the standard Stream API via `stream().map(...)`.
 
+    /**
+     * Eagerly collects all elements into an unmodifiable list.
+     *
+     * @return an unmodifiable list of all elements
+     */
     public List<T> toList() {
         List<T> result = new ArrayList<>();
         this.iterator().forEachRemaining(result::add);

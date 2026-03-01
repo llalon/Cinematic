@@ -8,6 +8,13 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Domain representation of a movie sourced from Radarr.
+ *
+ * <p>Provides navigation to associated {@link Tag}s, {@link Torrent}s, {@link Request}s,
+ * and watch history ({@link Watches}) for the movie. All collection relations are lazy
+ * and returned as {@link Iterable}.</p>
+ */
 @Slf4j
 public class Movie extends LibraryMediaItem {
 
@@ -71,22 +78,47 @@ public class Movie extends LibraryMediaItem {
                 .iterator();
     }
 
+    /**
+     * Returns the title of this movie.
+     *
+     * @return the movie title
+     */
     public String getTitle() {
         return this.radarrMovie.getTitle();
     }
 
+    /**
+     * Returns the release year of this movie.
+     *
+     * @return the release year
+     */
     public Integer getYear() {
         return this.radarrMovie.getYear();
     }
 
+    /**
+     * Returns the Radarr status of this movie (e.g. {@code announced}, {@code released}).
+     *
+     * @return the movie status
+     */
     public String getStatus() {
         return this.radarrMovie.getStatus();
     }
 
+    /**
+     * Returns whether a file exists on disk for this movie.
+     *
+     * @return {@code true} if a file is present, {@code false} otherwise
+     */
     public Boolean getHasFile() {
         return this.radarrMovie.getHasFile();
     }
 
+    /**
+     * Returns the URL-safe title slug for this movie.
+     *
+     * @return the title slug
+     */
     public String getTitleSlug() {
         return this.radarrMovie.getTitleSlug();
     }

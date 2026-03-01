@@ -48,6 +48,14 @@ public class QBittorrentClient {
     private final HttpUrl baseUrl;
     private volatile String sessionCookie;
 
+    /**
+     * Constructs a new {@code QBittorrentClient}.
+     *
+     * @param httpClient the OkHttp client to use for requests
+     * @param properties the qBittorrent connection properties (URL, username, and password)
+     * @param moshi the Moshi instance for JSON deserialization
+     * @throws IllegalArgumentException if the URL, username, or password is invalid
+     */
     public QBittorrentClient(OkHttpClient httpClient, QBittorrentProperties properties, Moshi moshi) {
         this.moshi = moshi;
         this.username = properties.getUsername();

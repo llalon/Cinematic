@@ -19,6 +19,12 @@ public class QBittorrentProperties {
     private final String username;
     private final String password;
 
+    /**
+     * Loads qBittorrent connection properties from the {@code QBITTORRENT_URL},
+     * {@code QBITTORRENT_USERNAME}, and {@code QBITTORRENT_PASSWORD} environment variables.
+     *
+     * @return a {@code QBittorrentProperties} instance populated from environment
+     */
     public static QBittorrentProperties fromEnvironment() {
         return QBittorrentProperties.builder()
                 .url(System.getenv("QBITTORRENT_URL"))

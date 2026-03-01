@@ -129,6 +129,9 @@ public class Library extends DomainModel {
         };
     }
 
+    /**
+     * Invalidates all caches
+     */
     public void invalidateCache() {
         super.invalidateCache(Caches.values());
     }

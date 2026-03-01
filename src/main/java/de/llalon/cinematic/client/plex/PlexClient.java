@@ -35,6 +35,14 @@ public class PlexClient {
     private final Moshi moshi;
     private final HttpUrl baseUrl;
 
+    /**
+     * Constructs a new {@code PlexClient}.
+     *
+     * @param httpClient the OkHttp client to use for requests
+     * @param properties the Plex connection properties (URL and token)
+     * @param moshi the Moshi instance for JSON deserialization
+     * @throws IllegalArgumentException if the URL or token is invalid
+     */
     public PlexClient(OkHttpClient httpClient, PlexProperties properties, Moshi moshi) {
         this.moshi = moshi;
         this.token = properties.getToken();
@@ -48,6 +56,11 @@ public class PlexClient {
         }
     }
 
+    /**
+     * Returns all media library sections available on the Plex server.
+     *
+     * @return a wrapped container holding all library {@link de.llalon.cinematic.client.plex.dto.PlexDirectory} entries
+     */
     public PlexMediaContainerWrapper<PlexSectionsContainer> getSections() {
         HttpUrl url = baseUrl.newBuilder()
                 .addPathSegments("library")
@@ -57,6 +70,14 @@ public class PlexClient {
         return get(url, type);
     }
 
+    /**
+     * Returns all media items in a specific library section, optionally including GUID metadata.
+     *
+     * @param sectionId the Plex library section key
+     * @param mediaType the Plex media type filter (e.g. {@code "1"} for movies, {@code "2"} for shows)
+     * @param includeGuids whether to include agent GUIDs (TMDB, TVDB, IMDB) for each item
+     * @return a wrapped container holding the matching {@link de.llalon.cinematic.client.plex.dto.PlexMetadataContainer}
+     */
     public PlexMediaContainerWrapper<PlexMetadataContainer> getSection(
             String sectionId, String mediaType, boolean includeGuids) {
         HttpUrl url = baseUrl.newBuilder()

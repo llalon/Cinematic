@@ -45,6 +45,14 @@ public class TautulliClient {
     private final Moshi moshi;
     private final HttpUrl baseUrl;
 
+    /**
+     * Constructs a new {@code TautulliClient}.
+     *
+     * @param httpClient the OkHttp client to use for requests
+     * @param properties the Tautulli connection properties (URL and API key)
+     * @param moshi the Moshi instance for JSON deserialization
+     * @throws IllegalArgumentException if the URL or API key is invalid
+     */
     public TautulliClient(OkHttpClient httpClient, TautulliProperties properties, Moshi moshi) {
         this.moshi = moshi;
         this.apiKey = properties.getApiKey();

@@ -10,6 +10,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Domain representation of a torrent managed by qBittorrent.
+ *
+ * <p>Provides navigation to the {@link Series} and {@link Movie} objects
+ * associated with this torrent via the Sonarr/Radarr download queues.
+ * Supports priority management and tag operations.</p>
+ */
 @Slf4j
 public class Torrent extends DomainModel {
 
@@ -106,22 +113,47 @@ public class Torrent extends DomainModel {
                 .iterator();
     }
 
+    /**
+     * Returns the info-hash of this torrent.
+     *
+     * @return the torrent hash
+     */
     public String getHash() {
         return this.torrentInfo.getHash();
     }
 
+    /**
+     * Returns the category assigned to this torrent in qBittorrent.
+     *
+     * @return the torrent category
+     */
     public String getCategory() {
         return this.torrentInfo.getCategory();
     }
 
+    /**
+     * Returns the current download/seed state of this torrent.
+     *
+     * @return the torrent state
+     */
     public String getState() {
         return this.torrentInfo.getState();
     }
 
+    /**
+     * Returns the display name of this torrent.
+     *
+     * @return the torrent name
+     */
     public String getName() {
         return this.torrentInfo.getName();
     }
 
+    /**
+     * Returns the announce URL of the tracker used by this torrent.
+     *
+     * @return the tracker URL
+     */
     public String getTracker() {
         return this.torrentInfo.getTracker();
     }
