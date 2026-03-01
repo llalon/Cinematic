@@ -11,6 +11,10 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
+    <name>Cinematic</name>
+    <description>A jvm library for interacting with arr stack APIs.</description>
+    <url>https://github.com/llalon/Cinematic</url>
+
     <properties>
         <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
