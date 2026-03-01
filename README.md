@@ -22,6 +22,18 @@ It integrates:
 
 ## Usage
 
+### Maven
+
+Add to maven projects using [Jitpack](https://jitpack.io/):
+
+```xml
+<dependency>
+        <groupId>com.github.llalon</groupId>
+        <artifactId>cinematic</artifactId>
+        <version>main-SNAPSHOT</version>
+</dependency>
+```
+
 ### Configuration
 
 By default api clients will be configured from environment variables
