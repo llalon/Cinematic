@@ -150,6 +150,42 @@ public class Torrent extends DomainModel {
     }
 
     /**
+     * Returns the absolute content path for this torrent.
+     *
+     * @return the content path, or null if not available
+     */
+    public String getContentPath() {
+        return this.torrentInfo.getContentPath();
+    }
+
+    /**
+     * Returns the amount of data left to download (bytes).
+     *
+     * @return bytes left, or null if not available
+     */
+    public Long getAmountLeft() {
+        return this.torrentInfo.getAmountLeft();
+    }
+
+    /**
+     * Returns the torrent progress as fraction (0.0 - 1.0).
+     *
+     * @return progress, or null if not available
+     */
+    public Float getProgress() {
+        return this.torrentInfo.getProgress();
+    }
+
+    /**
+     * Returns the completion time as Unix epoch seconds, if available.
+     *
+     * @return completion time, or null if not available
+     */
+    public Long getCompletionOn() {
+        return this.torrentInfo.getCompletionOn();
+    }
+
+    /**
      * Returns the announce URL of the tracker used by this torrent.
      *
      * @return the tracker URL
