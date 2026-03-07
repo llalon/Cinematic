@@ -30,30 +30,7 @@ library.torrents.each do |torrent|
     content_path = torrent.getContentPath
 
     # Skip torrents that are not completed yet
-    begin
-      completed = false
-      amt_left = torrent.getAmountLeft
-      if !amt_left.nil?
-        amt_val = amt_left.respond_to?(:longValue) ? amt_left.longValue : amt_left.to_i
-        completed = true if amt_val == 0
-      end
-      if !completed && torrent.respond_to?(:getProgress) && !torrent.getProgress.nil?
-        pr = torrent.getProgress
-        pr_val = pr.respond_to?(:floatValue) ? pr.floatValue : pr.to_f
-        completed = true if pr_val >= 1.0
-      end
-      if !completed && torrent.getCompletionOn
-        completed = true
-      end
-      if !completed && torrent.getState
-        st = torrent.getState.to_s
-        completed = true if st.include?('UP') || st.downcase == 'uploading'
-      end
-    rescue => e
-      puts "  [WARN] Could not determine completion for #{name}: #{e}"
-    end
-
-    unless completed
+    unless torrent.isCompleted
       puts "  [SKIP] Torrent not completed: #{name} (state=#{torrent.getState})"
       next
     end

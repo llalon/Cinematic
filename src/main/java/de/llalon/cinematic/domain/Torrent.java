@@ -193,4 +193,13 @@ public class Torrent extends DomainModel {
     public String getTracker() {
         return this.torrentInfo.getTracker();
     }
+
+    /**
+     * @return true if the torrent is completed
+     */
+    public boolean isCompleted() {
+        return this.torrentInfo.getAmountLeft() == 0
+                && this.torrentInfo.getCompletionOn() > 0
+                && this.torrentInfo.getCompleted() > 0;
+    }
 }
