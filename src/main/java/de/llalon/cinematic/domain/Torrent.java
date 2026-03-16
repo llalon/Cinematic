@@ -78,7 +78,7 @@ public class Torrent extends DomainModel {
     public Iterable<Series> series() {
         return () -> sonarrQueue()
                 .filter(sonarrQueue -> sonarrQueue.getDownloadId() != null
-                        && sonarrQueue.getDownloadId().equalsIgnoreCase(this.QBittorrentInfo.getHash()))
+                        && sonarrQueue.getDownloadId().equalsIgnoreCase(this.qbittorrentInfo.getHash()))
                 .map(SonarrQueue::getSeriesId)
                 .filter(Objects::nonNull)
                 .distinct()
@@ -102,7 +102,7 @@ public class Torrent extends DomainModel {
     public Iterable<Movie> movies() {
         return () -> radarrQueue()
                 .filter(queueResource -> queueResource.getDownloadId() != null
-                        && queueResource.getDownloadId().equalsIgnoreCase(this.QBittorrentInfo.getHash()))
+                        && queueResource.getDownloadId().equalsIgnoreCase(this.qbittorrentInfo.getHash()))
                 .map(RadarrQueue::getMovieId)
                 .filter(Objects::nonNull)
                 .distinct()
@@ -120,7 +120,7 @@ public class Torrent extends DomainModel {
      * @return the torrent hash
      */
     public String getHash() {
-        return this.QBittorrentInfo.getHash();
+        return this.qbittorrentInfo.getHash();
     }
 
     /**
@@ -129,7 +129,7 @@ public class Torrent extends DomainModel {
      * @return the torrent category
      */
     public String getCategory() {
-        return this.QBittorrentInfo.getCategory();
+        return this.qbittorrentInfo.getCategory();
     }
 
     /**
@@ -138,7 +138,7 @@ public class Torrent extends DomainModel {
      * @return the torrent state
      */
     public String getState() {
-        return this.QBittorrentInfo.getState();
+        return this.qbittorrentInfo.getState();
     }
 
     /**
@@ -147,7 +147,7 @@ public class Torrent extends DomainModel {
      * @return the torrent name
      */
     public String getName() {
-        return this.QBittorrentInfo.getName();
+        return this.qbittorrentInfo.getName();
     }
 
     /**
@@ -156,7 +156,7 @@ public class Torrent extends DomainModel {
      * @return the content path, or null if not available
      */
     public String getContentPath() {
-        return this.QBittorrentInfo.getContentPath();
+        return this.qbittorrentInfo.getContentPath();
     }
 
     /**
@@ -165,7 +165,7 @@ public class Torrent extends DomainModel {
      * @return bytes left, or null if not available
      */
     public Long getAmountLeft() {
-        return this.QBittorrentInfo.getAmountLeft();
+        return this.qbittorrentInfo.getAmountLeft();
     }
 
     /**
@@ -174,7 +174,7 @@ public class Torrent extends DomainModel {
      * @return progress, or null if not available
      */
     public Float getProgress() {
-        return this.QBittorrentInfo.getProgress();
+        return this.qbittorrentInfo.getProgress();
     }
 
     /**
@@ -183,7 +183,7 @@ public class Torrent extends DomainModel {
      * @return completion time, or null if not available
      */
     public Long getCompletionOn() {
-        return this.QBittorrentInfo.getCompletionOn();
+        return this.qbittorrentInfo.getCompletionOn();
     }
 
     /**
@@ -192,24 +192,22 @@ public class Torrent extends DomainModel {
      * @return the tracker URL
      */
     public String getTracker() {
-        return this.QBittorrentInfo.getTracker();
+        return this.qbittorrentInfo.getTracker();
     }
 
     /**
      * @return true if the torrent is completed
      */
     public boolean isCompleted() {
-        final Long amountLeft = this.QBittorrentInfo.getAmountLeft();
-        final Long completionOn = this.QBittorrentInfo.getCompletionOn();
-        final Long completed = this.QBittorrentInfo.getCompleted();
+        final Long amountLeft = this.qbittorrentInfo.getAmountLeft();
+        final Long completionOn = this.qbittorrentInfo.getCompletionOn();
+        final Long completed = this.qbittorrentInfo.getCompleted();
 
         if (amountLeft == null || completionOn == null || completed == null) {
             return false;
         }
 
-        return amountLeft.longValue() == 0L
-                && completionOn.longValue() > 0L
-                && completed.longValue() > 0L;
+        return amountLeft.longValue() == 0L && completionOn.longValue() > 0L && completed.longValue() > 0L;
     }
 
     /**
@@ -219,7 +217,7 @@ public class Torrent extends DomainModel {
      */
     @NotNull
     public Iterable<TorrentFile> files() {
-        return () -> ctx.getQbittorrentClient().getTorrentFiles(this.QBittorrentInfo.getHash()).stream()
+        return () -> ctx.getQbittorrentClient().getTorrentFiles(this.qbittorrentInfo.getHash()).stream()
                 .map(f -> new TorrentFile(ctx, f))
                 .iterator();
     }
@@ -230,8 +228,8 @@ public class Torrent extends DomainModel {
      * @param deleteFiles if {@code true}, also removes the downloaded files from disk
      */
     public void remove(boolean deleteFiles) {
-        log.debug("Deleting torrent: {}, deleteFiles: {}", this.QBittorrentInfo.getHash(), deleteFiles);
-        ctx.getQbittorrentClient().deleteTorrents(List.of(this.QBittorrentInfo.getHash()), deleteFiles);
+        log.debug("Deleting torrent: {}, deleteFiles: {}", this.qbittorrentInfo.getHash(), deleteFiles);
+        ctx.getQbittorrentClient().deleteTorrents(List.of(this.qbittorrentInfo.getHash()), deleteFiles);
     }
 
     /**
@@ -245,9 +243,9 @@ public class Torrent extends DomainModel {
      * <p>Logs a warning if no matching queue items are found.</p>
      */
     public void blacklist() {
-        final String hash = this.QBittorrentInfo.getHash();
+        final String hash = this.qbittorrentInfo.getHash();
 
-        log.debug("Blacklisting torrent: {}, hash: {}", this.QBittorrentInfo.getHash(), hash);
+        log.debug("Blacklisting torrent: {}, hash: {}", this.qbittorrentInfo.getHash(), hash);
 
         final Stream<Integer> sonarrResults = sonarrQueue()
                 .filter(q -> q.getDownloadId() != null && q.getDownloadId().equalsIgnoreCase(hash))
