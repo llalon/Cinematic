@@ -12,7 +12,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-public class TorrentProperties {
+public class QBittorrentProperties {
 
     /** Torrent save path */
     @Json(name = "save_path")

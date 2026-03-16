@@ -12,7 +12,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-public class TorrentFile {
+public class QBittorrentFile {
 
     /** File name (including relative path) */
     private final String name;

@@ -289,6 +289,36 @@ public class SonarrClient {
         return get(url, type);
     }
 
+    /**
+     * Remove a queue item from Sonarr, optionally adding it to the blocklist.
+     *
+     * <p>The torrent is not removed from the download client by Sonarr when
+     * {@code removeFromClient} is {@code false} — handle client-side deletion separately.</p>
+     *
+     * @param id              queue item ID
+     * @param blocklist       if {@code true}, the release is added to the blocklist so Sonarr
+     *                        will not download it again
+     * @param removeFromClient if {@code true}, Sonarr will also instruct the download client
+     *                        to remove the download
+     * @param skipRedownload  if {@code true}, Sonarr will not trigger a search for a
+     *                        replacement after blacklisting
+     */
+    public void deleteQueueItem(int id, boolean blocklist, boolean removeFromClient, boolean skipRedownload) {
+        log.debug(
+                "Deleting queue item id={}, blocklist={}, removeFromClient={}, skipRedownload={}",
+                id,
+                blocklist,
+                removeFromClient,
+                skipRedownload);
+        HttpUrl url = baseUrl.newBuilder()
+                .addPathSegments("api/v3/queue/" + id)
+                .addQueryParameter("blocklist", String.valueOf(blocklist))
+                .addQueryParameter("removeFromClient", String.valueOf(removeFromClient))
+                .addQueryParameter("skipRedownload", String.valueOf(skipRedownload))
+                .build();
+        delete(url);
+    }
+
     // ==================== TAGS ====================
 
     /**

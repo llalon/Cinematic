@@ -7,7 +7,7 @@ import de.llalon.cinematic.client.overseerr.dto.OverseerrUser;
 import de.llalon.cinematic.client.plex.dto.PlexDirectory;
 import de.llalon.cinematic.client.plex.dto.PlexMediaContainerWrapper;
 import de.llalon.cinematic.client.plex.dto.PlexMetadataContainer;
-import de.llalon.cinematic.client.qbittorrent.dto.TorrentInfo;
+import de.llalon.cinematic.client.qbittorrent.dto.QBittorrentInfo;
 import de.llalon.cinematic.client.radarr.dto.MovieResource;
 import de.llalon.cinematic.client.radarr.dto.RadarrQueue;
 import de.llalon.cinematic.client.radarr.dto.RadarrTag;
@@ -76,7 +76,7 @@ abstract class DomainModel {
     }
 
     @NotNull
-    protected Stream<TorrentInfo> qbittorrentTorrents() {
+    protected Stream<QBittorrentInfo> qbittorrentTorrents() {
         return StreamUtils.streamIterator(new CachingIterable<>(
                 () -> ctx.getQbittorrentClient().getTorrents().iterator(),
                 getOrCreateCache(QBITTORRENT_TORRENT),

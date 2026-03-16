@@ -3,10 +3,9 @@ package de.llalon.cinematic.client.qbittorrent;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
-import de.llalon.cinematic.client.qbittorrent.config.QBittorrentProperties;
-import de.llalon.cinematic.client.qbittorrent.dto.TorrentFile;
-import de.llalon.cinematic.client.qbittorrent.dto.TorrentInfo;
-import de.llalon.cinematic.client.qbittorrent.dto.TorrentProperties;
+import de.llalon.cinematic.client.qbittorrent.dto.QBittorrentFile;
+import de.llalon.cinematic.client.qbittorrent.dto.QBittorrentInfo;
+import de.llalon.cinematic.client.qbittorrent.dto.QBittorrentProperties;
 import de.llalon.cinematic.client.qbittorrent.exception.QBittorrentApiException;
 import de.llalon.cinematic.client.qbittorrent.exception.QBittorrentClientException;
 import java.io.IOException;
@@ -56,7 +55,10 @@ public class QBittorrentClient {
      * @param moshi the Moshi instance for JSON deserialization
      * @throws IllegalArgumentException if the URL, username, or password is invalid
      */
-    public QBittorrentClient(OkHttpClient httpClient, QBittorrentProperties properties, Moshi moshi) {
+    public QBittorrentClient(
+            OkHttpClient httpClient,
+            de.llalon.cinematic.client.qbittorrent.config.QBittorrentProperties properties,
+            Moshi moshi) {
         this.moshi = moshi;
         this.username = properties.getUsername();
         this.password = properties.getPassword();
@@ -172,9 +174,9 @@ public class QBittorrentClient {
      *
      * @return list of all torrents
      */
-    public List<TorrentInfo> getTorrents() {
+    public List<QBittorrentInfo> getTorrents() {
         log.debug("Fetching all torrents");
-        Type type = Types.newParameterizedType(List.class, TorrentInfo.class);
+        Type type = Types.newParameterizedType(List.class, QBittorrentInfo.class);
         return get("/api/v2/torrents/info", Map.of(), type);
     }
 
@@ -187,7 +189,7 @@ public class QBittorrentClient {
      * @param tag Filter by tag
      * @return list of filtered torrents
      */
-    public List<TorrentInfo> getTorrents(String filter, String category, String tag) {
+    public List<QBittorrentInfo> getTorrents(String filter, String category, String tag) {
         log.debug("Fetching torrents with filter: {}, category: {}, tag: {}", filter, category, tag);
 
         HttpUrl.Builder urlBuilder = baseUrl.newBuilder().addPathSegments("api/v2/torrents/info");
@@ -202,7 +204,7 @@ public class QBittorrentClient {
             urlBuilder.addQueryParameter("tag", tag);
         }
 
-        Type type = Types.newParameterizedType(List.class, TorrentInfo.class);
+        Type type = Types.newParameterizedType(List.class, QBittorrentInfo.class);
         return get(urlBuilder.build(), type);
     }
 
@@ -212,9 +214,9 @@ public class QBittorrentClient {
      * @param hash Torrent hash
      * @return torrent properties
      */
-    public TorrentProperties getTorrentProperties(String hash) {
+    public QBittorrentProperties getTorrentProperties(String hash) {
         log.debug("Fetching properties for torrent: {}", hash);
-        return get("/api/v2/torrents/properties", Map.of("hash", hash), TorrentProperties.class);
+        return get("/api/v2/torrents/properties", Map.of("hash", hash), QBittorrentProperties.class);
     }
 
     /**
@@ -223,9 +225,9 @@ public class QBittorrentClient {
      * @param hash Torrent hash
      * @return list of torrent files
      */
-    public List<TorrentFile> getTorrentFiles(String hash) {
+    public List<QBittorrentFile> getTorrentFiles(String hash) {
         log.debug("Fetching files for torrent: {}", hash);
-        Type type = Types.newParameterizedType(List.class, TorrentFile.class);
+        Type type = Types.newParameterizedType(List.class, QBittorrentFile.class);
         return get("/api/v2/torrents/files", Map.of("hash", hash), type);
     }
 

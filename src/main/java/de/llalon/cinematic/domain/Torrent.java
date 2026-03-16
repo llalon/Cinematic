@@ -1,11 +1,12 @@
 package de.llalon.cinematic.domain;
 
-import de.llalon.cinematic.client.qbittorrent.dto.TorrentInfo;
+import de.llalon.cinematic.client.qbittorrent.dto.QBittorrentInfo;
 import de.llalon.cinematic.client.radarr.dto.RadarrQueue;
 import de.llalon.cinematic.client.sonarr.dto.SonarrQueue;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,25 +22,25 @@ import org.jetbrains.annotations.Nullable;
 public class Torrent extends DomainModel {
 
     @NotNull
-    private final TorrentInfo torrentInfo;
+    private final QBittorrentInfo qbittorrentInfo;
 
-    Torrent(ClientContext ctx, @NotNull TorrentInfo torrentInfo) {
+    Torrent(ClientContext ctx, @NotNull QBittorrentInfo qbittorrentInfo) {
         super(ctx);
-        this.torrentInfo = torrentInfo;
+        this.qbittorrentInfo = qbittorrentInfo;
     }
 
     /**
      * Sets the priority of the torrent to the top. Only works if queueing is enabled.
      */
     public void setTopPriority() {
-        this.ctx.getQbittorrentClient().setTopPriority(List.of(this.torrentInfo.getHash()));
+        this.ctx.getQbittorrentClient().setTopPriority(List.of(this.qbittorrentInfo.getHash()));
     }
 
     /**
      * Sets the priority of the torrent to the bottom. Only works if queueing is enabled.
      */
     public void setBottomPriority() {
-        this.ctx.getQbittorrentClient().setBottomPriority(List.of(this.torrentInfo.getHash()));
+        this.ctx.getQbittorrentClient().setBottomPriority(List.of(this.qbittorrentInfo.getHash()));
     }
 
     /**
@@ -49,7 +50,7 @@ public class Torrent extends DomainModel {
      */
     public void addTag(@Nullable String tag) {
         if (tag != null && !tag.isBlank()) {
-            final String torrentHash = torrentInfo.getHash();
+            final String torrentHash = qbittorrentInfo.getHash();
             // Ensure the tag exists, then attach it to this torrent
             ctx.getQbittorrentClient().createTags(List.of(tag));
             ctx.getQbittorrentClient().addTorrentTags(List.of(torrentHash), List.of(tag));
@@ -77,7 +78,7 @@ public class Torrent extends DomainModel {
     public Iterable<Series> series() {
         return () -> sonarrQueue()
                 .filter(sonarrQueue -> sonarrQueue.getDownloadId() != null
-                        && sonarrQueue.getDownloadId().equalsIgnoreCase(this.torrentInfo.getHash()))
+                        && sonarrQueue.getDownloadId().equalsIgnoreCase(this.qbittorrentInfo.getHash()))
                 .map(SonarrQueue::getSeriesId)
                 .filter(Objects::nonNull)
                 .distinct()
@@ -101,7 +102,7 @@ public class Torrent extends DomainModel {
     public Iterable<Movie> movies() {
         return () -> radarrQueue()
                 .filter(queueResource -> queueResource.getDownloadId() != null
-                        && queueResource.getDownloadId().equalsIgnoreCase(this.torrentInfo.getHash()))
+                        && queueResource.getDownloadId().equalsIgnoreCase(this.qbittorrentInfo.getHash()))
                 .map(RadarrQueue::getMovieId)
                 .filter(Objects::nonNull)
                 .distinct()
@@ -119,7 +120,7 @@ public class Torrent extends DomainModel {
      * @return the torrent hash
      */
     public String getHash() {
-        return this.torrentInfo.getHash();
+        return this.qbittorrentInfo.getHash();
     }
 
     /**
@@ -128,7 +129,7 @@ public class Torrent extends DomainModel {
      * @return the torrent category
      */
     public String getCategory() {
-        return this.torrentInfo.getCategory();
+        return this.qbittorrentInfo.getCategory();
     }
 
     /**
@@ -137,7 +138,7 @@ public class Torrent extends DomainModel {
      * @return the torrent state
      */
     public String getState() {
-        return this.torrentInfo.getState();
+        return this.qbittorrentInfo.getState();
     }
 
     /**
@@ -146,7 +147,7 @@ public class Torrent extends DomainModel {
      * @return the torrent name
      */
     public String getName() {
-        return this.torrentInfo.getName();
+        return this.qbittorrentInfo.getName();
     }
 
     /**
@@ -155,7 +156,7 @@ public class Torrent extends DomainModel {
      * @return the content path, or null if not available
      */
     public String getContentPath() {
-        return this.torrentInfo.getContentPath();
+        return this.qbittorrentInfo.getContentPath();
     }
 
     /**
@@ -164,7 +165,7 @@ public class Torrent extends DomainModel {
      * @return bytes left, or null if not available
      */
     public Long getAmountLeft() {
-        return this.torrentInfo.getAmountLeft();
+        return this.qbittorrentInfo.getAmountLeft();
     }
 
     /**
@@ -173,7 +174,7 @@ public class Torrent extends DomainModel {
      * @return progress, or null if not available
      */
     public Float getProgress() {
-        return this.torrentInfo.getProgress();
+        return this.qbittorrentInfo.getProgress();
     }
 
     /**
@@ -182,7 +183,7 @@ public class Torrent extends DomainModel {
      * @return completion time, or null if not available
      */
     public Long getCompletionOn() {
-        return this.torrentInfo.getCompletionOn();
+        return this.qbittorrentInfo.getCompletionOn();
     }
 
     /**
@@ -191,15 +192,81 @@ public class Torrent extends DomainModel {
      * @return the tracker URL
      */
     public String getTracker() {
-        return this.torrentInfo.getTracker();
+        return this.qbittorrentInfo.getTracker();
     }
 
     /**
      * @return true if the torrent is completed
      */
     public boolean isCompleted() {
-        return this.torrentInfo.getAmountLeft() == 0
-                && this.torrentInfo.getCompletionOn() > 0
-                && this.torrentInfo.getCompleted() > 0;
+        final Long amountLeft = this.qbittorrentInfo.getAmountLeft();
+        final Long completionOn = this.qbittorrentInfo.getCompletionOn();
+        final Long completed = this.qbittorrentInfo.getCompleted();
+
+        if (amountLeft == null || completionOn == null || completed == null) {
+            return false;
+        }
+
+        return amountLeft.longValue() == 0L && completionOn.longValue() > 0L && completed.longValue() > 0L;
+    }
+
+    /**
+     * Returns the files contained in this torrent.
+     *
+     * @return an iterable of {@link TorrentFile} objects
+     */
+    @NotNull
+    public Iterable<TorrentFile> files() {
+        return () -> ctx.getQbittorrentClient().getTorrentFiles(this.qbittorrentInfo.getHash()).stream()
+                .map(f -> new TorrentFile(ctx, f))
+                .iterator();
+    }
+
+    /**
+     * Deletes this torrent from qBittorrent.
+     *
+     * @param deleteFiles if {@code true}, also removes the downloaded files from disk
+     */
+    public void remove(boolean deleteFiles) {
+        log.debug("Deleting torrent: {}, deleteFiles: {}", this.qbittorrentInfo.getHash(), deleteFiles);
+        ctx.getQbittorrentClient().deleteTorrents(List.of(this.qbittorrentInfo.getHash()), deleteFiles);
+    }
+
+    /**
+     * Blacklists this torrent in the Sonarr/Radarr download queues.
+     *
+     * <p>Finds all Sonarr/Radarr queue items whose {@code downloadId} matches this torrent's hash
+     * and removes them with the blocklist flag set to {@code true}. The torrent is not
+     * removed from the download client — handle that separately via {@link #remove}.
+     * This will not trigger a replacement search ({@code skipRedownload=true}).</p>
+     *
+     * <p>Logs a warning if no matching queue items are found.</p>
+     */
+    public void blacklist() {
+        final String hash = this.qbittorrentInfo.getHash();
+
+        log.debug("Blacklisting torrent: {}, hash: {}", this.qbittorrentInfo.getHash(), hash);
+
+        final Stream<Integer> sonarrResults = sonarrQueue()
+                .filter(q -> q.getDownloadId() != null && q.getDownloadId().equalsIgnoreCase(hash))
+                .map(q -> {
+                    log.debug("Blacklisting Sonarr queue item id={} for torrent {}", q.getId(), hash);
+                    ctx.getSonarrClient().deleteQueueItem(q.getId(), true, false, true);
+                    return 1;
+                });
+
+        final Stream<Integer> radarrResults = radarrQueue()
+                .filter(q -> q.getDownloadId() != null && q.getDownloadId().equalsIgnoreCase(hash))
+                .map(q -> {
+                    log.debug("Blacklisting Radarr queue item id={} for torrent {}", q.getId(), hash);
+                    ctx.getRadarrClient().deleteQueueItem(q.getId(), true, false, true);
+                    return 1;
+                });
+
+        final long count = Stream.concat(sonarrResults, radarrResults).count();
+
+        if (count == 0) {
+            log.warn("No queue items found for torrent hash: {}", hash);
+        }
     }
 }
