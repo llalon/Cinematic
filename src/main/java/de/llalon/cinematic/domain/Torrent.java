@@ -199,9 +199,17 @@ public class Torrent extends DomainModel {
      * @return true if the torrent is completed
      */
     public boolean isCompleted() {
-        return this.QBittorrentInfo.getAmountLeft() == 0
-                && this.QBittorrentInfo.getCompletionOn() > 0
-                && this.QBittorrentInfo.getCompleted() > 0;
+        final Long amountLeft = this.QBittorrentInfo.getAmountLeft();
+        final Long completionOn = this.QBittorrentInfo.getCompletionOn();
+        final Long completed = this.QBittorrentInfo.getCompleted();
+
+        if (amountLeft == null || completionOn == null || completed == null) {
+            return false;
+        }
+
+        return amountLeft.longValue() == 0L
+                && completionOn.longValue() > 0L
+                && completed.longValue() > 0L;
     }
 
     /**
