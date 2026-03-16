@@ -12,7 +12,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-public class TorrentInfo {
+public class QBittorrentInfo {
 
     /** Time (Unix Epoch) when the torrent was added to the client */
     @Json(name = "added_on")
