@@ -22,25 +22,25 @@ import org.jetbrains.annotations.Nullable;
 public class Torrent extends DomainModel {
 
     @NotNull
-    private final QBittorrentInfo QBittorrentInfo;
+    private final QBittorrentInfo qbittorrentInfo;
 
-    Torrent(ClientContext ctx, @NotNull QBittorrentInfo QBittorrentInfo) {
+    Torrent(ClientContext ctx, @NotNull QBittorrentInfo qbittorrentInfo) {
         super(ctx);
-        this.QBittorrentInfo = QBittorrentInfo;
+        this.qbittorrentInfo = qbittorrentInfo;
     }
 
     /**
      * Sets the priority of the torrent to the top. Only works if queueing is enabled.
      */
     public void setTopPriority() {
-        this.ctx.getQbittorrentClient().setTopPriority(List.of(this.QBittorrentInfo.getHash()));
+        this.ctx.getQbittorrentClient().setTopPriority(List.of(this.qbittorrentInfo.getHash()));
     }
 
     /**
      * Sets the priority of the torrent to the bottom. Only works if queueing is enabled.
      */
     public void setBottomPriority() {
-        this.ctx.getQbittorrentClient().setBottomPriority(List.of(this.QBittorrentInfo.getHash()));
+        this.ctx.getQbittorrentClient().setBottomPriority(List.of(this.qbittorrentInfo.getHash()));
     }
 
     /**
@@ -50,7 +50,7 @@ public class Torrent extends DomainModel {
      */
     public void addTag(@Nullable String tag) {
         if (tag != null && !tag.isBlank()) {
-            final String torrentHash = QBittorrentInfo.getHash();
+            final String torrentHash = qbittorrentInfo.getHash();
             // Ensure the tag exists, then attach it to this torrent
             ctx.getQbittorrentClient().createTags(List.of(tag));
             ctx.getQbittorrentClient().addTorrentTags(List.of(torrentHash), List.of(tag));
