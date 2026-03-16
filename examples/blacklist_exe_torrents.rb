@@ -13,16 +13,16 @@ puts "Scanning torrents for .exe files..."
 found = 0
 
 library.torrents.each do |torrent|
-  name = torrent.getName
-  hash = torrent.getHash
+  name = torrent.get_name
+  hash = torrent.get_hash
 
   begin
-    exe_files = torrent.files.select { |f| f.getName.to_s.downcase.end_with?('.exe') }
+    exe_files = torrent.files.select { |f| f.get_name.to_s.downcase.end_with?('.exe') }
     next if exe_files.empty?
 
     found += 1
     puts "\n[MALWARE] #{name} (#{hash})"
-    exe_files.each { |f| puts "  .exe: #{f.getName}" }
+    exe_files.each { |f| puts "  .exe: #{f.get_name}" }
 
     puts "  Blacklisting torrent..."
     torrent.blacklist
