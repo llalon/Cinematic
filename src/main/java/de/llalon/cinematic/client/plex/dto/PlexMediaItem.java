@@ -32,4 +32,16 @@ public class PlexMediaItem {
 
     @Json(name = "Guid")
     private final List<PlexId> guids;
+
+    @Json(name = "Media")
+    private final List<PlexMedia> media;
+
+    @Json(name = "index")
+    private final Integer index;
+
+    @Json(name = "parentIndex")
+    private final Integer parentIndex;
+
+    @Json(name = "parentRatingKey")
+    private final String parentRatingKey;
 }

@@ -94,6 +94,62 @@ public class PlexClient {
         return get(url, type);
     }
 
+    /**
+     * Returns the full metadata for a specific Plex item, including nested media version details.
+     *
+     * @param ratingKey the Plex rating key uniquely identifying the item
+     * @return a wrapped container holding the {@link PlexMetadataContainer} with full media details
+     * @see <a href="https://github.com/plexapi/plexapi">Plex API reference</a>
+     */
+    public PlexMediaContainerWrapper<PlexMetadataContainer> getMetadata(String ratingKey) {
+        HttpUrl url = baseUrl.newBuilder()
+                .addPathSegments("library")
+                .addPathSegments("metadata")
+                .addPathSegments(ratingKey)
+                .build();
+        Type type = Types.newParameterizedType(PlexMediaContainerWrapper.class, PlexMetadataContainer.class);
+        return get(url, type);
+    }
+
+    /**
+     * Returns the children of a Plex item (e.g. seasons for a show, episodes for a season).
+     *
+     * @param ratingKey the Plex rating key of the parent item
+     * @return a wrapped container holding the child {@link PlexMetadataContainer}
+     */
+    public PlexMediaContainerWrapper<PlexMetadataContainer> getChildren(String ratingKey) {
+        HttpUrl url = baseUrl.newBuilder()
+                .addPathSegments("library")
+                .addPathSegments("metadata")
+                .addPathSegments(ratingKey)
+                .addPathSegments("children")
+                .build();
+        Type type = Types.newParameterizedType(PlexMediaContainerWrapper.class, PlexMetadataContainer.class);
+        return get(url, type);
+    }
+
+    /**
+     * Deletes a specific media version from a Plex item.
+     *
+     * <p>The Plex server must have "Allow media deletion" enabled in its settings.
+     * This operation is <strong>not</strong> idempotent — calling it twice for the
+     * same media ID will result in a 404 on the second call.</p>
+     *
+     * @param ratingKey the Plex rating key of the item that owns the media version
+     * @param mediaId   the numeric ID of the media version to delete
+     */
+    public void deleteMedia(String ratingKey, int mediaId) {
+        log.debug("Deleting Plex media version: ratingKey={}, mediaId={}", ratingKey, mediaId);
+        HttpUrl url = baseUrl.newBuilder()
+                .addPathSegments("library")
+                .addPathSegments("metadata")
+                .addPathSegments(ratingKey)
+                .addPathSegments("media")
+                .addPathSegments(String.valueOf(mediaId))
+                .build();
+        delete(url);
+    }
+
     private <T> T get(HttpUrl url, Type responseType) {
         Request request = new Request.Builder()
                 .url(url)
@@ -103,6 +159,26 @@ public class PlexClient {
                 .build();
 
         return executeRequest(request, responseType);
+    }
+
+    private void delete(HttpUrl url) {
+        Request request = new Request.Builder()
+                .url(url)
+                .header(PLEX_TOKEN_HEADER, token)
+                .header("Accept", "application/json")
+                .delete()
+                .build();
+        try (Response response = httpClient.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                String errorBody = response.body() != null ? response.body().string() : "";
+                log.error("Plex API DELETE error: status={}, body={}", response.code(), errorBody);
+                throw new PlexApiException(
+                        "Plex API DELETE request failed: HTTP " + response.code(), response.code(), errorBody);
+            }
+        } catch (IOException e) {
+            log.error("Failed to execute Plex DELETE request: {}", url, e);
+            throw new PlexApiException("Failed to execute Plex DELETE request: " + url, e);
+        }
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
