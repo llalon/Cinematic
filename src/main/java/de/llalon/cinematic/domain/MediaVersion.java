@@ -10,9 +10,6 @@ import org.jetbrains.annotations.NotNull;
  * <p>A Plex item may contain multiple media versions when the user has stored several
  * quality copies. Each {@code MediaVersion} exposes the video and audio characteristics
  * of one version and provides a {@link #delete()} mutation to remove it from Plex.</p>
- *
- * <p>Obtained via {@link LibraryMediaItem#mediaVersions()} or
- * {@link Episode#mediaVersions()}.</p>
  */
 @Slf4j
 public class MediaVersion extends DomainModel {
@@ -37,7 +34,23 @@ public class MediaVersion extends DomainModel {
      * this object should no longer be used.</p>
      */
     public void delete() {
-        log.debug("Deleting Plex media version: ratingKey={}, mediaId={}", ratingKey, plexMedia.getId());
+        log.info("Deleting Plex media version: ratingKey={}, mediaId={}", ratingKey, plexMedia.getId());
         ctx.getPlexClient().deleteMedia(ratingKey, plexMedia.getId());
+    }
+
+    public String videoCodec() {
+        return this.plexMedia.getVideoCodec();
+    }
+
+    public String videoResolution() {
+        return this.plexMedia.getVideoResolution();
+    }
+
+    public String audioCodec() {
+        return this.plexMedia.getAudioCodec();
+    }
+
+    public String container() {
+        return this.plexMedia.getContainer();
     }
 }

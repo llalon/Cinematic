@@ -1,7 +1,9 @@
 package de.llalon.cinematic.domain;
 
+import de.llalon.cinematic.client.plex.dto.PlexMediaItem;
 import de.llalon.cinematic.client.sonarr.dto.SeriesResource;
 import de.llalon.cinematic.client.sonarr.dto.SonarrTag;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -100,5 +102,29 @@ public class Series extends LibraryMediaItem {
      */
     public String getStatus() {
         return this.sonarrSeries.getStatus();
+    }
+
+    /**
+     * Returns the media versions for all episodes in this series.
+     *
+     * <p>Traverses seasons and episodes via Plex children to collect all episode
+     * media versions.</p>
+     *
+     * @return an iterable of {@link MediaVersion} objects; empty if the series is not in Plex
+     */
+    @Override
+    @NotNull
+    public Iterable<MediaVersion> mediaVersions() {
+        return () -> fetchPlexMediaItem()
+                .map(PlexMediaItem::getRatingKey)
+                .map(ratingKey -> super.plexChildren(ratingKey).getMediaContainer().getMetadata().stream()
+                        .filter(season -> season.getRatingKey() != null)
+                        .flatMap(season ->
+                                super.plexChildren(season.getRatingKey()).getMediaContainer().getMetadata().stream()
+                                        .filter(episode -> episode.getMedia() != null)
+                                        .flatMap(episode -> episode.getMedia().stream()
+                                                .map(media -> new MediaVersion(ctx, media, episode.getRatingKey()))))
+                        .iterator())
+                .orElse(Collections.emptyIterator());
     }
 }
