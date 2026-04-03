@@ -147,11 +147,31 @@ abstract class LibraryMediaItem extends DomainModel {
                 .orElse(Collections.emptyIterator());
     }
 
+    /**
+     * Returns the media versions (e.g. 1080p, 4K) available in Plex for this item.
+     *
+     * <p>Looks up this item in Plex by external identifier, then fetches the full
+     * metadata to discover all media versions. Items with multiple versions are
+     * duplicates that can be compared by quality.</p>
+     *
+     * @return an iterable of {@link MediaVersion} objects; empty if the item is not in Plex
+     */
+    @NotNull
+    public Iterable<MediaVersion> mediaVersions() {
+        return () -> fetchPlexMediaItem()
+                .map(PlexMediaItem::getRatingKey)
+                .map(ratingKey -> super.plexMetadata(ratingKey).getMediaContainer().getMetadata().stream()
+                        .filter(item -> item.getMedia() != null)
+                        .flatMap(item -> item.getMedia().stream().map(media -> new MediaVersion(ctx, media, ratingKey)))
+                        .iterator())
+                .orElse(Collections.emptyIterator());
+    }
+
     @NotNull
     protected Optional<PlexMediaItem> fetchPlexMediaItem() {
         return plexSections()
                 .filter(section -> libraryMediaType.getPlexLibraryType().equalsIgnoreCase(section.getType()))
-                .map(section -> plexSection(section.getKey(), libraryMediaType.getPlexMediaType()))
+                .map(section -> super.plexSection(section.getKey(), libraryMediaType.getPlexMediaType()))
                 .filter(section -> section.getMediaContainer() != null
                         && section.getMediaContainer().getMetadata() != null)
                 .flatMap(section -> section.getMediaContainer().getMetadata().stream())

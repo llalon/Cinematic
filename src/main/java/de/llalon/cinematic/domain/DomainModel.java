@@ -48,7 +48,8 @@ abstract class DomainModel {
         OVERSEERR_USER,
         TAUTULLI_HISTORY,
         TAUTULLI_USER,
-        PLEX_SECTION;
+        PLEX_SECTION,
+        PLEX_METADATA;
     }
 
     protected final ClientContext ctx;
@@ -178,6 +179,18 @@ abstract class DomainModel {
     protected PlexMediaContainerWrapper<PlexMetadataContainer> plexSection(@NotNull String key, @NotNull String type) {
         return supplyWithCache(PLEX_SECTION, "section:" + key + ":" + type, () -> ctx.getPlexClient()
                 .getSection(key, type, true));
+    }
+
+    @NotNull
+    protected PlexMediaContainerWrapper<PlexMetadataContainer> plexMetadata(@NotNull String ratingKey) {
+        return supplyWithCache(PLEX_METADATA, "metadata:" + ratingKey, () -> ctx.getPlexClient()
+                .getMetadata(ratingKey));
+    }
+
+    @NotNull
+    protected PlexMediaContainerWrapper<PlexMetadataContainer> plexChildren(@NotNull String ratingKey) {
+        return supplyWithCache(PLEX_METADATA, "children:" + ratingKey, () -> ctx.getPlexClient()
+                .getChildren(ratingKey));
     }
 
     @NotNull
