@@ -67,6 +67,27 @@ public class Torrent extends DomainModel {
     }
 
     /**
+     * Removes a tag from this torrent by name.
+     *
+     * @param tag the tag name to remove; ignored if null or blank
+     */
+    public void removeTag(@Nullable String tag) {
+        if (tag != null && !tag.isBlank()) {
+            final String torrentHash = qbittorrentInfo.getHash();
+            ctx.getQbittorrentClient().removeTorrentTags(List.of(torrentHash), List.of(tag));
+        }
+    }
+
+    /**
+     * Removes a tag from this torrent.
+     *
+     * @param tag the Tag domain object whose name will be removed
+     */
+    public void removeTag(@NotNull Tag tag) {
+        removeTag(tag.getName());
+    }
+
+    /**
      * Returns the series associated with this torrent.
      *
      * <p>Correlates this torrent's hash against the Sonarr download queue via the {@code downloadId}
