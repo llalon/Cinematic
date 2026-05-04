@@ -3,6 +3,7 @@ package de.llalon.cinematic.domain;
 import de.llalon.cinematic.client.qbittorrent.dto.QBittorrentInfo;
 import de.llalon.cinematic.client.radarr.dto.RadarrQueue;
 import de.llalon.cinematic.client.sonarr.dto.SonarrQueue;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -74,7 +75,16 @@ public class Torrent extends DomainModel {
     public void removeTag(@Nullable String tag) {
         if (tag != null && !tag.isBlank()) {
             final String torrentHash = qbittorrentInfo.getHash();
-            ctx.getQbittorrentClient().removeTorrentTags(List.of(torrentHash), List.of(tag));
+            final List<String> matchedTags = new ArrayList<>();
+
+            // Case-insensitive tags to match across platforms
+            for (String candidate : qbittorrentInfo.getTags().split(",")) {
+                if (tag.equalsIgnoreCase(candidate.trim())) {
+                    matchedTags.add(candidate);
+                }
+            }
+
+            ctx.getQbittorrentClient().removeTorrentTags(List.of(torrentHash), matchedTags);
         }
     }
 
@@ -85,6 +95,31 @@ public class Torrent extends DomainModel {
      */
     public void removeTag(@NotNull Tag tag) {
         removeTag(tag.getName());
+    }
+
+    /**
+     * Checks whether this torrent currently has a specific tag.
+     *
+     * @param tag the tag name to check
+     * @return true if the torrent has the tag, false otherwise
+     */
+    public boolean hasTag(@Nullable String tag) {
+        if (tag == null || tag.isBlank()) {
+            return false;
+        }
+
+        final String tags = qbittorrentInfo.getTags();
+        if (tags == null || tags.isBlank()) {
+            return false;
+        }
+
+        for (String candidate : tags.split(",")) {
+            if (tag.equalsIgnoreCase(candidate.trim())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
