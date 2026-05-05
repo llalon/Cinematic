@@ -31,6 +31,11 @@ class CinematicIntegrationsTests {
     }
 
     @Test
+    void test() {
+        // Stub
+    }
+
+    @Test
     void canGetUsers() {
         var results = library.users();
         assertNotNull(results.iterator().next());
