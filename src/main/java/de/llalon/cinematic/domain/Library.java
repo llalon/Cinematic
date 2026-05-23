@@ -1,9 +1,7 @@
 package de.llalon.cinematic.domain;
 
-import static de.llalon.cinematic.domain.DomainModel.Caches.*;
-
-import de.llalon.cinematic.client.overseerr.dto.OverseerrUser;
 import de.llalon.cinematic.client.radarr.dto.RadarrTag;
+import de.llalon.cinematic.client.seerr.dto.SeerrUser;
 import de.llalon.cinematic.client.sonarr.dto.SonarrTag;
 import de.llalon.cinematic.client.tautulli.dto.TautulliUser;
 import java.util.HashSet;
@@ -90,19 +88,18 @@ public class Library extends DomainModel {
     }
 
     /**
-     * Returns an iterable of all requests from Overseerr.
+     * Returns an iterable of all requests from Seerr.
      *
      * @return an iterable of Request objects
      */
     @NotNull
     public Iterable<Request> requests() {
-        return () -> super.overseerrRequests()
-                .map(request -> new Request(ctx, request))
-                .iterator();
+        return () ->
+                super.seerrRequests().map(request -> new Request(ctx, request)).iterator();
     }
 
     /**
-     * Returns an iterable of all users, deduplicated by email, from Tautulli and Overseerr.
+     * Returns an iterable of all users, deduplicated by email, from Tautulli and Seerr.
      *
      * @return an iterable of User objects
      */
@@ -112,7 +109,7 @@ public class Library extends DomainModel {
             final Set<String> userEmails = new HashSet<>();
 
             return Stream.concat(
-                            super.overseerrUsers().map(OverseerrUser::getEmail),
+                            super.seerrUsers().map(SeerrUser::getEmail),
                             super.tautulliUsers().map(TautulliUser::getEmail))
                     .filter(email -> {
                         if (email == null || email.isEmpty()) {

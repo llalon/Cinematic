@@ -1,11 +1,11 @@
-package de.llalon.cinematic.client.overseerr.dto;
+package de.llalon.cinematic.client.seerr.dto;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * Generic wrapper for paginated results from Overseerr API.
+ * Generic wrapper for paginated results from Seerr API.
  *
  * @param <T> The type of results in the page
  */

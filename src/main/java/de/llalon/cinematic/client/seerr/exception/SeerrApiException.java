@@ -1,14 +1,14 @@
-package de.llalon.cinematic.client.overseerr.exception;
+package de.llalon.cinematic.client.seerr.exception;
 
 import lombok.Getter;
 
 /**
- * Exception thrown when Overseerr API calls fail.
+ * Exception thrown when Seerr API calls fail.
  * This indicates remote API errors such as HTTP errors, network failures,
  * authentication failures, or rate limiting.
  */
 @Getter
-public class OverseerrApiException extends RuntimeException {
+public class SeerrApiException extends RuntimeException {
 
     private final Integer statusCode;
     private final String responseBody;
@@ -17,10 +17,10 @@ public class OverseerrApiException extends RuntimeException {
      * Creates an exception for a failed HTTP response.
      *
      * @param message human-readable error description
-     * @param statusCode HTTP status code returned by the Overseerr API
+     * @param statusCode HTTP status code returned by the Seerr API
      * @param responseBody raw response body (may be empty)
      */
-    public OverseerrApiException(String message, int statusCode, String responseBody) {
+    public SeerrApiException(String message, int statusCode, String responseBody) {
         super(message);
         this.statusCode = statusCode;
         this.responseBody = responseBody;
@@ -32,7 +32,7 @@ public class OverseerrApiException extends RuntimeException {
      * @param message human-readable error description
      * @param cause the underlying exception
      */
-    public OverseerrApiException(String message, Throwable cause) {
+    public SeerrApiException(String message, Throwable cause) {
         super(message, cause);
         this.statusCode = null;
         this.responseBody = null;

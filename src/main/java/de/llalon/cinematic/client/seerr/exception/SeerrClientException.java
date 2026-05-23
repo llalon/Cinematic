@@ -1,13 +1,13 @@
-package de.llalon.cinematic.client.overseerr.exception;
+package de.llalon.cinematic.client.seerr.exception;
 
 /**
- * Exception thrown when Overseerr client fails to parse or serialize data.
+ * Exception thrown when Seerr client fails to parse or serialize data.
  * This indicates local client errors such as JSON serialization/deserialization failures,
  * schema mismatches, or invalid configuration.
  *
  * These errors are never retryable and typically indicate bugs or breaking API changes.
  */
-public class OverseerrClientException extends RuntimeException {
+public class SeerrClientException extends RuntimeException {
 
     /**
      * Creates an exception wrapping a local client-side failure.
@@ -15,7 +15,7 @@ public class OverseerrClientException extends RuntimeException {
      * @param message human-readable error description
      * @param cause the underlying parse or serialization exception
      */
-    public OverseerrClientException(String message, Throwable cause) {
+    public SeerrClientException(String message, Throwable cause) {
         super(message, cause);
     }
 

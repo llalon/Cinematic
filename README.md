@@ -10,7 +10,7 @@ It integrates:
 
 - Plex
 - Tautulli
-- Overseerr
+- Seerr
 - Sonarr
 - Radarr
 - qBittorrent
@@ -42,8 +42,8 @@ By default api clients will be configured from environment variables
 TAUTULLI_URL=http://localhost:8181
 TAUTULLI_API_KEY=your-tautulli-api-key
 
-OVERSEERR_URL=http://localhost:5055
-OVERSEERR_API_KEY=your-overseerr-api-key
+SEERR_URL=http://localhost:5055
+SEERR_API_KEY=your-seerr-api-key
 
 SONARR_URL=http://localhost:8989
 SONARR_API_KEY=your-sonarr-api-key
@@ -88,7 +88,7 @@ Library library = new Library(ClientContext.builder()
                 .url("http://localhost:8181")
                 .apiKey("test")
                 .build())
-        .overseerrProperties(OverseerrProperties.builder()
+        .seerrProperties(SeerrProperties.builder()
                 .url("http://localhost:5055")
                 .apiKey("test")
                 .build())

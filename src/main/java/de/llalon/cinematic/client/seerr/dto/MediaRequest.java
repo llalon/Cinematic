@@ -1,4 +1,4 @@
-package de.llalon.cinematic.client.overseerr.dto;
+package de.llalon.cinematic.client.seerr.dto;
 
 import com.squareup.moshi.Json;
 import java.time.LocalDateTime;
@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * Represents a media request in Overseerr.
+ * Represents a media request in Seerr.
  *
  * Status values:
  * 1 = PENDING APPROVAL
@@ -36,10 +36,10 @@ public class MediaRequest {
     private final LocalDateTime updatedAt;
 
     @Json(name = "requestedBy")
-    private final OverseerrUser requestedBy;
+    private final SeerrUser requestedBy;
 
     @Json(name = "modifiedBy")
-    private final OverseerrUser modifiedBy;
+    private final SeerrUser modifiedBy;
 
     @Json(name = "is4k")
     private final Boolean is4k;

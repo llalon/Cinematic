@@ -1,4 +1,4 @@
-package de.llalon.cinematic.client.overseerr.dto;
+package de.llalon.cinematic.client.seerr.dto;
 
 import com.squareup.moshi.Json;
 import java.util.List;
@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * Request body for creating a new media request in Overseerr.
+ * Request body for creating a new media request in Seerr.
  */
 @Data
 @AllArgsConstructor

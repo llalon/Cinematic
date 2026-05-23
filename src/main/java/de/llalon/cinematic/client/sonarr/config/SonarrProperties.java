@@ -3,6 +3,7 @@ package de.llalon.cinematic.client.sonarr.config;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Configuration properties for connecting to the Sonarr API.
@@ -14,9 +15,10 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class SonarrProperties {
-    private final String url;
-    private final String apiKey;
+    private String url;
+    private String apiKey;
 
     /**
      * Loads Sonarr connection properties from the {@code SONARR_URL} and

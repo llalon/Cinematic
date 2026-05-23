@@ -3,6 +3,7 @@ package de.llalon.cinematic.client.tautulli.config;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Configuration properties for connecting to the Tautulli API.
@@ -14,9 +15,10 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class TautulliProperties {
-    private final String url;
-    private final String apiKey;
+    private String url;
+    private String apiKey;
 
     /**
      * Loads Tautulli connection properties from the {@code TAUTULLI_URL} and

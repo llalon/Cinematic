@@ -8,7 +8,7 @@ It integrates:
 
 - Plex
 - Tautulli
-- Overseerr
+- Seerr
 - Sonarr
 - Radarr
 - qBittorrent
