@@ -71,17 +71,17 @@ For failures originating from the external service:
 ```java
 
 @Getter
-public class OverseerrApiException extends RuntimeException {
+public class SeerrApiException extends RuntimeException {
     private final Integer statusCode;
     private final String responseBody;
 
-    public OverseerrApiException(String message, int statusCode, String responseBody) {
+    public SeerrApiException(String message, int statusCode, String responseBody) {
         super(message);
         this.statusCode = statusCode;
         this.responseBody = responseBody;
     }
 
-    public OverseerrApiException(String message, Throwable cause) {
+    public SeerrApiException(String message, Throwable cause) {
         super(message, cause);
         this.statusCode = null;
         this.responseBody = null;
@@ -111,8 +111,8 @@ For failures in the client code itself:
 **Example:**
 
 ```java
-public class OverseerrClientParseException extends RuntimeException {
-    public OverseerrClientParseException(String message, Throwable cause) {
+public class SeerrClientParseException extends RuntimeException {
+    public SeerrClientParseException(String message, Throwable cause) {
         super(message, cause);
     }
 

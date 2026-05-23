@@ -1,22 +1,22 @@
-package de.llalon.cinematic.client.overseerr;
+package de.llalon.cinematic.client.seerr;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
-import de.llalon.cinematic.client.overseerr.config.OverseerrProperties;
-import de.llalon.cinematic.client.overseerr.dto.*;
-import de.llalon.cinematic.client.overseerr.exception.OverseerrApiException;
-import de.llalon.cinematic.client.overseerr.exception.OverseerrClientException;
+import de.llalon.cinematic.client.seerr.config.SeerrProperties;
+import de.llalon.cinematic.client.seerr.dto.*;
+import de.llalon.cinematic.client.seerr.exception.SeerrApiException;
+import de.llalon.cinematic.client.seerr.exception.SeerrClientException;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 
 /**
- * Client service for interacting with the Overseerr API (v1).
+ * Client service for interacting with the Seerr API (v1).
  *
- * Overseerr is a request management and media discovery tool that works with Plex,
- * Sonarr, and Radarr. This client provides type-safe access to Overseerr API endpoints.
+ * Seerr is a request management and media discovery tool that works with Plex,
+ * Sonarr, and Radarr. This client provides type-safe access to Seerr API endpoints.
  *
  * Authentication is handled via API key passed in X-Api-Key header.
  * All API calls are synchronous and blocking.
@@ -27,10 +27,10 @@ import okhttp3.*;
  * - Media information retrieval
  * - Idempotent operations safe for replay
  *
- * @see <a href="https://docs.overseerr.dev/">Overseerr Documentation</a>
+ * @see <a href="https://docs.seerr.dev/">Seerr Documentation</a>
  */
 @Slf4j
-public class OverseerrClient {
+public class SeerrClient {
 
     private static final String API_KEY_HEADER = "X-Api-Key";
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
@@ -41,20 +41,20 @@ public class OverseerrClient {
     private final HttpUrl baseUrl;
 
     /**
-     * Constructs a new {@code OverseerrClient}.
+     * Constructs a new {@code SeerrClient}.
      *
      * @param httpClient the OkHttp client to use for requests
-     * @param properties the Overseerr connection properties (URL and API key)
+     * @param properties the Seerr connection properties (URL and API key)
      * @param moshi the Moshi instance for JSON deserialization
      * @throws IllegalArgumentException if the URL or API key is invalid
      */
-    public OverseerrClient(OkHttpClient httpClient, OverseerrProperties properties, Moshi moshi) {
+    public SeerrClient(OkHttpClient httpClient, SeerrProperties properties, Moshi moshi) {
         this.moshi = moshi;
         this.apiKey = properties.getApiKey();
         this.httpClient = httpClient;
         this.baseUrl = HttpUrl.parse(properties.getUrl());
         if (this.baseUrl == null) {
-            throw new IllegalArgumentException("Invalid Overseerr URL: " + properties.getUrl());
+            throw new IllegalArgumentException("Invalid Seerr URL: " + properties.getUrl());
         }
         if (this.apiKey == null || this.apiKey.isEmpty()) {
             throw new IllegalArgumentException("Invalid API Key: " + properties.getApiKey());
@@ -64,14 +64,14 @@ public class OverseerrClient {
     // ==================== USERS ====================
 
     /**
-     * Get all users in Overseerr.
+     * Get all users in Seerr.
      *
      * @param take Number of results per page (optional)
      * @param skip Number of results to skip (optional)
      * @param sort Sort order: created, updated, requests, displayname (optional)
      * @return paged results of users
      */
-    public PagedResults<OverseerrUser> getAllUsers(Integer take, Integer skip, String sort) {
+    public PagedResults<SeerrUser> getAllUsers(Integer take, Integer skip, String sort) {
         log.debug("Fetching all users with take={}, skip={}, sort={}", take, skip, sort);
         HttpUrl.Builder urlBuilder = baseUrl.newBuilder().addPathSegments("api/v1/user");
         if (take != null) {
@@ -83,16 +83,16 @@ public class OverseerrClient {
         if (sort != null) {
             urlBuilder.addQueryParameter("sort", sort);
         }
-        Type type = Types.newParameterizedType(PagedResults.class, OverseerrUser.class);
+        Type type = Types.newParameterizedType(PagedResults.class, SeerrUser.class);
         return get(urlBuilder.build(), type);
     }
 
     /**
-     * Get all users in Overseerr with default pagination.
+     * Get all users in Seerr with default pagination.
      *
      * @return paged results of users
      */
-    public PagedResults<OverseerrUser> getAllUsers() {
+    public PagedResults<SeerrUser> getAllUsers() {
         return getAllUsers(null, null, null);
     }
 
@@ -102,21 +102,21 @@ public class OverseerrClient {
      * @param userId User ID
      * @return user details
      */
-    public OverseerrUser getUser(int userId) {
+    public SeerrUser getUser(int userId) {
         log.debug("Fetching user with ID: {}", userId);
-        return get("/api/v1/user/" + userId, OverseerrUser.class);
+        return get("/api/v1/user/" + userId, SeerrUser.class);
     }
 
     /**
      * Create a new user.
      * Requires MANAGE_USERS permission.
      *
-     * @param overseerrUser User object with email, username, and permissions
+     * @param seerrUser User object with email, username, and permissions
      * @return created user with ID
      */
-    public OverseerrUser createUser(OverseerrUser overseerrUser) {
-        log.debug("Creating user: {}", overseerrUser.getEmail());
-        return post("/api/v1/user", overseerrUser, OverseerrUser.class);
+    public SeerrUser createUser(SeerrUser seerrUser) {
+        log.debug("Creating user: {}", seerrUser.getEmail());
+        return post("/api/v1/user", seerrUser, SeerrUser.class);
     }
 
     /**
@@ -125,31 +125,31 @@ public class OverseerrClient {
      * Requires MANAGE_USERS permission.
      *
      * @param userId User ID
-     * @param overseerrUser User object with updated fields
+     * @param seerrUser User object with updated fields
      * @return updated user
      */
-    public OverseerrUser updateUser(int userId, OverseerrUser overseerrUser) {
+    public SeerrUser updateUser(int userId, SeerrUser seerrUser) {
         log.debug("Updating user with ID: {}", userId);
-        return put("/api/v1/user/" + userId, overseerrUser, OverseerrUser.class);
+        return put("/api/v1/user/" + userId, seerrUser, SeerrUser.class);
     }
 
     /**
-     * Delete a user from Overseerr.
+     * Delete a user from Seerr.
      * Requires MANAGE_USERS permission.
      *
      * @param userId User ID
      * @return deleted user details
      */
-    public OverseerrUser deleteUser(int userId) {
+    public SeerrUser deleteUser(int userId) {
         log.debug("Deleting user with ID: {}", userId);
-        Type type = Types.newParameterizedType(PagedResults.class, OverseerrUser.class);
+        Type type = Types.newParameterizedType(PagedResults.class, SeerrUser.class);
         return delete("/api/v1/user/" + userId, type);
     }
 
     // ==================== REQUESTS ====================
 
     /**
-     * Get all requests in Overseerr.
+     * Get all requests in Seerr.
      * Returns all requests if user has ADMIN or MANAGE_REQUESTS permissions.
      * Otherwise, only returns the logged-in user's requests.
      *
@@ -281,7 +281,7 @@ public class OverseerrClient {
     }
 
     /**
-     * Delete a request from Overseerr.
+     * Delete a request from Seerr.
      * If user has MANAGE_REQUESTS permission, any request can be removed.
      * Otherwise, only pending requests can be removed.
      *
@@ -332,7 +332,7 @@ public class OverseerrClient {
     // ==================== MEDIA ====================
 
     /**
-     * Get all media in Overseerr.
+     * Get all media in Seerr.
      *
      * @param take Number of results per page (optional)
      * @param skip Number of results to skip (optional)
@@ -369,7 +369,7 @@ public class OverseerrClient {
     }
 
     /**
-     * Delete media from Overseerr.
+     * Delete media from Seerr.
      *
      * @param mediaId Media ID
      */
@@ -394,7 +394,7 @@ public class OverseerrClient {
     // ==================== HTTP METHODS ====================
 
     /**
-     * Execute a GET request to the Overseerr API.
+     * Execute a GET request to the Seerr API.
      *
      * @param path API path
      * @param responseType Type for the expected response type
@@ -409,7 +409,7 @@ public class OverseerrClient {
     }
 
     /**
-     * Execute a GET request to the Overseerr API.
+     * Execute a GET request to the Seerr API.
      *
      * @param url Full URL with query parameters
      * @param responseType Type for the expected response type
@@ -440,7 +440,7 @@ public class OverseerrClient {
     }
 
     /**
-     * Execute a POST request to the Overseerr API.
+     * Execute a POST request to the Seerr API.
      *
      * @param path API path
      * @param body Request body object (can be null)
@@ -471,12 +471,12 @@ public class OverseerrClient {
             return executeRequest(request, responseType);
         } catch (Exception e) {
             log.error("Failed to serialize request body for POST {}", path, e);
-            throw new OverseerrClientException("Failed to serialize request body for POST " + path, e);
+            throw new SeerrClientException("Failed to serialize request body for POST " + path, e);
         }
     }
 
     /**
-     * Execute a PUT request to the Overseerr API.
+     * Execute a PUT request to the Seerr API.
      *
      * @param path API path
      * @param body Request body object
@@ -501,12 +501,12 @@ public class OverseerrClient {
             return executeRequest(request, responseType);
         } catch (Exception e) {
             log.error("Failed to serialize request body for PUT {}", path, e);
-            throw new OverseerrClientException("Failed to serialize request body for PUT " + path, e);
+            throw new SeerrClientException("Failed to serialize request body for PUT " + path, e);
         }
     }
 
     /**
-     * Execute a DELETE request to the Overseerr API.
+     * Execute a DELETE request to the Seerr API.
      *
      * @param path API path
      */
@@ -518,7 +518,7 @@ public class OverseerrClient {
     }
 
     /**
-     * Execute a DELETE request to the Overseerr API with response body.
+     * Execute a DELETE request to the Seerr API with response body.
      *
      * @param path API path
      * @param responseType Type for the expected response type
@@ -533,7 +533,7 @@ public class OverseerrClient {
     }
 
     /**
-     * Execute a DELETE request to the Overseerr API.
+     * Execute a DELETE request to the Seerr API.
      *
      * @param url Full URL
      * @param responseType Type for the expected response type (can be null)
@@ -553,13 +553,13 @@ public class OverseerrClient {
             try (Response response = httpClient.newCall(request).execute()) {
                 if (!response.isSuccessful() && response.code() != 204) {
                     String errorBody = response.body() != null ? response.body().string() : "";
-                    log.error("Overseerr API error: status={}, body={}", response.code(), errorBody);
-                    throw new OverseerrApiException(
-                            "Overseerr API request failed: HTTP " + response.code(), response.code(), errorBody);
+                    log.error("Seerr API error: status={}, body={}", response.code(), errorBody);
+                    throw new SeerrApiException(
+                            "Seerr API request failed: HTTP " + response.code(), response.code(), errorBody);
                 }
             } catch (IOException e) {
                 log.error("Failed to execute DELETE request", e);
-                throw new OverseerrApiException("Failed to execute DELETE request", e);
+                throw new SeerrApiException("Failed to execute DELETE request", e);
             }
             return null;
         }
@@ -577,9 +577,9 @@ public class OverseerrClient {
         try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful() && response.code() != 204) {
                 String errorBody = response.body() != null ? response.body().string() : "";
-                log.error("Overseerr API error: status={}, body={}", response.code(), errorBody);
-                throw new OverseerrApiException(
-                        "Overseerr API request failed: HTTP " + response.code(), response.code(), errorBody);
+                log.error("Seerr API error: status={}, body={}", response.code(), errorBody);
+                throw new SeerrApiException(
+                        "Seerr API request failed: HTTP " + response.code(), response.code(), errorBody);
             }
 
             String responseBody = response.body() != null ? response.body().string() : "";
@@ -591,13 +591,12 @@ public class OverseerrClient {
                 JsonAdapter<T> adapter = (JsonAdapter<T>) moshi.adapter(responseType);
                 return adapter.fromJson(responseBody);
             } catch (IOException parseException) {
-                log.error("Failed to parse Overseerr response: {}", request.url(), parseException);
-                throw new OverseerrClientException(
-                        "Failed to parse Overseerr response: " + request.url(), parseException);
+                log.error("Failed to parse Seerr response: {}", request.url(), parseException);
+                throw new SeerrClientException("Failed to parse Seerr response: " + request.url(), parseException);
             }
         } catch (IOException e) {
-            log.error("Failed to execute Overseerr request: {}", request.url(), e);
-            throw new OverseerrApiException("Failed to execute Overseerr request: " + request.url(), e);
+            log.error("Failed to execute Seerr request: {}", request.url(), e);
+            throw new SeerrApiException("Failed to execute Seerr request: " + request.url(), e);
         }
     }
 }

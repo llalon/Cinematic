@@ -1,14 +1,14 @@
 package de.llalon.cinematic.domain;
 
 import com.squareup.moshi.Moshi;
-import de.llalon.cinematic.client.overseerr.OverseerrClient;
-import de.llalon.cinematic.client.overseerr.config.OverseerrProperties;
 import de.llalon.cinematic.client.plex.PlexClient;
 import de.llalon.cinematic.client.plex.config.PlexProperties;
 import de.llalon.cinematic.client.qbittorrent.QBittorrentClient;
 import de.llalon.cinematic.client.qbittorrent.config.QBittorrentProperties;
 import de.llalon.cinematic.client.radarr.RadarrClient;
 import de.llalon.cinematic.client.radarr.config.RadarrProperties;
+import de.llalon.cinematic.client.seerr.SeerrClient;
+import de.llalon.cinematic.client.seerr.config.SeerrProperties;
 import de.llalon.cinematic.client.sonarr.SonarrClient;
 import de.llalon.cinematic.client.sonarr.config.SonarrProperties;
 import de.llalon.cinematic.client.tautulli.TautulliClient;
@@ -48,13 +48,13 @@ public final class ClientContext {
             RadarrProperties radarrProperties,
             SonarrProperties sonarrProperties,
             QBittorrentProperties qbittorrentProperties,
-            OverseerrProperties overseerrProperties,
+            SeerrProperties seerrProperties,
             TautulliProperties tautulliProperties,
             PlexClient plexClient,
             RadarrClient radarrClient,
             SonarrClient sonarrClient,
             QBittorrentClient qbittorrentClient,
-            OverseerrClient overseerrClient,
+            SeerrClient seerrClient,
             TautulliClient tautulliClient) {
         this.httpClient = httpClient == null ? new OkHttpClient() : httpClient;
         this.moshi = moshi == null
@@ -110,15 +110,14 @@ public final class ClientContext {
                     : null;
         }
 
-        // Overseerr
-        if (overseerrClient != null) {
-            this.overseerrClient = overseerrClient;
-            this.overseerrProperties = overseerrProperties;
+        // Seerr
+        if (seerrClient != null) {
+            this.seerrClient = seerrClient;
+            this.seerrProperties = seerrProperties;
         } else {
-            this.overseerrProperties =
-                    overseerrProperties != null ? overseerrProperties : OverseerrProperties.fromEnvironment();
-            this.overseerrClient = this.overseerrProperties.getUrl() != null
-                    ? new OverseerrClient(this.httpClient, this.overseerrProperties, this.moshi)
+            this.seerrProperties = seerrProperties != null ? seerrProperties : SeerrProperties.fromEnvironment();
+            this.seerrClient = this.seerrProperties.getUrl() != null
+                    ? new SeerrClient(this.httpClient, this.seerrProperties, this.moshi)
                     : null;
         }
 
@@ -140,8 +139,8 @@ public final class ClientContext {
         if (this.tautulliClient == null) {
             log.warn("Tautulli not configured. Some features may not be available");
         }
-        if (this.overseerrClient == null) {
-            log.warn("Overseerr not configured. Some features may not be available");
+        if (this.seerrClient == null) {
+            log.warn("Seerr not configured. Some features may not be available");
         }
         if (this.radarrClient == null) {
             log.warn("Radarr not configured. Some features may not be available");
@@ -193,9 +192,9 @@ public final class ClientContext {
     private final QBittorrentProperties qbittorrentProperties;
 
     /**
-     * The Overseerr properties for configuration.
+     * The Seerr properties for configuration.
      */
-    private final OverseerrProperties overseerrProperties;
+    private final SeerrProperties seerrProperties;
 
     /**
      * The Tautulli properties for configuration.
@@ -223,9 +222,9 @@ public final class ClientContext {
     private final QBittorrentClient qbittorrentClient;
 
     /**
-     * The Overseerr client instance.
+     * The Seerr client instance.
      */
-    private final OverseerrClient overseerrClient;
+    private final SeerrClient seerrClient;
 
     /**
      * The Tautulli client instance.
@@ -302,13 +301,13 @@ public final class ClientContext {
     }
 
     /**
-     * Returns the Overseerr configuration properties, or {@code null} if Overseerr is not configured.
+     * Returns the Seerr configuration properties, or {@code null} if Seerr is not configured.
      *
-     * @return the Overseerr properties, or {@code null}
+     * @return the Seerr properties, or {@code null}
      */
     @Nullable
-    public OverseerrProperties getOverseerrProperties() {
-        return this.overseerrProperties;
+    public SeerrProperties getSeerrProperties() {
+        return this.seerrProperties;
     }
 
     /**
@@ -378,17 +377,17 @@ public final class ClientContext {
     }
 
     /**
-     * Returns the configured {@link OverseerrClient}.
+     * Returns the configured {@link SeerrClient}.
      *
-     * @return the Overseerr client
-     * @throws ClientNotConfiguredException if Overseerr is not configured
+     * @return the Seerr client
+     * @throws ClientNotConfiguredException if Seerr is not configured
      */
     @NotNull
-    public OverseerrClient getOverseerrClient() {
-        if (this.overseerrClient == null) {
-            throw new ClientNotConfiguredException("Overseerr not configured");
+    public SeerrClient getSeerrClient() {
+        if (this.seerrClient == null) {
+            throw new ClientNotConfiguredException("Seerr not configured");
         }
-        return this.overseerrClient;
+        return this.seerrClient;
     }
 
     /**

@@ -24,7 +24,7 @@ class CinematicIntegrationsTests {
             library.getContext().getQbittorrentClient();
             library.getContext().getSonarrClient();
             library.getContext().getTautulliClient();
-            library.getContext().getOverseerrClient();
+            library.getContext().getSeerrClient();
         } catch (Exception e) {
             throw new TestAbortedException("Environment variables for client configuration not set.");
         }

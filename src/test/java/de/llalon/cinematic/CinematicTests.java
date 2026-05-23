@@ -1,9 +1,9 @@
 package de.llalon.cinematic;
 
-import de.llalon.cinematic.client.overseerr.config.OverseerrProperties;
 import de.llalon.cinematic.client.plex.config.PlexProperties;
 import de.llalon.cinematic.client.qbittorrent.config.QBittorrentProperties;
 import de.llalon.cinematic.client.radarr.config.RadarrProperties;
+import de.llalon.cinematic.client.seerr.config.SeerrProperties;
 import de.llalon.cinematic.client.sonarr.config.SonarrProperties;
 import de.llalon.cinematic.client.tautulli.config.TautulliProperties;
 import de.llalon.cinematic.domain.ClientContext;
@@ -44,7 +44,7 @@ class CinematicTests {
                         .url("http://localhost:8181")
                         .apiKey("test")
                         .build())
-                .overseerrProperties(OverseerrProperties.builder()
+                .seerrProperties(SeerrProperties.builder()
                         .url("http://localhost:5055")
                         .apiKey("test")
                         .build())
@@ -57,6 +57,6 @@ class CinematicTests {
         Assertions.assertNotNull(library.getContext().getQbittorrentClient());
         Assertions.assertNotNull(library.getContext().getTautulliClient());
         Assertions.assertNotNull(library.getContext().getSonarrClient());
-        Assertions.assertNotNull(library.getContext().getOverseerrClient());
+        Assertions.assertNotNull(library.getContext().getSeerrClient());
     }
 }

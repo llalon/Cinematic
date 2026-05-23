@@ -3,6 +3,7 @@ package de.llalon.cinematic.client.plex.config;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Configuration properties for connecting to the Plex Media Server API.
@@ -14,9 +15,10 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class PlexProperties {
-    private final String url;
-    private final String token;
+    private String url;
+    private String token;
 
     /**
      * Loads Plex connection properties from the {@code PLEX_URL} and

@@ -1,4 +1,4 @@
-package de.llalon.cinematic.client.overseerr.dto;
+package de.llalon.cinematic.client.seerr.dto;
 
 import com.squareup.moshi.Json;
 import java.time.LocalDateTime;
@@ -6,11 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * Represents a user in Overseerr.
+ * Represents a user in Seerr.
  */
 @Data
 @AllArgsConstructor
-public class OverseerrUser {
+public class SeerrUser {
     private final Integer id;
     private final String email;
     private final String username;

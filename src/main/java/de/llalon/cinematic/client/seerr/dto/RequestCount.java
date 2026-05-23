@@ -1,10 +1,10 @@
-package de.llalon.cinematic.client.overseerr.dto;
+package de.llalon.cinematic.client.seerr.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * Represents request counts in Overseerr.
+ * Represents request counts in Seerr.
  */
 @Data
 @AllArgsConstructor

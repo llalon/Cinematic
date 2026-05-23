@@ -3,6 +3,7 @@ package de.llalon.cinematic.client.qbittorrent.config;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Configuration properties for qBittorrent WebUI API.
@@ -13,11 +14,12 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class QBittorrentProperties {
 
-    private final String url;
-    private final String username;
-    private final String password;
+    private String url;
+    private String username;
+    private String password;
 
     /**
      * Loads qBittorrent connection properties from the {@code QBITTORRENT_URL},

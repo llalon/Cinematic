@@ -1,11 +1,11 @@
-package de.llalon.cinematic.client.overseerr.dto;
+package de.llalon.cinematic.client.seerr.dto;
 
 import com.squareup.moshi.Json;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * Represents a TV season in Overseerr requests.
+ * Represents a TV season in Seerr requests.
  */
 @Data
 @AllArgsConstructor

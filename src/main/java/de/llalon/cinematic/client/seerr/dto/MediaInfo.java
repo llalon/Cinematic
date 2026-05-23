@@ -1,4 +1,4 @@
-package de.llalon.cinematic.client.overseerr.dto;
+package de.llalon.cinematic.client.seerr.dto;
 
 import com.squareup.moshi.Json;
 import java.time.LocalDateTime;
@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * Represents media information in Overseerr.
+ * Represents media information in Seerr.
  *
  * Status values:
  * 1 = UNKNOWN

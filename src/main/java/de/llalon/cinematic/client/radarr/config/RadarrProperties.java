@@ -3,6 +3,7 @@ package de.llalon.cinematic.client.radarr.config;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Configuration properties for connecting to the Radarr API.
@@ -14,9 +15,10 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class RadarrProperties {
-    private final String url;
-    private final String apiKey;
+    private String url;
+    private String apiKey;
 
     /**
      * Loads Radarr connection properties from the {@code RADARR_URL} and

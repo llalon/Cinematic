@@ -1,10 +1,10 @@
-package de.llalon.cinematic.client.overseerr.dto;
+package de.llalon.cinematic.client.seerr.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * Represents pagination information in Overseerr API responses.
+ * Represents pagination information in Seerr API responses.
  */
 @Data
 @AllArgsConstructor

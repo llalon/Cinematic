@@ -2,8 +2,6 @@ package de.llalon.cinematic.domain;
 
 import static de.llalon.cinematic.domain.DomainModel.Caches.*;
 
-import de.llalon.cinematic.client.overseerr.dto.MediaRequest;
-import de.llalon.cinematic.client.overseerr.dto.OverseerrUser;
 import de.llalon.cinematic.client.plex.dto.PlexDirectory;
 import de.llalon.cinematic.client.plex.dto.PlexMediaContainerWrapper;
 import de.llalon.cinematic.client.plex.dto.PlexMetadataContainer;
@@ -11,6 +9,8 @@ import de.llalon.cinematic.client.qbittorrent.dto.QBittorrentInfo;
 import de.llalon.cinematic.client.radarr.dto.MovieResource;
 import de.llalon.cinematic.client.radarr.dto.RadarrQueue;
 import de.llalon.cinematic.client.radarr.dto.RadarrTag;
+import de.llalon.cinematic.client.seerr.dto.MediaRequest;
+import de.llalon.cinematic.client.seerr.dto.SeerrUser;
 import de.llalon.cinematic.client.sonarr.dto.SeriesResource;
 import de.llalon.cinematic.client.sonarr.dto.SonarrQueue;
 import de.llalon.cinematic.client.sonarr.dto.SonarrTag;
@@ -44,8 +44,8 @@ abstract class DomainModel {
         QBITTORRENT_TORRENT,
         SONARR_QUEUE,
         RADARR_QUEUE,
-        OVERSEERR_REQUEST,
-        OVERSEERR_USER,
+        SEERR_REQUEST,
+        SEERR_USER,
         TAUTULLI_HISTORY,
         TAUTULLI_USER,
         PLEX_SECTION;
@@ -118,35 +118,35 @@ abstract class DomainModel {
     }
 
     @NotNull
-    protected Stream<MediaRequest> overseerrRequests() {
+    protected Stream<MediaRequest> seerrRequests() {
         return StreamUtils.streamIterator(new CachingIterable<>(
-                () -> new OffsetPagedIterable<>((take, skip) -> ctx.getOverseerrClient()
+                () -> new OffsetPagedIterable<>((take, skip) -> ctx.getSeerrClient()
                                 .getAllRequests(take, skip, null, null, null)
                                 .getResults())
                         .iterator(),
-                getOrCreateCache(OVERSEERR_REQUEST),
+                getOrCreateCache(SEERR_REQUEST),
                 "all"));
     }
 
     @NotNull
-    protected Stream<MediaRequest> overseerrRequestsByUser(@NotNull Integer userId) {
+    protected Stream<MediaRequest> seerrRequestsByUser(@NotNull Integer userId) {
         return StreamUtils.streamIterator(new CachingIterable<>(
-                () -> new OffsetPagedIterable<>((take, skip) -> ctx.getOverseerrClient()
+                () -> new OffsetPagedIterable<>((take, skip) -> ctx.getSeerrClient()
                                 .getAllRequests(take, skip, null, null, userId)
                                 .getResults())
                         .iterator(),
-                getOrCreateCache(OVERSEERR_REQUEST),
+                getOrCreateCache(SEERR_REQUEST),
                 "user:" + userId));
     }
 
     @NotNull
-    protected Stream<OverseerrUser> overseerrUsers() {
+    protected Stream<SeerrUser> seerrUsers() {
         return StreamUtils.streamIterator(new CachingIterable<>(
-                () -> new OffsetPagedIterable<>((take, skip) -> ctx.getOverseerrClient()
+                () -> new OffsetPagedIterable<>((take, skip) -> ctx.getSeerrClient()
                                 .getAllUsers(take, skip, null)
                                 .getResults())
                         .iterator(),
-                getOrCreateCache(OVERSEERR_USER),
+                getOrCreateCache(SEERR_USER),
                 "all"));
     }
 
