@@ -42,6 +42,9 @@ public class MovieFileResource {
     @Json(name = "qualityCutoffNotMet")
     private final Boolean qualityCutoffNotMet;
 
+    @Json(name = "mediaInfo")
+    private final RadarrMediaInfoResource mediaInfo;
+
     @Json(name = "originalFilePath")
     private final String originalFilePath;
 }

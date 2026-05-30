@@ -6,11 +6,13 @@ import de.llalon.cinematic.client.plex.dto.PlexDirectory;
 import de.llalon.cinematic.client.plex.dto.PlexMediaContainerWrapper;
 import de.llalon.cinematic.client.plex.dto.PlexMetadataContainer;
 import de.llalon.cinematic.client.qbittorrent.dto.QBittorrentInfo;
+import de.llalon.cinematic.client.radarr.dto.MovieFileResource;
 import de.llalon.cinematic.client.radarr.dto.MovieResource;
 import de.llalon.cinematic.client.radarr.dto.RadarrQueue;
 import de.llalon.cinematic.client.radarr.dto.RadarrTag;
 import de.llalon.cinematic.client.seerr.dto.MediaRequest;
 import de.llalon.cinematic.client.seerr.dto.SeerrUser;
+import de.llalon.cinematic.client.sonarr.dto.EpisodeFileResource;
 import de.llalon.cinematic.client.sonarr.dto.SeriesResource;
 import de.llalon.cinematic.client.sonarr.dto.SonarrQueue;
 import de.llalon.cinematic.client.sonarr.dto.SonarrTag;
@@ -90,9 +92,25 @@ abstract class DomainModel {
     }
 
     @NotNull
+    protected Stream<MovieFileResource> radarrMovieFilesByMovie(@NotNull Integer movieId) {
+        return StreamUtils.streamIterator(new CachingIterable<>(
+                () -> ctx.getRadarrClient().getMovieFilesByMovie(movieId).iterator(),
+                getOrCreateCache(RADARR_MOVIE),
+                "files:movie:" + movieId));
+    }
+
+    @NotNull
     protected Stream<SeriesResource> sonarrSeries() {
         return StreamUtils.streamIterator(new CachingIterable<>(
                 () -> ctx.getSonarrClient().getAllSeries().iterator(), getOrCreateCache(SONARR_SERIE), "all"));
+    }
+
+    @NotNull
+    protected Stream<EpisodeFileResource> sonarrEpisodeFilesBySeries(@NotNull Integer seriesId) {
+        return StreamUtils.streamIterator(new CachingIterable<>(
+                () -> ctx.getSonarrClient().getEpisodeFilesBySeries(seriesId).iterator(),
+                getOrCreateCache(SONARR_SERIE),
+                "files:series:" + seriesId));
     }
 
     @NotNull

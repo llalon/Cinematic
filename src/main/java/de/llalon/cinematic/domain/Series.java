@@ -76,6 +76,20 @@ public class Series extends LibraryMediaItem {
     }
 
     /**
+     * Returns the media file formats associated with this series.
+     *
+     * @return an iterable of MediaFormat objects, one per imported episode file with media information
+     */
+    @Override
+    @NotNull
+    public Iterable<MediaFormat> formats() {
+        return () -> sonarrEpisodeFilesBySeries(sonarrSeries.getId())
+                .filter(episodeFile -> episodeFile.getMediaInfo() != null)
+                .map(episodeFile -> new MediaFormat(ctx, episodeFile.getMediaInfo()))
+                .iterator();
+    }
+
+    /**
      * Returns the title of this series.
      *
      * @return the series title
