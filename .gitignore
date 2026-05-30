@@ -39,7 +39,3 @@ build/
 .DS_Store
 /.idea
 .env
-/bin
-!/bin/
-/bin/*
-!/bin/start_repel.sh
