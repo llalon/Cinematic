@@ -40,3 +40,6 @@ build/
 /.idea
 .env
 /bin
+!/bin/
+/bin/*
+!/bin/start_repel.sh
