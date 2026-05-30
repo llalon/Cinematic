@@ -109,6 +109,12 @@ abstract class DomainModel {
     }
 
     @NotNull
+    protected SeriesResource sonarrSeriesById(@NotNull Integer seriesId) {
+        return supplyWithCache(
+                SONARR_SERIE, "series:" + seriesId, () -> ctx.getSonarrClient().getSeries(seriesId));
+    }
+
+    @NotNull
     protected Stream<EpisodeResource> sonarrEpisodesBySeries(@NotNull Integer seriesId) {
         return StreamUtils.streamIterator(new CachingIterable<>(
                 () -> ctx.getSonarrClient().getEpisodesBySeries(seriesId).iterator(),

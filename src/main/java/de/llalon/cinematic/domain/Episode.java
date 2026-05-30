@@ -24,6 +24,20 @@ public class Episode extends DomainModel {
     }
 
     /**
+     * Returns the series this episode belongs to.
+     *
+     * @return the parent Series
+     */
+    @NotNull
+    public Series series() {
+        if (sonarrEpisode.getSeries() != null) {
+            return new Series(ctx, sonarrEpisode.getSeries());
+        }
+
+        return new Series(ctx, sonarrSeriesById(sonarrEpisode.getSeriesId()));
+    }
+
+    /**
      * Returns the media file formats associated with this episode.
      *
      * @return an iterable of MediaFormat objects
