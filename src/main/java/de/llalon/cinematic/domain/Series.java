@@ -76,20 +76,6 @@ public class Series extends LibraryMediaItem {
     }
 
     /**
-     * Returns the media file formats associated with this series.
-     *
-     * @return an iterable of MediaFormat objects, one per imported episode file with media information
-     */
-    @Override
-    @NotNull
-    public Iterable<MediaFormat> formats() {
-        return () -> sonarrEpisodeFilesBySeries(sonarrSeries.getId())
-                .filter(episodeFile -> episodeFile.getMediaInfo() != null)
-                .map(episodeFile -> new MediaFormat(ctx, episodeFile.getMediaInfo()))
-                .iterator();
-    }
-
-    /**
      * Returns the title of this series.
      *
      * @return the series title
@@ -114,5 +100,17 @@ public class Series extends LibraryMediaItem {
      */
     public String getStatus() {
         return this.sonarrSeries.getStatus();
+    }
+
+    /**
+     * Returns the episodes associated with this series.
+     *
+     * @return an iterable of Episode objects
+     */
+    @NotNull
+    public Iterable<Episode> episodes() {
+        return () -> sonarrEpisodesBySeries(sonarrSeries.getId())
+                .map(episode -> new Episode(ctx, episode))
+                .iterator();
     }
 }

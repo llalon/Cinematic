@@ -48,9 +48,11 @@ class CinematicIntegrationsTests {
     @Test
     void canGetSeriesVideoFormats() {
         for (var series : library.series()) {
-            for (var format : series.formats()) {
-                assertNotNull(format.getVideoFormat());
-                return;
+            for (var episode : series.episodes()) {
+                for (var format : episode.formats()) {
+                    assertNotNull(format.getVideoFormat());
+                    return;
+                }
             }
         }
     }

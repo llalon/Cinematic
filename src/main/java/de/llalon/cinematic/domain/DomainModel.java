@@ -13,6 +13,7 @@ import de.llalon.cinematic.client.radarr.dto.RadarrTag;
 import de.llalon.cinematic.client.seerr.dto.MediaRequest;
 import de.llalon.cinematic.client.seerr.dto.SeerrUser;
 import de.llalon.cinematic.client.sonarr.dto.EpisodeFileResource;
+import de.llalon.cinematic.client.sonarr.dto.EpisodeResource;
 import de.llalon.cinematic.client.sonarr.dto.SeriesResource;
 import de.llalon.cinematic.client.sonarr.dto.SonarrQueue;
 import de.llalon.cinematic.client.sonarr.dto.SonarrTag;
@@ -40,6 +41,8 @@ abstract class DomainModel {
         RADARR_TAG,
         QBITTORRENT_TAG,
         SONARR_SERIE,
+        SONARR_EPISODE,
+        SONARR_EPISODE_FILE,
         RADARR_MOVIE,
         SONARR_USER,
         RADARR_USER,
@@ -106,11 +109,17 @@ abstract class DomainModel {
     }
 
     @NotNull
-    protected Stream<EpisodeFileResource> sonarrEpisodeFilesBySeries(@NotNull Integer seriesId) {
+    protected Stream<EpisodeResource> sonarrEpisodesBySeries(@NotNull Integer seriesId) {
         return StreamUtils.streamIterator(new CachingIterable<>(
-                () -> ctx.getSonarrClient().getEpisodeFilesBySeries(seriesId).iterator(),
-                getOrCreateCache(SONARR_SERIE),
-                "files:series:" + seriesId));
+                () -> ctx.getSonarrClient().getEpisodesBySeries(seriesId).iterator(),
+                getOrCreateCache(SONARR_EPISODE),
+                "series:" + seriesId));
+    }
+
+    @NotNull
+    protected EpisodeFileResource sonarrEpisodeFile(@NotNull Integer episodeFileId) {
+        return supplyWithCache(SONARR_EPISODE_FILE, "episodeFile:" + episodeFileId, () -> ctx.getSonarrClient()
+                .getEpisodeFile(episodeFileId));
     }
 
     @NotNull

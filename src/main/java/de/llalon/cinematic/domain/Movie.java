@@ -84,7 +84,6 @@ public class Movie extends LibraryMediaItem {
      *
      * @return an iterable of MediaFormat objects
      */
-    @Override
     @NotNull
     public Iterable<MediaFormat> formats() {
         return () -> {

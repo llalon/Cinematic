@@ -99,16 +99,6 @@ abstract class LibraryMediaItem extends DomainModel {
     public abstract Iterable<Torrent> torrents();
 
     /**
-     * Returns the media file formats associated with this media item.
-     *
-     * <p>Movies generally return one format. Series return one format per imported episode file.</p>
-     *
-     * @return an iterable of MediaFormat objects
-     */
-    @NotNull
-    public abstract Iterable<MediaFormat> formats();
-
-    /**
      * Returns the requests associated with this media item.
      *
      * @return an iterable of Request objects
