@@ -36,6 +36,26 @@ class CinematicIntegrationsTests {
     }
 
     @Test
+    void canGetMovieVideoFormats() {
+        for (var movie : library.movies()) {
+            for (var format : movie.formats()) {
+                assertNotNull(format.getVideoFormat());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetSeriesVideoFormats() {
+        for (var series : library.series()) {
+            for (var format : series.formats()) {
+                assertNotNull(format.getVideoFormat());
+                return;
+            }
+        }
+    }
+
+    @Test
     void canGetUsers() {
         var results = library.users();
         assertNotNull(results.iterator().next());
