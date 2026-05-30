@@ -21,8 +21,6 @@ if ! command -v jruby >/dev/null 2>&1; then
   exit 1
 fi
 
-export MAVEN_OPTS="${MAVEN_OPTS:-} --enable-final-field-mutation=ALL-UNNAMED"
-
 ./mvnw \
   -q \
   -DskipTests \
