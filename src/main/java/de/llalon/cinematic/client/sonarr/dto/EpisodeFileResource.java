@@ -46,7 +46,7 @@ public class EpisodeFileResource {
     private final Boolean qualityCutoffNotMet;
 
     @Json(name = "mediaInfo")
-    private final Object mediaInfo;
+    private final SonarrMediaInfoResource mediaInfo;
 
     @Json(name = "originalFilePath")
     private final String originalFilePath;

@@ -5,6 +5,7 @@ import de.llalon.cinematic.client.radarr.dto.RadarrTag;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
@@ -76,6 +77,27 @@ public class Movie extends LibraryMediaItem {
                         .filter(torrent -> torrent.getHash().equalsIgnoreCase(queueResource.getDownloadId()))
                         .map(torrent -> new Torrent(ctx, torrent)))
                 .iterator();
+    }
+
+    /**
+     * Returns the media file formats associated with this movie.
+     *
+     * @return an iterable of MediaFormat objects
+     */
+    @NotNull
+    public Iterable<MediaFormat> formats() {
+        return () -> {
+            if (radarrMovie.getMovieFile() != null && radarrMovie.getMovieFile().getMediaInfo() != null) {
+                return Stream.of(radarrMovie.getMovieFile())
+                        .map(movieFile -> new MediaFormat(ctx, movieFile.getMediaInfo()))
+                        .iterator();
+            }
+
+            return radarrMovieFilesByMovie(radarrMovie.getId())
+                    .filter(movieFile -> movieFile.getMediaInfo() != null)
+                    .map(movieFile -> new MediaFormat(ctx, movieFile.getMediaInfo()))
+                    .iterator();
+        };
     }
 
     /**

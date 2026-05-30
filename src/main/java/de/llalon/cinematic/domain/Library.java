@@ -60,6 +60,19 @@ public class Library extends DomainModel {
     }
 
     /**
+     * Returns an iterable of all episodes in the library.
+     *
+     * @return an iterable of Episode objects
+     */
+    @NotNull
+    public Iterable<Episode> episodes() {
+        return () -> super.sonarrSeries()
+                .flatMap(series -> super.sonarrEpisodesBySeries(series.getId()))
+                .map(episode -> new Episode(ctx, episode))
+                .iterator();
+    }
+
+    /**
      * Returns an iterable of all torrents in the library.
      *
      * @return an iterable of Torrent objects
