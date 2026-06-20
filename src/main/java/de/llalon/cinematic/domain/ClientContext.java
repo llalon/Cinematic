@@ -40,6 +40,25 @@ import org.jspecify.annotations.Nullable;
 @Builder
 public final class ClientContext {
 
+    /**
+     * Creates a context with optional shared infrastructure, configuration, and prebuilt clients.
+     *
+     * @param httpClient shared HTTP client, or {@code null} to create a default client
+     * @param moshi shared Moshi instance, or {@code null} to create a default instance
+     * @param cacheManager cache manager, or {@code null} to use the default JCache manager
+     * @param plexProperties Plex configuration, or {@code null} to load it from environment variables
+     * @param radarrProperties Radarr configuration, or {@code null} to load it from environment variables
+     * @param sonarrProperties Sonarr configuration, or {@code null} to load it from environment variables
+     * @param qbittorrentProperties qBittorrent configuration, or {@code null} to load it from environment variables
+     * @param seerrProperties Seerr configuration, or {@code null} to load it from environment variables
+     * @param tautulliProperties Tautulli configuration, or {@code null} to load it from environment variables
+     * @param plexClient prebuilt Plex client, or {@code null} to create one from configuration
+     * @param radarrClient prebuilt Radarr client, or {@code null} to create one from configuration
+     * @param sonarrClient prebuilt Sonarr client, or {@code null} to create one from configuration
+     * @param qbittorrentClient prebuilt qBittorrent client, or {@code null} to create one from configuration
+     * @param seerrClient prebuilt Seerr client, or {@code null} to create one from configuration
+     * @param tautulliClient prebuilt Tautulli client, or {@code null} to create one from configuration
+     */
     public ClientContext(
             OkHttpClient httpClient,
             Moshi moshi,

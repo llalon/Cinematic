@@ -21,6 +21,9 @@ public abstract class AbstractPagedIterable<T> implements Iterable<T> {
 
     private static final int DEFAULT_PAGE_SIZE = 500;
 
+    /**
+     * Number of elements requested per page.
+     */
     protected final int pageSize;
 
     /**
@@ -39,6 +42,13 @@ public abstract class AbstractPagedIterable<T> implements Iterable<T> {
         this.pageSize = DEFAULT_PAGE_SIZE;
     }
 
+    /**
+     * Fetches one page using the concrete paging strategy.
+     *
+     * @param pageIndex current page index or offset
+     * @param pageSize number of elements requested per page
+     * @return fetched page, or {@code null} / empty to end iteration
+     */
     protected abstract List<T> fetchPage(int pageIndex, int pageSize);
 
     @Override
@@ -127,10 +137,22 @@ public abstract class AbstractPagedIterable<T> implements Iterable<T> {
         return StreamSupport.stream(spliterator(), false);
     }
 
+    /**
+     * Returns the starting page index for this paging strategy.
+     *
+     * @return initial page index
+     */
     protected int initialPageIndex() {
         return 0;
     } // override for 1-based page numbering
 
+    /**
+     * Computes the next page index after a page has been fetched.
+     *
+     * @param currentPageIndex current page index
+     * @param lastPageSize number of elements returned by the last page
+     * @return next page index
+     */
     protected int nextPageIndex(int currentPageIndex, int lastPageSize) {
         return currentPageIndex + 1;
     } // override for offset style

@@ -24,16 +24,10 @@ public class User extends DomainModel {
     @NonNull
     private final String email;
 
-    @Getter(
-            value = AccessLevel.PROTECTED,
-            lazy = true,
-            onMethod_ = {@Nullable})
+    @Getter(value = AccessLevel.PROTECTED, lazy = true)
     private final SeerrUser seerrUser = fetchSeerrUser();
 
-    @Getter(
-            value = AccessLevel.PROTECTED,
-            lazy = true,
-            onMethod_ = {@Nullable})
+    @Getter(value = AccessLevel.PROTECTED, lazy = true)
     private final TautulliUser tautulliUser = fetchTautulliUser();
 
     User(@NonNull ClientContext ctx, @NonNull TautulliUser tautulliUser) {

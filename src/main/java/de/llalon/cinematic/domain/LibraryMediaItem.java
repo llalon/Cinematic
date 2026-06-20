@@ -16,6 +16,9 @@ import org.jspecify.annotations.Nullable;
 @Slf4j
 abstract class LibraryMediaItem extends DomainModel {
 
+    /**
+     * Supported external identifier schemes used by Plex GUIDs.
+     */
     @Getter
     @RequiredArgsConstructor
     protected enum LibraryIdType {
@@ -26,6 +29,9 @@ abstract class LibraryMediaItem extends DomainModel {
         protected final String value;
     }
 
+    /**
+     * Supported media categories and their Plex API identifiers.
+     */
     @Getter
     @RequiredArgsConstructor
     protected enum LibraryMediaType {
@@ -36,18 +42,22 @@ abstract class LibraryMediaItem extends DomainModel {
         protected final String plexMediaType;
     }
 
+    /** TMDB identifier for this media item, when known. */
     @Getter
     @Nullable
     protected final String tmdbId;
 
+    /** TVDB identifier for this media item, when known. */
     @Getter // Would be null for movies!
     @Nullable
     protected final String tvdbId;
 
+    /** IMDB identifier for this media item, when known. */
     @Getter
     @Nullable
     protected final String imdbId;
 
+    /** Media type used to query matching Plex library sections. */
     protected final LibraryMediaType libraryMediaType; // show or movie
 
     protected LibraryMediaItem(@NonNull ClientContext ctx, @NonNull MovieResource radarrMovie) {
@@ -147,6 +157,11 @@ abstract class LibraryMediaItem extends DomainModel {
                 .orElse(Collections.emptyIterator());
     }
 
+    /**
+     * Finds the matching Plex library item for this media item.
+     *
+     * @return matching Plex media item, or an empty optional when no match is found
+     */
     @NonNull
     protected Optional<PlexMediaItem> fetchPlexMediaItem() {
         return plexSections()

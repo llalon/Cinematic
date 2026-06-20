@@ -2,6 +2,11 @@ package de.llalon.cinematic.util.collections;
 
 import java.util.List;
 
+/**
+ * Fetches one page of values for a paged iterable.
+ *
+ * @param <T> the element type
+ */
 @FunctionalInterface
 public interface PageFetcher<T> {
     /**

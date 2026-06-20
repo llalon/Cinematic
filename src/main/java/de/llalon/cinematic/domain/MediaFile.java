@@ -12,11 +12,15 @@ import org.jspecify.annotations.Nullable;
 @Getter
 abstract class MediaFile extends DomainModel {
 
+    /**
+     * Source application that owns an imported media file.
+     */
     protected enum Source {
         RADARR,
         SONARR
     }
 
+    /** Source application used when deleting or resolving this media file. */
     @Getter(AccessLevel.NONE)
     @NonNull
     protected final Source source;
@@ -113,11 +117,21 @@ abstract class MediaFile extends DomainModel {
         this.format = format;
     }
 
+    /**
+     * Returns the parsed media format details for this file.
+     *
+     * @return media format details, or {@code null} when unavailable
+     */
     @Nullable
     public MediaFormat format() {
         return this.format;
     }
 
+    /**
+     * Returns the parsed media format details for this file.
+     *
+     * @return media format details, or {@code null} when unavailable
+     */
     @Nullable
     public MediaFormat getFormat() {
         return format();

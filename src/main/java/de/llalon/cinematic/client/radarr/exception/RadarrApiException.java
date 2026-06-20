@@ -10,7 +10,9 @@ import lombok.Getter;
 @Getter
 public class RadarrApiException extends RuntimeException {
 
+    /** HTTP status code returned by Radarr, or {@code null} when the request failed before a response arrived. */
     private final Integer statusCode;
+    /** Raw response body returned by Radarr, or {@code null} when no response body was available. */
     private final String responseBody;
 
     /**
