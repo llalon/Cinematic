@@ -10,8 +10,8 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 @Slf4j
 abstract class LibraryMediaItem extends DomainModel {
@@ -50,7 +50,7 @@ abstract class LibraryMediaItem extends DomainModel {
 
     protected final LibraryMediaType libraryMediaType; // show or movie
 
-    protected LibraryMediaItem(@NotNull ClientContext ctx, @NotNull MovieResource radarrMovie) {
+    protected LibraryMediaItem(@NonNull ClientContext ctx, @NonNull MovieResource radarrMovie) {
         super(ctx);
         this.tmdbId = radarrMovie.getTmdbId() == null ? null : String.valueOf(radarrMovie.getTmdbId());
         this.imdbId = radarrMovie.getImdbId() == null ? null : String.valueOf(radarrMovie.getImdbId());
@@ -58,7 +58,7 @@ abstract class LibraryMediaItem extends DomainModel {
         this.libraryMediaType = LibraryMediaType.MOVIE;
     }
 
-    protected LibraryMediaItem(@NotNull ClientContext ctx, @NotNull SeriesResource sonarrSeries) {
+    protected LibraryMediaItem(@NonNull ClientContext ctx, @NonNull SeriesResource sonarrSeries) {
         super(ctx);
         this.tmdbId = sonarrSeries.getTmdbId() == null ? null : String.valueOf(sonarrSeries.getTmdbId());
         this.imdbId = sonarrSeries.getImdbId() == null ? null : String.valueOf(sonarrSeries.getImdbId());
@@ -87,7 +87,7 @@ abstract class LibraryMediaItem extends DomainModel {
      *
      * @return an iterable of Tag objects
      */
-    @NotNull
+    @NonNull
     public abstract Iterable<Tag> tags();
 
     /**
@@ -95,7 +95,7 @@ abstract class LibraryMediaItem extends DomainModel {
      *
      * @return an iterable of Torrent objects
      */
-    @NotNull
+    @NonNull
     public abstract Iterable<Torrent> torrents();
 
     /**
@@ -103,7 +103,7 @@ abstract class LibraryMediaItem extends DomainModel {
      *
      * @return an iterable of Request objects
      */
-    @NotNull
+    @NonNull
     public Iterable<Request> requests() {
         return () -> seerrRequests()
                 .filter(request -> request.getMedia() != null)
@@ -137,7 +137,7 @@ abstract class LibraryMediaItem extends DomainModel {
      *
      * @return an iterable of Watches objects
      */
-    @NotNull
+    @NonNull
     public Iterable<Watches> watches() {
         return () -> fetchPlexMediaItem()
                 .map(PlexMediaItem::getRatingKey)
@@ -147,7 +147,7 @@ abstract class LibraryMediaItem extends DomainModel {
                 .orElse(Collections.emptyIterator());
     }
 
-    @NotNull
+    @NonNull
     protected Optional<PlexMediaItem> fetchPlexMediaItem() {
         return plexSections()
                 .filter(section -> libraryMediaType.getPlexLibraryType().equalsIgnoreCase(section.getType()))
@@ -186,7 +186,7 @@ abstract class LibraryMediaItem extends DomainModel {
      * @param id     the identifier value from the Plex GUID
      * @return {@code true} if the identifier matches this media item
      */
-    protected boolean plexMatchesId(@NotNull LibraryIdType prefix, @NotNull String id) {
+    protected boolean plexMatchesId(@NonNull LibraryIdType prefix, @NonNull String id) {
         switch (prefix) {
             case TMDB:
                 return id.equalsIgnoreCase(String.valueOf(this.tmdbId));

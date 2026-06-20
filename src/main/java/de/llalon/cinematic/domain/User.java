@@ -7,8 +7,8 @@ import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Domain representation of a user that may exist in one or both of Seerr and Tautulli.
@@ -21,28 +21,32 @@ import org.jetbrains.annotations.Nullable;
 public class User extends DomainModel {
 
     @Getter
-    @NotNull
+    @NonNull
     private final String email;
 
-    @Nullable // if the user does not exist in seerr
-    @Getter(value = AccessLevel.PROTECTED, lazy = true)
+    @Getter(
+            value = AccessLevel.PROTECTED,
+            lazy = true,
+            onMethod_ = {@Nullable})
     private final SeerrUser seerrUser = fetchSeerrUser();
 
-    @Nullable // if the user does not exist in tautulli
-    @Getter(value = AccessLevel.PROTECTED, lazy = true)
+    @Getter(
+            value = AccessLevel.PROTECTED,
+            lazy = true,
+            onMethod_ = {@Nullable})
     private final TautulliUser tautulliUser = fetchTautulliUser();
 
-    User(@NotNull ClientContext ctx, @NotNull TautulliUser tautulliUser) {
+    User(@NonNull ClientContext ctx, @NonNull TautulliUser tautulliUser) {
         super(ctx);
         this.email = tautulliUser.getEmail();
     }
 
-    User(@NotNull ClientContext ctx, @NotNull SeerrUser seerrUser) {
+    User(@NonNull ClientContext ctx, @NonNull SeerrUser seerrUser) {
         super(ctx);
         this.email = seerrUser.getEmail();
     }
 
-    User(@NotNull ClientContext ctx, @NotNull String email) {
+    User(@NonNull ClientContext ctx, @NonNull String email) {
         super(ctx);
         this.email = email;
     }
@@ -53,7 +57,7 @@ public class User extends DomainModel {
      *
      * @return an iterable of Watches objects sorted by date descending
      */
-    @NotNull
+    @NonNull
     public Iterable<Watches> watches() {
         return () -> {
             try {
@@ -74,7 +78,7 @@ public class User extends DomainModel {
      *
      * @return an iterable of Request objects
      */
-    @NotNull
+    @NonNull
     public Iterable<Request> requests() {
         return () -> {
             try {

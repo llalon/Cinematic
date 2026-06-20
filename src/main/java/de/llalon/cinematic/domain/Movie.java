@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Domain representation of a movie sourced from Radarr.
@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 @Slf4j
 public class Movie extends LibraryMediaItem {
 
-    @NotNull
+    @NonNull
     private final MovieResource radarrMovie;
 
     /**
@@ -29,7 +29,7 @@ public class Movie extends LibraryMediaItem {
      * @param ctx the client context
      * @param radarrMovie the Radarr movie resource
      */
-    Movie(@NotNull ClientContext ctx, @NotNull MovieResource radarrMovie) {
+    Movie(@NonNull ClientContext ctx, @NonNull MovieResource radarrMovie) {
         super(ctx, radarrMovie);
         this.radarrMovie = radarrMovie;
     }
@@ -40,7 +40,7 @@ public class Movie extends LibraryMediaItem {
      * @return an iterable of Tag objects
      */
     @Override
-    @NotNull
+    @NonNull
     public Iterable<Tag> tags() {
         return () -> {
             final Map<Integer, String> tags =
@@ -69,7 +69,7 @@ public class Movie extends LibraryMediaItem {
      * @return an iterable of Torrent objects
      */
     @Override
-    @NotNull
+    @NonNull
     public Iterable<Torrent> torrents() {
         return () -> radarrQueue()
                 .filter(queueResource -> queueResource.getMovieId().equals(radarrMovie.getId()))
@@ -85,7 +85,7 @@ public class Movie extends LibraryMediaItem {
      *
      * @return an iterable of MediaFile objects
      */
-    @NotNull
+    @NonNull
     public Iterable<MovieFile> files() {
         return () -> {
             if (radarrMovie.getMovieFile() != null) {
@@ -103,7 +103,7 @@ public class Movie extends LibraryMediaItem {
      *
      * @return an iterable of MediaFormat objects
      */
-    @NotNull
+    @NonNull
     public Iterable<MediaFormat> formats() {
         return () -> StreamSupport.stream(files().spliterator(), false)
                 .map(MediaFile::format)

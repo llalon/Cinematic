@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Domain representation of a tag that may be applied to movies, series, and torrents.
@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 public class Tag extends DomainModel {
 
     @Getter
-    @NotNull
+    @NonNull
     private final String name;
 
     /**
@@ -29,7 +29,7 @@ public class Tag extends DomainModel {
      * @param context the client context
      * @param name the tag name
      */
-    Tag(@NotNull ClientContext context, @NotNull String name) {
+    Tag(@NonNull ClientContext context, @NonNull String name) {
         super(context);
         this.name = name;
     }
@@ -39,7 +39,7 @@ public class Tag extends DomainModel {
      *
      * @return an iterable of Movie objects
      */
-    @NotNull
+    @NonNull
     public Iterable<Movie> movies() {
         return () -> {
             final Set<Integer> tagIds = radarrTags()
@@ -64,7 +64,7 @@ public class Tag extends DomainModel {
      *
      * @return an iterable of Series objects
      */
-    @NotNull
+    @NonNull
     public Iterable<Series> series() {
         return () -> {
             final Set<Integer> tagIds = sonarrTags()
@@ -89,7 +89,7 @@ public class Tag extends DomainModel {
      *
      * @return an iterable of Torrent objects
      */
-    @NotNull
+    @NonNull
     public Iterable<Torrent> torrents() {
         return () -> ctx.getQbittorrentClient().getTorrents(null, null, this.name).stream()
                 .map(x -> new Torrent(ctx, x))

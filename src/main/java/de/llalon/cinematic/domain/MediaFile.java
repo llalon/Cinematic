@@ -3,28 +3,25 @@ package de.llalon.cinematic.domain;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Domain representation of one imported media file.
- *
- * <p>This object intentionally models file facts and file operations only. Decisions such as duplicate detection,
- * quality ranking, and codec preferences belong in scripts built on top of this model.</p>
  */
 @Getter
 abstract class MediaFile extends DomainModel {
 
-    public enum Source {
+    protected enum Source {
         RADARR,
         SONARR
     }
 
     @Getter(AccessLevel.NONE)
-    @NotNull
+    @NonNull
     protected final Source source;
 
-    @NotNull
+    @NonNull
     private final Integer id;
 
     @Nullable
@@ -76,9 +73,9 @@ abstract class MediaFile extends DomainModel {
     private final MediaFormat format;
 
     protected MediaFile(
-            @NotNull ClientContext ctx,
-            @NotNull Source source,
-            @NotNull Integer id,
+            @NonNull ClientContext ctx,
+            @NonNull Source source,
+            @NonNull Integer id,
             @Nullable Integer movieId,
             @Nullable Integer seriesId,
             @Nullable Integer seasonNumber,

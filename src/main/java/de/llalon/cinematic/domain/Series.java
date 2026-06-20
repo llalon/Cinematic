@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Domain representation of a TV series sourced from Sonarr.
@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 @Slf4j
 public class Series extends LibraryMediaItem {
 
-    @NotNull
+    @NonNull
     private final SeriesResource sonarrSeries;
 
     /**
@@ -27,7 +27,7 @@ public class Series extends LibraryMediaItem {
      * @param ctx            the client context
      * @param seriesResource the Sonarr series resource
      */
-    Series(@NotNull ClientContext ctx, @NotNull SeriesResource seriesResource) {
+    Series(@NonNull ClientContext ctx, @NonNull SeriesResource seriesResource) {
         super(ctx, seriesResource);
         this.sonarrSeries = seriesResource;
     }
@@ -38,7 +38,7 @@ public class Series extends LibraryMediaItem {
      * @return an iterable of Tag objects
      */
     @Override
-    @NotNull
+    @NonNull
     public Iterable<Tag> tags() {
         return () -> {
             final Map<Integer, String> tags =
@@ -64,7 +64,7 @@ public class Series extends LibraryMediaItem {
      * @return an iterable of Torrent objects
      */
     @Override
-    @NotNull
+    @NonNull
     public Iterable<Torrent> torrents() {
         return () -> sonarrQueue()
                 .filter(queueResource -> queueResource.getSeriesId().equals(sonarrSeries.getId()))
@@ -107,7 +107,7 @@ public class Series extends LibraryMediaItem {
      *
      * @return an iterable of Episode objects
      */
-    @NotNull
+    @NonNull
     public Iterable<Episode> episodes() {
         return () -> sonarrEpisodesBySeries(sonarrSeries.getId())
                 .map(episode -> new Episode(ctx, episode))
@@ -119,7 +119,7 @@ public class Series extends LibraryMediaItem {
      *
      * @return an iterable of MediaFile objects
      */
-    @NotNull
+    @NonNull
     public Iterable<MediaFile> files() {
         return () -> sonarrEpisodeFilesBySeries(sonarrSeries.getId())
                 .map(episodeFile -> (MediaFile) new EpisodeFile(ctx, episodeFile))

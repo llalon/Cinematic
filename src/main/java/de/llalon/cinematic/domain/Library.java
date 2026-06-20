@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 @Slf4j
 public class Library extends DomainModel {
@@ -18,7 +18,7 @@ public class Library extends DomainModel {
      *
      * @param ctx the client context
      */
-    public Library(@NotNull ClientContext ctx) {
+    public Library(@NonNull ClientContext ctx) {
         super(ctx);
     }
 
@@ -34,7 +34,7 @@ public class Library extends DomainModel {
      *
      * @return the client context
      */
-    @NotNull
+    @NonNull
     public ClientContext getContext() {
         return super.ctx;
     }
@@ -44,7 +44,7 @@ public class Library extends DomainModel {
      *
      * @return an iterable of Movie objects
      */
-    @NotNull
+    @NonNull
     public Iterable<Movie> movies() {
         return () -> super.radarrMovies().map(movie -> new Movie(ctx, movie)).iterator();
     }
@@ -54,7 +54,7 @@ public class Library extends DomainModel {
      *
      * @return an iterable of Series objects
      */
-    @NotNull
+    @NonNull
     public Iterable<Series> series() {
         return () -> super.sonarrSeries().map(series -> new Series(ctx, series)).iterator();
     }
@@ -64,7 +64,7 @@ public class Library extends DomainModel {
      *
      * @return an iterable of Episode objects
      */
-    @NotNull
+    @NonNull
     public Iterable<Episode> episodes() {
         return () -> super.sonarrSeries()
                 .flatMap(series -> super.sonarrEpisodesBySeries(series.getId()))
@@ -77,7 +77,7 @@ public class Library extends DomainModel {
      *
      * @return an iterable of Torrent objects
      */
-    @NotNull
+    @NonNull
     public Iterable<Torrent> torrents() {
         return () -> super.qbittorrentTorrents()
                 .map(torrent -> new Torrent(ctx, torrent))
@@ -89,7 +89,7 @@ public class Library extends DomainModel {
      *
      * @return an iterable of Tag objects
      */
-    @NotNull
+    @NonNull
     public Iterable<Tag> tags() {
         return () -> Stream.concat(
                         Stream.concat(
@@ -105,7 +105,7 @@ public class Library extends DomainModel {
      *
      * @return an iterable of Request objects
      */
-    @NotNull
+    @NonNull
     public Iterable<Request> requests() {
         return () ->
                 super.seerrRequests().map(request -> new Request(ctx, request)).iterator();
@@ -116,7 +116,7 @@ public class Library extends DomainModel {
      *
      * @return an iterable of User objects
      */
-    @NotNull
+    @NonNull
     public Iterable<User> users() {
         return () -> {
             final Set<String> userEmails = new HashSet<>();

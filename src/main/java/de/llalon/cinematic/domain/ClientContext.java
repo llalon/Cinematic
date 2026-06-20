@@ -22,8 +22,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Holds all configured API clients and shared infrastructure used by the domain model.
@@ -237,7 +237,7 @@ public final class ClientContext {
      * @return the HTTP client
      * @throws IllegalStateException if the client is in an invalid state
      */
-    @NotNull
+    @NonNull
     public OkHttpClient getHttpClient() {
         if (this.httpClient == null) {
             throw new IllegalStateException("Configured http client is invalid");
@@ -251,7 +251,7 @@ public final class ClientContext {
      * @return the Moshi instance
      * @throws IllegalStateException if the Moshi instance is in an invalid state
      */
-    @NotNull
+    @NonNull
     public Moshi getMoshi() {
         if (this.moshi == null) {
             throw new IllegalStateException("Configured http client is invalid");
@@ -326,7 +326,7 @@ public final class ClientContext {
      * @return the Plex client
      * @throws ClientNotConfiguredException if Plex is not configured
      */
-    @NotNull
+    @NonNull
     public PlexClient getPlexClient() {
         if (this.plexClient == null) {
             throw new ClientNotConfiguredException("Plex not configured");
@@ -340,7 +340,7 @@ public final class ClientContext {
      * @return the Radarr client
      * @throws ClientNotConfiguredException if Radarr is not configured
      */
-    @NotNull
+    @NonNull
     public RadarrClient getRadarrClient() {
         if (this.radarrClient == null) {
             throw new ClientNotConfiguredException("Radarr not configured");
@@ -354,7 +354,7 @@ public final class ClientContext {
      * @return the Sonarr client
      * @throws ClientNotConfiguredException if Sonarr is not configured
      */
-    @NotNull
+    @NonNull
     public SonarrClient getSonarrClient() {
         if (this.sonarrClient == null) {
             throw new ClientNotConfiguredException("Sonarr not configured");
@@ -368,7 +368,7 @@ public final class ClientContext {
      * @return the qBittorrent client
      * @throws ClientNotConfiguredException if qBittorrent is not configured
      */
-    @NotNull
+    @NonNull
     public QBittorrentClient getQbittorrentClient() {
         if (this.qbittorrentClient == null) {
             throw new ClientNotConfiguredException("QBittorrent not configured");
@@ -382,7 +382,7 @@ public final class ClientContext {
      * @return the Seerr client
      * @throws ClientNotConfiguredException if Seerr is not configured
      */
-    @NotNull
+    @NonNull
     public SeerrClient getSeerrClient() {
         if (this.seerrClient == null) {
             throw new ClientNotConfiguredException("Seerr not configured");
@@ -396,7 +396,7 @@ public final class ClientContext {
      * @return the Tautulli client
      * @throws ClientNotConfiguredException if Tautulli is not configured
      */
-    @NotNull
+    @NonNull
     public TautulliClient getTautulliClient() {
         if (this.tautulliClient == null) {
             throw new ClientNotConfiguredException("Tautulli not configured");

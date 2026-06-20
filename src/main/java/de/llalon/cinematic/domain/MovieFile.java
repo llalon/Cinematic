@@ -2,7 +2,7 @@ package de.llalon.cinematic.domain;
 
 import de.llalon.cinematic.client.radarr.dto.MovieFileResource;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Domain representation of a media file sourced from Radarr.
@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 @Slf4j
 public final class MovieFile extends MediaFile {
 
-    MovieFile(@NotNull ClientContext ctx, @NotNull MovieFileResource movieFile) {
+    MovieFile(@NonNull ClientContext ctx, @NonNull MovieFileResource movieFile) {
         super(
                 ctx,
                 Source.RADARR,

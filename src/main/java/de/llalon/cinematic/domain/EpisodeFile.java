@@ -2,8 +2,8 @@ package de.llalon.cinematic.domain;
 
 import de.llalon.cinematic.client.sonarr.dto.EpisodeFileResource;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Domain representation of a media file sourced from Sonarr.
@@ -11,11 +11,11 @@ import org.jetbrains.annotations.Nullable;
 @Slf4j
 public final class EpisodeFile extends MediaFile {
 
-    EpisodeFile(@NotNull ClientContext ctx, @NotNull EpisodeFileResource episodeFile) {
+    EpisodeFile(@NonNull ClientContext ctx, @NonNull EpisodeFileResource episodeFile) {
         this(ctx, episodeFile, null);
     }
 
-    EpisodeFile(@NotNull ClientContext ctx, @NotNull EpisodeFileResource episodeFile, @Nullable Integer episodeNumber) {
+    EpisodeFile(@NonNull ClientContext ctx, @NonNull EpisodeFileResource episodeFile, @Nullable Integer episodeNumber) {
         super(
                 ctx,
                 Source.SONARR,

@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Domain representation of a TV episode sourced from Sonarr.
@@ -18,10 +18,10 @@ import org.jetbrains.annotations.NotNull;
 @Slf4j
 public class Episode extends DomainModel {
 
-    @NotNull
+    @NonNull
     private final EpisodeResource sonarrEpisode;
 
-    Episode(@NotNull ClientContext ctx, @NotNull EpisodeResource sonarrEpisode) {
+    Episode(@NonNull ClientContext ctx, @NonNull EpisodeResource sonarrEpisode) {
         super(ctx);
         this.sonarrEpisode = sonarrEpisode;
     }
@@ -31,7 +31,7 @@ public class Episode extends DomainModel {
      *
      * @return the parent Series
      */
-    @NotNull
+    @NonNull
     public Series series() {
         if (sonarrEpisode.getSeries() != null) {
             return new Series(ctx, sonarrEpisode.getSeries());
@@ -45,7 +45,7 @@ public class Episode extends DomainModel {
      *
      * @return an iterable of MediaFile objects
      */
-    @NotNull
+    @NonNull
     public Iterable<EpisodeFile> files() {
         return () -> {
             if (sonarrEpisode.getEpisodeFile() != null) {
@@ -68,7 +68,7 @@ public class Episode extends DomainModel {
      *
      * @return an iterable of MediaFormat objects
      */
-    @NotNull
+    @NonNull
     public Iterable<MediaFormat> formats() {
         return () -> StreamSupport.stream(files().spliterator(), false)
                 .map(MediaFile::format)

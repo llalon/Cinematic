@@ -7,8 +7,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Domain representation of a torrent managed by qBittorrent.
@@ -20,10 +20,10 @@ import org.jetbrains.annotations.Nullable;
 @Slf4j
 public class Torrent extends DomainModel {
 
-    @NotNull
+    @NonNull
     private final QBittorrentInfo qbittorrentInfo;
 
-    Torrent(ClientContext ctx, @NotNull QBittorrentInfo qbittorrentInfo) {
+    Torrent(ClientContext ctx, @NonNull QBittorrentInfo qbittorrentInfo) {
         super(ctx);
         this.qbittorrentInfo = qbittorrentInfo;
     }
@@ -61,7 +61,7 @@ public class Torrent extends DomainModel {
      *
      * @param tag the Tag domain object whose name will be applied
      */
-    public void addTag(@NotNull Tag tag) {
+    public void addTag(@NonNull Tag tag) {
         addTag(tag.getName());
     }
 
@@ -91,7 +91,7 @@ public class Torrent extends DomainModel {
      *
      * @param tag the Tag domain object whose name will be removed
      */
-    public void removeTag(@NotNull Tag tag) {
+    public void removeTag(@NonNull Tag tag) {
         removeTag(tag.getName());
     }
 
@@ -126,7 +126,7 @@ public class Torrent extends DomainModel {
      * @param tag the tag name to check
      * @return true if the torrent has the tag, false otherwise
      */
-    public boolean hasTag(@NotNull Tag tag) {
+    public boolean hasTag(@NonNull Tag tag) {
         return hasTag(tag.getName());
     }
 
@@ -154,7 +154,7 @@ public class Torrent extends DomainModel {
      *
      * @return an iterable of Series objects
      */
-    @NotNull
+    @NonNull
     public Iterable<Series> series() {
         return () -> sonarrQueue()
                 .filter(sonarrQueue -> sonarrQueue.getDownloadId() != null
@@ -178,7 +178,7 @@ public class Torrent extends DomainModel {
      *
      * @return an iterable of Movie objects
      */
-    @NotNull
+    @NonNull
     public Iterable<Movie> movies() {
         return () -> radarrQueue()
                 .filter(queueResource -> queueResource.getDownloadId() != null
@@ -295,7 +295,7 @@ public class Torrent extends DomainModel {
      *
      * @return an iterable of {@link TorrentFile} objects
      */
-    @NotNull
+    @NonNull
     public Iterable<TorrentFile> files() {
         return () -> ctx.getQbittorrentClient().getTorrentFiles(this.qbittorrentInfo.getHash()).stream()
                 .map(f -> new TorrentFile(ctx, f))
