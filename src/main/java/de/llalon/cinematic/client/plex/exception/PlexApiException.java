@@ -8,7 +8,9 @@ import lombok.Getter;
 @Getter
 public class PlexApiException extends RuntimeException {
 
+    /** HTTP status code returned by Plex, or {@code null} when the request failed before a response arrived. */
     private final Integer statusCode;
+    /** Raw response body returned by Plex, or {@code null} when no response body was available. */
     private final String responseBody;
 
     /**

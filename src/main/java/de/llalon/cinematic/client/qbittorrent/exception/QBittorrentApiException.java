@@ -10,7 +10,9 @@ import lombok.Getter;
 @Getter
 public class QBittorrentApiException extends RuntimeException {
 
+    /** HTTP status code returned by qBittorrent, or {@code null} when the request failed before a response arrived. */
     private final Integer statusCode;
+    /** Raw response body returned by qBittorrent, or {@code null} when no response body was available. */
     private final String responseBody;
 
     /**

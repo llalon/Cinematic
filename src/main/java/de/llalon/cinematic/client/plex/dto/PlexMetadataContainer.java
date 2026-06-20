@@ -5,6 +5,9 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+/**
+ * Contains the metadata entries returned for a Plex library section.
+ */
 @Data
 @AllArgsConstructor
 public class PlexMetadataContainer {

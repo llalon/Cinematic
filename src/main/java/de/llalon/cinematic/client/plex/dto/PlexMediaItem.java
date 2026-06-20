@@ -5,6 +5,9 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+/**
+ * Represents a single item returned from the Plex library API.
+ */
 @Data
 @AllArgsConstructor
 public class PlexMediaItem {

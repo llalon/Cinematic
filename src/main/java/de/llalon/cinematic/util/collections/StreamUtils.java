@@ -13,6 +13,7 @@ import java.util.stream.StreamSupport;
  * instantiated or used as an enum value.</p>
  */
 public enum StreamUtils {
+    /** Utility singleton; this enum is used only as a namespace for static helpers. */
     INSTANCE;
 
     /**
