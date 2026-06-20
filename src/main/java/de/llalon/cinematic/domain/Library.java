@@ -10,6 +10,9 @@ import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
 
+/**
+ * Entry point for traversing media, users, requests, torrents, and tags across configured services.
+ */
 @Slf4j
 public class Library extends DomainModel {
 
