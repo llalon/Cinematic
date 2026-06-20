@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import de.llalon.cinematic.domain.*;
 import de.llalon.cinematic.util.collections.StreamUtils;
+import java.util.Objects;
 import org.junit.jupiter.api.*;
 import org.opentest4j.TestAbortedException;
 
@@ -33,6 +34,28 @@ class CinematicIntegrationsTests {
     @Test
     void test() {
         // Stub
+    }
+
+    @Test
+    void canGetMovieVideoFilesFormats() {
+        for (var movie : library.movies()) {
+            for (var file : movie.files()) {
+                assertNotNull(Objects.requireNonNull(file.getFormat()).getVideoFormat());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetSeriesVideoEpisodeFileFormats() {
+        for (var series : library.series()) {
+            for (var episode : series.episodes()) {
+                for (var file : episode.files()) {
+                    assertNotNull(Objects.requireNonNull(file.getFormat()).getVideoFormat());
+                    return;
+                }
+            }
+        }
     }
 
     @Test

@@ -113,4 +113,16 @@ public class Series extends LibraryMediaItem {
                 .map(episode -> new Episode(ctx, episode))
                 .iterator();
     }
+
+    /**
+     * Returns the imported media files associated with this series.
+     *
+     * @return an iterable of MediaFile objects
+     */
+    @NotNull
+    public Iterable<MediaFile> files() {
+        return () -> sonarrEpisodeFilesBySeries(sonarrSeries.getId())
+                .map(episodeFile -> (MediaFile) new EpisodeFile(ctx, episodeFile))
+                .iterator();
+    }
 }

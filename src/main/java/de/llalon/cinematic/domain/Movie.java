@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
@@ -80,24 +81,34 @@ public class Movie extends LibraryMediaItem {
     }
 
     /**
+     * Returns the imported media files associated with this movie.
+     *
+     * @return an iterable of MediaFile objects
+     */
+    @NotNull
+    public Iterable<MovieFile> files() {
+        return () -> {
+            if (radarrMovie.getMovieFile() != null) {
+                return Stream.of(new MovieFile(ctx, radarrMovie.getMovieFile())).iterator();
+            }
+
+            return radarrMovieFilesByMovie(radarrMovie.getId())
+                    .map(movieFile -> new MovieFile(ctx, movieFile))
+                    .iterator();
+        };
+    }
+
+    /**
      * Returns the media file formats associated with this movie.
      *
      * @return an iterable of MediaFormat objects
      */
     @NotNull
     public Iterable<MediaFormat> formats() {
-        return () -> {
-            if (radarrMovie.getMovieFile() != null && radarrMovie.getMovieFile().getMediaInfo() != null) {
-                return Stream.of(radarrMovie.getMovieFile())
-                        .map(movieFile -> new MediaFormat(ctx, movieFile.getMediaInfo()))
-                        .iterator();
-            }
-
-            return radarrMovieFilesByMovie(radarrMovie.getId())
-                    .filter(movieFile -> movieFile.getMediaInfo() != null)
-                    .map(movieFile -> new MediaFormat(ctx, movieFile.getMediaInfo()))
-                    .iterator();
-        };
+        return () -> StreamSupport.stream(files().spliterator(), false)
+                .map(MediaFile::format)
+                .filter(Objects::nonNull)
+                .iterator();
     }
 
     /**

@@ -129,6 +129,14 @@ abstract class DomainModel {
     }
 
     @NotNull
+    protected Stream<EpisodeFileResource> sonarrEpisodeFilesBySeries(@NotNull Integer seriesId) {
+        return StreamUtils.streamIterator(new CachingIterable<>(
+                () -> ctx.getSonarrClient().getEpisodeFilesBySeries(seriesId).iterator(),
+                getOrCreateCache(SONARR_EPISODE_FILE),
+                "files:series:" + seriesId));
+    }
+
+    @NotNull
     protected Stream<RadarrQueue> radarrQueue() {
         return StreamUtils.streamIterator(new CachingIterable<>(
                 () -> new PagePagedIterable<>((take, skip) -> ctx.getRadarrClient()

@@ -2,8 +2,11 @@ package de.llalon.cinematic.domain;
 
 import de.llalon.cinematic.client.sonarr.dto.EpisodeFileResource;
 import de.llalon.cinematic.client.sonarr.dto.EpisodeResource;
+import de.llalon.cinematic.util.collections.StreamUtils;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,31 +41,39 @@ public class Episode extends DomainModel {
     }
 
     /**
+     * Returns the imported media files associated with this episode.
+     *
+     * @return an iterable of MediaFile objects
+     */
+    @NotNull
+    public Iterable<EpisodeFile> files() {
+        return () -> {
+            if (sonarrEpisode.getEpisodeFile() != null) {
+                return Stream.of(new EpisodeFile(ctx, sonarrEpisode.getEpisodeFile(), sonarrEpisode.getEpisodeNumber()))
+                        .iterator();
+            }
+
+            if (sonarrEpisode.getEpisodeFileId() == null || sonarrEpisode.getEpisodeFileId() == 0) {
+                return StreamUtils.emptyIterator();
+            }
+
+            EpisodeFileResource episodeFile = sonarrEpisodeFile(sonarrEpisode.getEpisodeFileId());
+            return Stream.of(new EpisodeFile(ctx, episodeFile, sonarrEpisode.getEpisodeNumber()))
+                    .iterator();
+        };
+    }
+
+    /**
      * Returns the media file formats associated with this episode.
      *
      * @return an iterable of MediaFormat objects
      */
     @NotNull
     public Iterable<MediaFormat> formats() {
-        return () -> {
-            if (sonarrEpisode.getEpisodeFile() != null
-                    && sonarrEpisode.getEpisodeFile().getMediaInfo() != null) {
-                return Stream.of(sonarrEpisode.getEpisodeFile())
-                        .map(episodeFile -> new MediaFormat(ctx, episodeFile.getMediaInfo()))
-                        .iterator();
-            }
-
-            if (sonarrEpisode.getEpisodeFileId() == null || sonarrEpisode.getEpisodeFileId() == 0) {
-                return Stream.<MediaFormat>empty().iterator();
-            }
-
-            EpisodeFileResource episodeFile = sonarrEpisodeFile(sonarrEpisode.getEpisodeFileId());
-            if (episodeFile.getMediaInfo() == null) {
-                return Stream.<MediaFormat>empty().iterator();
-            }
-
-            return Stream.of(new MediaFormat(ctx, episodeFile.getMediaInfo())).iterator();
-        };
+        return () -> StreamSupport.stream(files().spliterator(), false)
+                .map(MediaFile::format)
+                .filter(Objects::nonNull)
+                .iterator();
     }
 
     /**
