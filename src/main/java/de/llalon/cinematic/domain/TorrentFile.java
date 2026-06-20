@@ -1,8 +1,8 @@
 package de.llalon.cinematic.domain;
 
 import de.llalon.cinematic.client.qbittorrent.dto.QBittorrentFile;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Domain representation of a file within a torrent managed by qBittorrent.
@@ -12,10 +12,10 @@ import org.jetbrains.annotations.Nullable;
  */
 public class TorrentFile extends DomainModel {
 
-    @NotNull
+    @NonNull
     private final QBittorrentFile dto;
 
-    TorrentFile(@NotNull ClientContext ctx, @NotNull QBittorrentFile dto) {
+    TorrentFile(@NonNull ClientContext ctx, @NonNull QBittorrentFile dto) {
         super(ctx);
         this.dto = dto;
     }

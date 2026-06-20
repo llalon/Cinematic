@@ -2,7 +2,7 @@ package de.llalon.cinematic.domain;
 
 import de.llalon.cinematic.client.tautulli.dto.History;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Domain representation of a single watch history entry recorded by Tautulli.
@@ -13,10 +13,10 @@ import org.jetbrains.annotations.NotNull;
 @Slf4j
 public class Watches extends DomainModel {
 
-    @NotNull
+    @NonNull
     private final History tautulliHistory;
 
-    Watches(@NotNull ClientContext ctx, @NotNull History tautulliHistory) {
+    Watches(@NonNull ClientContext ctx, @NonNull History tautulliHistory) {
         super(ctx);
         this.tautulliHistory = tautulliHistory;
     }
@@ -26,7 +26,7 @@ public class Watches extends DomainModel {
      *
      * @return the watching {@link User}
      */
-    @NotNull
+    @NonNull
     public User user() {
         return new User(ctx, tautulliUserById(this.tautulliHistory.getUserId()));
     }

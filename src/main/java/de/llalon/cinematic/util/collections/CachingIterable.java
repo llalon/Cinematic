@@ -2,7 +2,7 @@ package de.llalon.cinematic.util.collections;
 
 import java.util.*;
 import javax.cache.Cache;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * An {@link Iterable} decorator that transparently caches the results of a delegate iterable
@@ -29,14 +29,14 @@ public class CachingIterable<T> implements Iterable<T> {
      * @param cacheKey the key under which the cached list is stored and looked up
      */
     public CachingIterable(
-            @NotNull Iterable<T> delegate, @NotNull Cache<String, List<T>> cache, @NotNull String cacheKey) {
+            @NonNull Iterable<T> delegate, @NonNull Cache<String, List<T>> cache, @NonNull String cacheKey) {
 
         this.delegate = delegate;
         this.cache = cache;
         this.cacheKey = cacheKey;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public Iterator<T> iterator() {
 

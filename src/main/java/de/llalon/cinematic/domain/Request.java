@@ -2,7 +2,7 @@ package de.llalon.cinematic.domain;
 
 import de.llalon.cinematic.client.seerr.dto.MediaRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Domain representation of a media request made in Seerr.
@@ -13,10 +13,10 @@ import org.jetbrains.annotations.NotNull;
 @Slf4j
 public class Request extends DomainModel {
 
-    @NotNull
+    @NonNull
     private final MediaRequest seerrRequest;
 
-    Request(@NotNull ClientContext ctx, @NotNull MediaRequest seerrRequest) {
+    Request(@NonNull ClientContext ctx, @NonNull MediaRequest seerrRequest) {
         super(ctx);
         this.seerrRequest = seerrRequest;
     }
@@ -26,7 +26,7 @@ public class Request extends DomainModel {
      *
      * @return the requesting User
      */
-    @NotNull
+    @NonNull
     public User user() {
         return new User(ctx, seerrRequest.getRequestedBy());
     }

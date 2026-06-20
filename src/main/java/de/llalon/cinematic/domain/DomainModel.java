@@ -31,7 +31,7 @@ import javax.cache.CacheException;
 import javax.cache.CacheManager;
 import javax.cache.configuration.MutableConfiguration;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 @Slf4j
 abstract class DomainModel {
@@ -58,29 +58,29 @@ abstract class DomainModel {
 
     protected final ClientContext ctx;
 
-    protected DomainModel(@NotNull ClientContext ctx) {
+    protected DomainModel(@NonNull ClientContext ctx) {
         this.ctx = ctx;
     }
 
-    @NotNull
+    @NonNull
     protected Stream<RadarrTag> radarrTags() {
         return StreamUtils.streamIterator(new CachingIterable<>(
                 () -> ctx.getRadarrClient().getAllTags().iterator(), getOrCreateCache(RADARR_TAG), "all"));
     }
 
-    @NotNull
+    @NonNull
     protected Stream<SonarrTag> sonarrTags() {
         return StreamUtils.streamIterator(new CachingIterable<>(
                 () -> ctx.getSonarrClient().getAllTags().iterator(), getOrCreateCache(SONARR_TAG), "all"));
     }
 
-    @NotNull
+    @NonNull
     protected Stream<String> qbittorrentTags() {
         return StreamUtils.streamIterator(new CachingIterable<>(
                 () -> ctx.getQbittorrentClient().getAllTags().iterator(), getOrCreateCache(QBITTORRENT_TAG), "all"));
     }
 
-    @NotNull
+    @NonNull
     protected Stream<QBittorrentInfo> qbittorrentTorrents() {
         return StreamUtils.streamIterator(new CachingIterable<>(
                 () -> ctx.getQbittorrentClient().getTorrents().iterator(),
@@ -88,47 +88,55 @@ abstract class DomainModel {
                 "all"));
     }
 
-    @NotNull
+    @NonNull
     protected Stream<MovieResource> radarrMovies() {
         return StreamUtils.streamIterator(new CachingIterable<>(
                 () -> ctx.getRadarrClient().getAllMovies().iterator(), getOrCreateCache(RADARR_MOVIE), "all"));
     }
 
-    @NotNull
-    protected Stream<MovieFileResource> radarrMovieFilesByMovie(@NotNull Integer movieId) {
+    @NonNull
+    protected Stream<MovieFileResource> radarrMovieFilesByMovie(@NonNull Integer movieId) {
         return StreamUtils.streamIterator(new CachingIterable<>(
                 () -> ctx.getRadarrClient().getMovieFilesByMovie(movieId).iterator(),
                 getOrCreateCache(RADARR_MOVIE),
                 "files:movie:" + movieId));
     }
 
-    @NotNull
+    @NonNull
     protected Stream<SeriesResource> sonarrSeries() {
         return StreamUtils.streamIterator(new CachingIterable<>(
                 () -> ctx.getSonarrClient().getAllSeries().iterator(), getOrCreateCache(SONARR_SERIE), "all"));
     }
 
-    @NotNull
-    protected SeriesResource sonarrSeriesById(@NotNull Integer seriesId) {
+    @NonNull
+    protected SeriesResource sonarrSeriesById(@NonNull Integer seriesId) {
         return supplyWithCache(
                 SONARR_SERIE, "series:" + seriesId, () -> ctx.getSonarrClient().getSeries(seriesId));
     }
 
-    @NotNull
-    protected Stream<EpisodeResource> sonarrEpisodesBySeries(@NotNull Integer seriesId) {
+    @NonNull
+    protected Stream<EpisodeResource> sonarrEpisodesBySeries(@NonNull Integer seriesId) {
         return StreamUtils.streamIterator(new CachingIterable<>(
                 () -> ctx.getSonarrClient().getEpisodesBySeries(seriesId).iterator(),
                 getOrCreateCache(SONARR_EPISODE),
                 "series:" + seriesId));
     }
 
-    @NotNull
-    protected EpisodeFileResource sonarrEpisodeFile(@NotNull Integer episodeFileId) {
+    @NonNull
+    protected EpisodeFileResource sonarrEpisodeFile(@NonNull Integer episodeFileId) {
         return supplyWithCache(SONARR_EPISODE_FILE, "episodeFile:" + episodeFileId, () -> ctx.getSonarrClient()
                 .getEpisodeFile(episodeFileId));
     }
 
-    @NotNull
+    @NonNull
+    protected Stream<EpisodeFileResource> sonarrEpisodeFilesBySeries(@NonNull Integer seriesId) {
+        return StreamUtils.streamIterator(new CachingIterable<>(
+                () -> ctx.getSonarrClient().getEpisodeFilesBySeries(seriesId).iterator(),
+                getOrCreateCache(SONARR_EPISODE_FILE),
+                "files:series:" + seriesId));
+    }
+
+    @NonNull
     protected Stream<RadarrQueue> radarrQueue() {
         return StreamUtils.streamIterator(new CachingIterable<>(
                 () -> new PagePagedIterable<>((take, skip) -> ctx.getRadarrClient()
@@ -139,7 +147,7 @@ abstract class DomainModel {
                 "all"));
     }
 
-    @NotNull
+    @NonNull
     protected Stream<SonarrQueue> sonarrQueue() {
         return StreamUtils.streamIterator(new CachingIterable<>(
                 () -> new PagePagedIterable<>((take, skip) -> ctx.getSonarrClient()
@@ -150,7 +158,7 @@ abstract class DomainModel {
                 "all"));
     }
 
-    @NotNull
+    @NonNull
     protected Stream<MediaRequest> seerrRequests() {
         return StreamUtils.streamIterator(new CachingIterable<>(
                 () -> new OffsetPagedIterable<>((take, skip) -> ctx.getSeerrClient()
@@ -161,8 +169,8 @@ abstract class DomainModel {
                 "all"));
     }
 
-    @NotNull
-    protected Stream<MediaRequest> seerrRequestsByUser(@NotNull Integer userId) {
+    @NonNull
+    protected Stream<MediaRequest> seerrRequestsByUser(@NonNull Integer userId) {
         return StreamUtils.streamIterator(new CachingIterable<>(
                 () -> new OffsetPagedIterable<>((take, skip) -> ctx.getSeerrClient()
                                 .getAllRequests(take, skip, null, null, userId)
@@ -172,7 +180,7 @@ abstract class DomainModel {
                 "user:" + userId));
     }
 
-    @NotNull
+    @NonNull
     protected Stream<SeerrUser> seerrUsers() {
         return StreamUtils.streamIterator(new CachingIterable<>(
                 () -> new OffsetPagedIterable<>((take, skip) -> ctx.getSeerrClient()
@@ -183,19 +191,19 @@ abstract class DomainModel {
                 "all"));
     }
 
-    @NotNull
+    @NonNull
     protected Stream<TautulliUser> tautulliUsers() {
         return StreamUtils.streamIterator(new CachingIterable<>(
                 () -> ctx.getTautulliClient().getUsers().iterator(), getOrCreateCache(TAUTULLI_USER), "all"));
     }
 
-    @NotNull
-    protected TautulliUser tautulliUserById(@NotNull Integer userId) {
+    @NonNull
+    protected TautulliUser tautulliUserById(@NonNull Integer userId) {
         return supplyWithCache(
                 TAUTULLI_USER, "user:" + userId, () -> ctx.getTautulliClient().getUser(userId));
     }
 
-    @NotNull
+    @NonNull
     protected Stream<PlexDirectory> plexSections() {
         return StreamUtils.streamIterator(new CachingIterable<>(
                 () -> ctx.getPlexClient()
@@ -207,14 +215,14 @@ abstract class DomainModel {
                 "all"));
     }
 
-    @NotNull
-    protected PlexMediaContainerWrapper<PlexMetadataContainer> plexSection(@NotNull String key, @NotNull String type) {
+    @NonNull
+    protected PlexMediaContainerWrapper<PlexMetadataContainer> plexSection(@NonNull String key, @NonNull String type) {
         return supplyWithCache(PLEX_SECTION, "section:" + key + ":" + type, () -> ctx.getPlexClient()
                 .getSection(key, type, true));
     }
 
-    @NotNull
-    protected Stream<History> tautulliHistoryByRatingKey(@NotNull String ratingKey) {
+    @NonNull
+    protected Stream<History> tautulliHistoryByRatingKey(@NonNull String ratingKey) {
         return StreamUtils.streamIterator(new CachingIterable<>(
                 () -> new OffsetPagedIterable<>((take, skip) -> ctx.getTautulliClient()
                                 .getHistoryByRatingKey(ratingKey, skip, take)
@@ -224,7 +232,7 @@ abstract class DomainModel {
                 "ratingKey:" + ratingKey));
     }
 
-    @NotNull
+    @NonNull
     protected Stream<History> tautulliHistoryByUser(int userId) {
         return StreamUtils.streamIterator(new CachingIterable<>(
                 () -> new OffsetPagedIterable<>((take, skip) -> ctx.getTautulliClient()
@@ -235,8 +243,8 @@ abstract class DomainModel {
                 "user:" + userId));
     }
 
-    @NotNull
-    protected <T> T supplyWithCache(@NotNull Caches caches, @NotNull String key, @NotNull Supplier<T> supplier) {
+    @NonNull
+    protected <T> T supplyWithCache(@NonNull Caches caches, @NonNull String key, @NonNull Supplier<T> supplier) {
         final Cache<String, T> cache = getOrCreateCache(caches);
 
         final T existing = cache.get(key);
@@ -254,7 +262,7 @@ abstract class DomainModel {
         return prior != null ? prior : loaded;
     }
 
-    protected <T, V> Cache<T, V> getOrCreateCache(@NotNull Caches cache) {
+    protected <T, V> Cache<T, V> getOrCreateCache(@NonNull Caches cache) {
         final CacheManager manager = ctx.getCacheManager();
 
         try {
@@ -277,11 +285,11 @@ abstract class DomainModel {
         }
     }
 
-    protected void invalidateCache(@NotNull Caches cache, @NotNull String key) {
+    protected void invalidateCache(@NonNull Caches cache, @NonNull String key) {
         getOrCreateCache(cache).remove(key);
     }
 
-    protected void invalidateCache(@NotNull Caches... cache) {
+    protected void invalidateCache(@NonNull Caches... cache) {
         for (Caches value : cache) {
             try {
                 this.ctx.getCacheManager().getCache(value.name()).clear();

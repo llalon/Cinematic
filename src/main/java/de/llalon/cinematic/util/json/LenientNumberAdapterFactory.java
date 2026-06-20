@@ -7,8 +7,8 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Set;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Moshi {@link JsonAdapter.Factory} that leniently coerces JSON values into {@link Number} types.
@@ -49,7 +49,7 @@ public class LenientNumberAdapterFactory implements JsonAdapter.Factory {
     @Nullable
     @Override
     public JsonAdapter<?> create(
-            @NotNull Type type, @NotNull Set<? extends Annotation> annotations, @NotNull Moshi moshi) {
+            @NonNull Type type, @NonNull Set<? extends Annotation> annotations, @NonNull Moshi moshi) {
 
         Class<?> raw = Types.getRawType(type);
 
@@ -62,7 +62,7 @@ public class LenientNumberAdapterFactory implements JsonAdapter.Factory {
         return new JsonAdapter<Object>() {
 
             @Override
-            public @Nullable Object fromJson(@NotNull JsonReader reader) throws IOException {
+            public @Nullable Object fromJson(@NonNull JsonReader reader) throws IOException {
 
                 JsonReader.Token token = reader.peek();
 
@@ -87,7 +87,7 @@ public class LenientNumberAdapterFactory implements JsonAdapter.Factory {
             }
 
             @Override
-            public void toJson(@NotNull JsonWriter writer, @Nullable Object value) throws IOException {
+            public void toJson(@NonNull JsonWriter writer, @Nullable Object value) throws IOException {
                 delegate.toJson(writer, value);
             }
         };
@@ -114,7 +114,7 @@ public class LenientNumberAdapterFactory implements JsonAdapter.Factory {
      * @return parsed number or {@code null} if value is blank
      */
     @Nullable
-    private Object parseNumber(@NotNull String value, @NotNull Class<?> raw) {
+    private Object parseNumber(@NonNull String value, @NonNull Class<?> raw) {
 
         String trimmed = value.trim();
 

@@ -39,6 +39,12 @@ public class MovieFileResource {
     @Json(name = "edition")
     private final String edition;
 
+    @Json(name = "quality")
+    private final Object quality;
+
+    @Json(name = "customFormatScore")
+    private final Integer customFormatScore;
+
     @Json(name = "qualityCutoffNotMet")
     private final Boolean qualityCutoffNotMet;
 

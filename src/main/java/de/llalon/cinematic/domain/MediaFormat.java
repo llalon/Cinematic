@@ -3,7 +3,7 @@ package de.llalon.cinematic.domain;
 import de.llalon.cinematic.client.radarr.dto.RadarrMediaInfoResource;
 import de.llalon.cinematic.client.sonarr.dto.SonarrMediaInfoResource;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Domain representation of the audio and video format metadata for one media file.
