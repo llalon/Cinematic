@@ -27,6 +27,22 @@ public class Episode extends DomainModel {
     }
 
     /**
+     * Returns an iterable of all torrents for the episode.
+     *
+     * @return an iterable of Torrent objects
+     */
+    @NonNull
+    public Iterable<Torrent> torrents() {
+        return () -> sonarrQueue()
+                .filter(queueResource -> queueResource.getEpisodeId().equals(sonarrEpisode.getId()))
+                .flatMap(queueResource -> super.qbittorrentTorrents()
+                        .filter(torrent -> torrent.getHash() != null && queueResource.getDownloadId() != null)
+                        .filter(torrent -> torrent.getHash().equalsIgnoreCase(queueResource.getDownloadId()))
+                        .map(torrent -> new Torrent(ctx, torrent)))
+                .iterator();
+    }
+
+    /**
      * Returns the series this episode belongs to.
      *
      * @return the parent Series
