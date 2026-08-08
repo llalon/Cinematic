@@ -138,6 +138,13 @@ class CinematicIntegrationsTests {
     }
 
     @Test
+    void canGetEpisodeTorrents() {
+        var episode = library.series().iterator().next().episodes().iterator().next();
+        var torrent = episode.torrents();
+        assertNotNull(StreamUtils.iterateToList(torrent));
+    }
+
+    @Test
     void canGetMovieRequests() {
         var movie = library.movies().iterator().next();
         var requests = movie.requests();
