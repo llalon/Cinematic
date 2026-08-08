@@ -20,4 +20,16 @@ library.movies.each do |movie|
   end
 end
 
+puts " Checking series..."
+library.series.each do |serie|
+  serie.episodes.each do |episode|
+    next unless episode.get_has_file
+
+    episode.torrents.each do |torrent|
+      puts "  [EPISODE] Dropping priority for upgrade: '#{serie.get_title}: #{episode.get_title}' (#{torrent.get_hash})"
+      torrent.setBottomPriority()
+    end
+  end
+end
+
 puts "Done."

@@ -23,9 +23,8 @@ def move_to_recycle(disk_file)
   relative_path = disk_file.sub(LIBRARY_SHARE + "/", "")
   recycle_target = File.join(RECYCLE_PATH, relative_path)
 
-  # ToDo: Enable for non dry run
-  #FileUtils.mkdir_p(File.dirname(recycle_target))
-  #FileUtils.mv(disk_file, recycle_target)
+  FileUtils.mkdir_p(File.dirname(recycle_target))
+  FileUtils.mv(disk_file, recycle_target)
 
   puts " → Moved to: #{recycle_target}"
 end
