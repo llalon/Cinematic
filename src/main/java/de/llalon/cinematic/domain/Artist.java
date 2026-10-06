@@ -138,6 +138,11 @@ public class Artist extends LibraryMediaItem {
     }
 
     @Override
+    protected boolean hasExternalPlexIdentifiers(PlexMediaItem item) {
+        return hasPlexGuidScheme(item.getGuid(), LibraryIdType.MBID) || super.hasExternalPlexIdentifiers(item);
+    }
+
+    @Override
     protected Optional<PlexMediaItem> selectPlexMatch(Stream<PlexMediaItem> matches) {
         return uniquePlexMatch(matches);
     }

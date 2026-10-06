@@ -105,7 +105,7 @@ abstract class LibraryMediaItem extends DomainModel {
      * @throws ClientNotConfiguredException if matching requires an unconfigured Plex client
      */
     @Nullable
-    public String getPlexRatingKey() {
+    protected String getPlexRatingKey() {
         return fetchPlexMediaItem().map(PlexMediaItem::getRatingKey).orElse(null);
     }
 
@@ -260,9 +260,7 @@ abstract class LibraryMediaItem extends DomainModel {
     }
 
     private PlexMediaItem withExternalIds(PlexMediaItem item) {
-        if (item.getRatingKey() == null
-                || isMusicBrainzGuid(item.getGuid())
-                || (item.getGuids() != null && !item.getGuids().isEmpty())) {
+        if (item.getRatingKey() == null || hasExternalPlexIdentifiers(item)) {
             return item;
         }
         // Listings can omit external GUIDs; full item metadata may contain them.
@@ -298,8 +296,15 @@ abstract class LibraryMediaItem extends DomainModel {
                 });
     }
 
-    private static boolean isMusicBrainzGuid(String guid) {
-        return guid != null && guid.regionMatches(true, 0, "mbid://", 0, "mbid://".length());
+    /** Determines whether a listing already supplies external identifiers; subtypes can recognize legacy GUIDs. */
+    protected boolean hasExternalPlexIdentifiers(PlexMediaItem item) {
+        return item.getGuids() != null && !item.getGuids().isEmpty();
+    }
+
+    /** Tests a direct Plex GUID against an external identifier scheme. */
+    protected boolean hasPlexGuidScheme(String guid, LibraryIdType type) {
+        String prefix = type.getValue() + "://";
+        return guid != null && guid.regionMatches(true, 0, prefix, 0, prefix.length());
     }
 
     /**
