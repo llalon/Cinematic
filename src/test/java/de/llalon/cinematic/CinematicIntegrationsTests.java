@@ -33,6 +33,26 @@ class CinematicIntegrationsTests {
     }
 
     @Test
+    void canGetMusicTrackWatches() {
+        for (var tracks : library.tracks()) {
+            for (var watches : tracks.watches()) {
+                assertNotNull(watches.getRatingKey());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetMusicTrackTorrents() {
+        for (var album : library.albums()) {
+            for (var torrent : album.torrents()) {
+                assertNotNull(torrent.getHash());
+                return;
+            }
+        }
+    }
+
+    @Test
     void canGetArtistAlbumTrackBackToArtist() {
         for (var artist : library.artists()) {
             for (var album : artist.albums()) {
