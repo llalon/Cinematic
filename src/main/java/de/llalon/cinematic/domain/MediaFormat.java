@@ -1,5 +1,6 @@
 package de.llalon.cinematic.domain;
 
+import de.llalon.cinematic.client.lidarr.dto.LidarrMediaInfoResource;
 import de.llalon.cinematic.client.radarr.dto.RadarrMediaInfoResource;
 import de.llalon.cinematic.client.sonarr.dto.SonarrMediaInfoResource;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +45,10 @@ public class MediaFormat extends DomainModel {
         this.audioChannels = audioChannels;
         this.audioLanguages = audioLanguages;
         this.videoDynamicRange = videoDynamicRange;
+    }
+
+    MediaFormat(ClientContext ctx, LidarrMediaInfoResource mediaInfo) {
+        this(ctx, null, mediaInfo.getAudioCodec(), null, mediaInfo.getAudioChannels(), null, null);
     }
 
     MediaFormat(ClientContext ctx, RadarrMediaInfoResource mediaInfo) {
