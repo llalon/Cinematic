@@ -26,14 +26,22 @@ class CinematicIntegrationsTests {
             library.getContext().getSonarrClient();
             library.getContext().getTautulliClient();
             library.getContext().getSeerrClient();
+            library.getContext().getLidarrClient();
         } catch (Exception e) {
             throw new TestAbortedException("Environment variables for client configuration not set.");
         }
     }
 
     @Test
-    void test() {
-        // Stub
+    void canGetArtistAlbumTrackBackToArtist() {
+        for (var artist : library.artists()) {
+            for (var album : artist.albums()) {
+                for (var track : album.tracks()) {
+                    assertEquals(artist.getId(), track.album().artist().getId());
+                    return;
+                }
+            }
+        }
     }
 
     @Test

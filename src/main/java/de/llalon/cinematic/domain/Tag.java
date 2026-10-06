@@ -95,4 +95,17 @@ public class Tag extends DomainModel {
                 .map(x -> new Torrent(ctx, x))
                 .iterator();
     }
+    /** Returns artists carrying this tag in Lidarr. */
+    public Iterable<Artist> artists() {
+        return () -> {
+            Set<Integer> ids = lidarrTags()
+                    .filter(t -> name.equals(t.getLabel()))
+                    .map(t -> t.getId())
+                    .collect(Collectors.toSet());
+            return lidarrArtists()
+                    .filter(a -> a.getTags() != null && a.getTags().stream().anyMatch(ids::contains))
+                    .map(a -> new Artist(ctx, a))
+                    .iterator();
+        };
+    }
 }

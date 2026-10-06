@@ -5,15 +5,19 @@ import static de.llalon.cinematic.util.collections.StreamUtils.streamIterator;
 import de.llalon.cinematic.client.plex.dto.PlexMediaItem;
 import de.llalon.cinematic.client.radarr.dto.MovieResource;
 import de.llalon.cinematic.client.sonarr.dto.SeriesResource;
+import de.llalon.cinematic.client.tautulli.dto.History;
 import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
-@Slf4j
 abstract class LibraryMediaItem extends DomainModel {
 
     /**
@@ -24,7 +28,8 @@ abstract class LibraryMediaItem extends DomainModel {
     protected enum LibraryIdType {
         TMDB("tmdb"),
         IMDB("imdb"),
-        TVDB("tvdb");
+        TVDB("tvdb"),
+        MBID("mbid");
 
         protected final String value;
     }
@@ -35,11 +40,15 @@ abstract class LibraryMediaItem extends DomainModel {
     @Getter
     @RequiredArgsConstructor
     protected enum LibraryMediaType {
-        SERIES("show", "2"),
-        MOVIE("movie", "1");
+        SERIES("show", "2", "show"),
+        MOVIE("movie", "1", "movie"),
+        ARTIST("artist", "8", "artist"),
+        ALBUM("artist", "9", "album"),
+        TRACK("artist", "10", "track");
 
         protected final String plexLibraryType;
         protected final String plexMediaType;
+        protected final String plexItemType;
     }
 
     /** TMDB identifier for this media item, when known. */
@@ -58,7 +67,7 @@ abstract class LibraryMediaItem extends DomainModel {
     protected final String imdbId;
 
     /** Media type used to query matching Plex library sections. */
-    protected final LibraryMediaType libraryMediaType; // show or movie
+    protected final LibraryMediaType libraryMediaType;
 
     protected LibraryMediaItem(@NonNull ClientContext ctx, @NonNull MovieResource radarrMovie) {
         super(ctx);
@@ -74,6 +83,30 @@ abstract class LibraryMediaItem extends DomainModel {
         this.imdbId = sonarrSeries.getImdbId() == null ? null : String.valueOf(sonarrSeries.getImdbId());
         this.tvdbId = sonarrSeries.getTvdbId() == null ? null : String.valueOf(sonarrSeries.getTvdbId());
         this.libraryMediaType = LibraryMediaType.SERIES;
+    }
+
+    /** Creates a media item whose external identifiers are supplied by its subtype. */
+    protected LibraryMediaItem(@NonNull ClientContext ctx, @NonNull LibraryMediaType type) {
+        super(ctx);
+        this.tmdbId = null;
+        this.tvdbId = null;
+        this.imdbId = null;
+        this.libraryMediaType = type;
+    }
+
+    /** Returns the MusicBrainz identifiers supplied by music subtypes. */
+    protected Stream<String> musicBrainzIds() {
+        return Stream.empty();
+    }
+
+    /**
+     * Resolves this item's server-local Plex rating key from its external identifiers.
+     * @return the rating key, or null when unmatched (including ambiguous music matches)
+     * @throws ClientNotConfiguredException if matching requires an unconfigured Plex client
+     */
+    @Nullable
+    public String getPlexRatingKey() {
+        return fetchPlexMediaItem().map(PlexMediaItem::getRatingKey).orElse(null);
     }
 
     /**
@@ -115,6 +148,12 @@ abstract class LibraryMediaItem extends DomainModel {
      */
     @NonNull
     public Iterable<Request> requests() {
+        return Collections.emptyList();
+    }
+
+    /** Returns movie and TV requests matched by this item's external identifiers. */
+    @NonNull
+    protected Iterable<Request> seerrMediaRequests() {
         return () -> seerrRequests()
                 .filter(request -> request.getMedia() != null)
                 .filter(request -> {
@@ -143,7 +182,7 @@ abstract class LibraryMediaItem extends DomainModel {
     }
 
     /**
-     * Returns the watch history for this media item.
+     * Returns playback history for this media item, including music listening history.
      *
      * @return an iterable of Watches objects
      */
@@ -151,10 +190,15 @@ abstract class LibraryMediaItem extends DomainModel {
     public Iterable<Watches> watches() {
         return () -> fetchPlexMediaItem()
                 .map(PlexMediaItem::getRatingKey)
-                .map(ratingKey -> tautulliHistoryByRatingKey(ratingKey)
+                .map(ratingKey -> playbackHistory(ratingKey)
                         .map(history -> new Watches(ctx, history))
                         .iterator())
                 .orElse(Collections.emptyIterator());
+    }
+
+    /** Loads playback history for this item; containers override the hierarchy level. */
+    protected Stream<History> playbackHistory(String ratingKey) {
+        return tautulliHistoryByRatingKey(ratingKey);
     }
 
     /**
@@ -164,50 +208,122 @@ abstract class LibraryMediaItem extends DomainModel {
      */
     @NonNull
     protected Optional<PlexMediaItem> fetchPlexMediaItem() {
-        return plexSections()
+        return selectPlexMatch(plexCandidates().filter(this::hasMatchingId));
+    }
+
+    /** Supplies candidates for this item's Plex identity. */
+    protected Stream<PlexMediaItem> plexCandidates() {
+        return plexLibraryItems();
+    }
+
+    /** Selects a matching item; subtypes can reject ambiguous matches. */
+    protected Optional<PlexMediaItem> selectPlexMatch(Stream<PlexMediaItem> matches) {
+        return matches.findFirst();
+    }
+
+    private Stream<PlexMediaItem> plexLibraryItems() {
+        return plexSections().collect(Collectors.toList()).stream()
                 .filter(section -> libraryMediaType.getPlexLibraryType().equalsIgnoreCase(section.getType()))
                 .map(section -> plexSection(section.getKey(), libraryMediaType.getPlexMediaType()))
                 .filter(section -> section.getMediaContainer() != null
                         && section.getMediaContainer().getMetadata() != null)
                 .flatMap(section -> section.getMediaContainer().getMetadata().stream())
-                .filter(series -> series.getGuids() != null)
-                .filter(series -> series.getGuids().stream().anyMatch(guid -> {
-                    if (guid.getId() == null) {
+                .filter(Objects::nonNull);
+    }
+
+    /** Supplies candidates with full external metadata, skipping absent identifiers. */
+    protected Stream<PlexMediaItem> plexCandidatesWithExternalIds(Stream<String> ids) {
+        return plexCandidatesWithExternalIds(ids, item -> true);
+    }
+
+    /** Supplies external-ID candidates restricted to a subtype's parent or other scope. */
+    protected Stream<PlexMediaItem> plexCandidatesWithExternalIds(Stream<String> ids, Predicate<PlexMediaItem> scope) {
+        if (ids.noneMatch(id -> id != null && !id.isBlank())) {
+            return Stream.empty();
+        }
+        return plexLibraryItems()
+                .filter(item -> libraryMediaType.getPlexItemType().equalsIgnoreCase(item.getType()))
+                .filter(scope)
+                .map(this::withExternalIds);
+    }
+
+    /** Returns a match only when every matching candidate has the same Plex rating key. */
+    protected Optional<PlexMediaItem> uniquePlexMatch(Stream<PlexMediaItem> matches) {
+        List<PlexMediaItem> unique = matches
+                .filter(item -> item.getRatingKey() != null)
+                .collect(Collectors.toMap(PlexMediaItem::getRatingKey, item -> item, (first, duplicate) -> first))
+                .values()
+                .stream()
+                .limit(2)
+                .collect(Collectors.toList());
+        return unique.size() == 1 ? Optional.of(unique.get(0)) : Optional.empty();
+    }
+
+    private PlexMediaItem withExternalIds(PlexMediaItem item) {
+        if (item.getRatingKey() == null
+                || isMusicBrainzGuid(item.getGuid())
+                || (item.getGuids() != null && !item.getGuids().isEmpty())) {
+            return item;
+        }
+        // Listings can omit external GUIDs; full item metadata may contain them.
+        var metadata = plexMetadata(item.getRatingKey()).getMediaContainer();
+        if (metadata == null || metadata.getMetadata() == null) {
+            return item;
+        }
+        return metadata.getMetadata().stream()
+                .filter(Objects::nonNull)
+                .filter(full -> item.getRatingKey().equals(full.getRatingKey()))
+                .filter(full -> libraryMediaType.getPlexItemType().equalsIgnoreCase(full.getType()))
+                .findFirst()
+                .orElse(item);
+    }
+
+    private boolean hasMatchingId(PlexMediaItem item) {
+        Stream<String> guids = item.getGuids() == null
+                ? Stream.empty()
+                : item.getGuids().stream().filter(Objects::nonNull).map(guid -> guid.getId());
+        return Stream.concat(Stream.of(item.getGuid()), guids)
+                .filter(Objects::nonNull)
+                .anyMatch(guid -> {
+                    String[] parts = guid.split("://", 2);
+                    if (parts.length != 2) {
                         return false;
                     }
-
                     try {
-                        String[] parts = guid.getId().split("://");
-                        if (parts.length != 2) {
-                            return false;
-                        }
-                        String prefix = parts[0];
-                        String id = parts[1];
-
-                        LibraryIdType type = LibraryIdType.valueOf(prefix.toUpperCase());
-                        return plexMatchesId(type, id);
-                    } catch (IllegalArgumentException | NullPointerException e) {
-                        log.warn("Unknown Plex id type: {}", guid.getId());
+                        LibraryIdType type = LibraryIdType.valueOf(parts[0].toUpperCase(java.util.Locale.ROOT));
+                        return plexMatchesId(type, parts[1]);
+                    } catch (IllegalArgumentException e) {
                         return false;
                     }
-                }))
-                .findFirst();
+                });
+    }
+
+    private static boolean isMusicBrainzGuid(String guid) {
+        return guid != null && guid.regionMatches(true, 0, "mbid://", 0, "mbid://".length());
     }
 
     /**
      * Checks whether the given Plex GUID prefix and ID match one of this media item's external identifiers.
      *
-     * @param prefix the GUID scheme (e.g. {@code "tmdb"}, {@code "imdb"}, {@code "tvdb"})
+     * @param prefix the GUID scheme (e.g. {@code "tmdb"}, {@code "imdb"}, {@code "tvdb"}, {@code "mbid"})
      * @param id     the identifier value from the Plex GUID
      * @return {@code true} if the identifier matches this media item
      */
     protected boolean plexMatchesId(@NonNull LibraryIdType prefix, @NonNull String id) {
         switch (prefix) {
             case TMDB:
-                return id.equalsIgnoreCase(String.valueOf(this.tmdbId));
+                return this.tmdbId != null && id.equalsIgnoreCase(this.tmdbId);
             case IMDB:
                 return id.equalsIgnoreCase(this.imdbId);
+            case MBID:
+                return musicBrainzIds()
+                        .filter(Objects::nonNull)
+                        .filter(candidate -> !candidate.isBlank())
+                        .anyMatch(id::equalsIgnoreCase);
             case TVDB:
+                if (this.tvdbId == null) {
+                    return false;
+                }
                 // could or could not have "tt" prefix
                 if (id.equalsIgnoreCase(this.tvdbId)) {
                     return true;

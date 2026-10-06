@@ -2,6 +2,7 @@ package de.llalon.cinematic.domain;
 
 import static de.llalon.cinematic.domain.DomainModel.Caches.*;
 
+import de.llalon.cinematic.client.lidarr.dto.*;
 import de.llalon.cinematic.client.plex.dto.PlexDirectory;
 import de.llalon.cinematic.client.plex.dto.PlexMediaContainerWrapper;
 import de.llalon.cinematic.client.plex.dto.PlexMetadataContainer;
@@ -40,6 +41,12 @@ abstract class DomainModel {
      * Cache regions used by domain model helper methods.
      */
     protected enum Caches {
+        LIDARR_ARTIST,
+        LIDARR_ALBUM,
+        LIDARR_TRACK,
+        LIDARR_TRACK_FILE,
+        LIDARR_TAG,
+        LIDARR_QUEUE,
         SONARR_TAG,
         RADARR_TAG,
         QBITTORRENT_TAG,
@@ -71,6 +78,84 @@ abstract class DomainModel {
      */
     protected DomainModel(@NonNull ClientContext ctx) {
         this.ctx = ctx;
+    }
+
+    /** Returns no values for an unconfigured optional service. */
+    protected <T> Stream<T> configuredStream(Supplier<?> client, Supplier<Stream<T>> values) {
+        try {
+            client.get();
+        } catch (ClientNotConfiguredException e) {
+            return Stream.empty();
+        }
+        return values.get();
+    }
+
+    protected Stream<ArtistResource> lidarrArtists() {
+        return StreamUtils.streamIterator(new CachingIterable<>(
+                () -> ctx.getLidarrClient().getAllArtists().iterator(), getOrCreateCache(LIDARR_ARTIST), "all"));
+    }
+
+    protected Stream<AlbumResource> lidarrAlbums() {
+        return StreamUtils.streamIterator(new CachingIterable<>(
+                () -> ctx.getLidarrClient().getAllAlbums().iterator(), getOrCreateCache(LIDARR_ALBUM), "all"));
+    }
+
+    protected Stream<AlbumResource> lidarrAlbumsByArtist(Integer artistId) {
+        return StreamUtils.streamIterator(new CachingIterable<>(
+                () -> ctx.getLidarrClient().getAlbumsByArtist(artistId).iterator(),
+                getOrCreateCache(LIDARR_ALBUM),
+                "artist:" + artistId));
+    }
+
+    protected Stream<TrackResource> lidarrTracksByAlbum(Integer albumId) {
+        return StreamUtils.streamIterator(new CachingIterable<>(
+                () -> ctx.getLidarrClient().getTracksByAlbum(albumId).iterator(),
+                getOrCreateCache(LIDARR_TRACK),
+                "album:" + albumId));
+    }
+
+    protected Stream<TrackFileResource> lidarrTrackFilesByAlbum(Integer albumId) {
+        return StreamUtils.streamIterator(new CachingIterable<>(
+                () -> ctx.getLidarrClient().getTrackFilesByAlbum(albumId).iterator(),
+                getOrCreateCache(LIDARR_TRACK_FILE),
+                "album:" + albumId));
+    }
+
+    protected Stream<TrackFileResource> lidarrTrackFilesByArtist(Integer artistId) {
+        return StreamUtils.streamIterator(new CachingIterable<>(
+                () -> ctx.getLidarrClient().getTrackFilesByArtist(artistId).iterator(),
+                getOrCreateCache(LIDARR_TRACK_FILE),
+                "artist:" + artistId));
+    }
+
+    protected Stream<LidarrTag> lidarrTags() {
+        return StreamUtils.streamIterator(new CachingIterable<>(
+                () -> ctx.getLidarrClient().getAllTags().iterator(), getOrCreateCache(LIDARR_TAG), "all"));
+    }
+
+    protected ArtistResource lidarrArtistById(Integer artistId) {
+        return supplyWithCache(
+                LIDARR_ARTIST, "id:" + artistId, () -> ctx.getLidarrClient().getArtist(artistId));
+    }
+
+    protected AlbumResource lidarrAlbumById(Integer albumId) {
+        return supplyWithCache(
+                LIDARR_ALBUM, "id:" + albumId, () -> ctx.getLidarrClient().getAlbum(albumId));
+    }
+
+    protected TrackFileResource lidarrTrackFile(Integer trackFileId) {
+        return supplyWithCache(LIDARR_TRACK_FILE, "id:" + trackFileId, () -> ctx.getLidarrClient()
+                .getTrackFile(trackFileId));
+    }
+
+    protected Stream<LidarrQueue> lidarrQueue() {
+        return StreamUtils.streamIterator(new CachingIterable<>(
+                () -> new PagePagedIterable<>((page, pageSize) -> ctx.getLidarrClient()
+                                .getQueue(page, pageSize, false, false)
+                                .getRecords())
+                        .iterator(),
+                getOrCreateCache(LIDARR_QUEUE),
+                "all"));
     }
 
     /**
@@ -341,6 +426,12 @@ abstract class DomainModel {
                 .getSection(key, type, true));
     }
 
+    /** Returns cached full Plex metadata for a server-local rating key. */
+    protected PlexMediaContainerWrapper<PlexMetadataContainer> plexMetadata(String ratingKey) {
+        return supplyWithCache(
+                PLEX_SECTION, "metadata:" + ratingKey, () -> ctx.getPlexClient().getMetadata(ratingKey));
+    }
+
     /**
      * Returns cached Tautulli history for a Plex rating key.
      *
@@ -356,6 +447,28 @@ abstract class DomainModel {
                         .iterator(),
                 getOrCreateCache(TAUTULLI_HISTORY),
                 "ratingKey:" + ratingKey));
+    }
+
+    /** Returns cached playback history for children of a Plex item. */
+    protected Stream<History> tautulliHistoryByParentRatingKey(String ratingKey) {
+        return StreamUtils.streamIterator(new CachingIterable<>(
+                () -> new OffsetPagedIterable<>((take, skip) -> ctx.getTautulliClient()
+                                .getHistoryByParentRatingKey(ratingKey, skip, take)
+                                .getData())
+                        .iterator(),
+                getOrCreateCache(TAUTULLI_HISTORY),
+                "parentRatingKey:" + ratingKey));
+    }
+
+    /** Returns cached playback history for descendants of a Plex item. */
+    protected Stream<History> tautulliHistoryByGrandparentRatingKey(String ratingKey) {
+        return StreamUtils.streamIterator(new CachingIterable<>(
+                () -> new OffsetPagedIterable<>((take, skip) -> ctx.getTautulliClient()
+                                .getHistoryByGrandparentRatingKey(ratingKey, skip, take)
+                                .getData())
+                        .iterator(),
+                getOrCreateCache(TAUTULLI_HISTORY),
+                "grandparentRatingKey:" + ratingKey));
     }
 
     /**
