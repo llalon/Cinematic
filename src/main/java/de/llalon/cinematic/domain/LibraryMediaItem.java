@@ -94,11 +94,6 @@ abstract class LibraryMediaItem extends DomainModel {
         this.libraryMediaType = type;
     }
 
-    /** Returns the MusicBrainz identifiers supplied by music subtypes. */
-    protected Stream<String> musicBrainzIds() {
-        return Stream.empty();
-    }
-
     /**
      * Resolves this item's server-local Plex rating key from its external identifiers.
      * @return the rating key, or null when unmatched (including ambiguous music matches)
@@ -277,23 +272,18 @@ abstract class LibraryMediaItem extends DomainModel {
     }
 
     private boolean hasMatchingId(PlexMediaItem item) {
-        Stream<String> guids = item.getGuids() == null
-                ? Stream.empty()
-                : item.getGuids().stream().filter(Objects::nonNull).map(guid -> guid.getId());
-        return Stream.concat(Stream.of(item.getGuid()), guids)
-                .filter(Objects::nonNull)
-                .anyMatch(guid -> {
-                    String[] parts = guid.split("://", 2);
-                    if (parts.length != 2) {
-                        return false;
-                    }
-                    try {
-                        LibraryIdType type = LibraryIdType.valueOf(parts[0].toUpperCase(java.util.Locale.ROOT));
-                        return plexMatchesId(type, parts[1]);
-                    } catch (IllegalArgumentException e) {
-                        return false;
-                    }
-                });
+        return plexGuids(item).anyMatch(guid -> {
+            String[] parts = guid.split("://", 2);
+            if (parts.length != 2) {
+                return false;
+            }
+            try {
+                LibraryIdType type = LibraryIdType.valueOf(parts[0].toUpperCase(java.util.Locale.ROOT));
+                return plexMatchesId(type, parts[1]);
+            } catch (IllegalArgumentException e) {
+                return false;
+            }
+        });
     }
 
     /** Determines whether a listing already supplies external identifiers; subtypes can recognize legacy GUIDs. */
@@ -301,10 +291,24 @@ abstract class LibraryMediaItem extends DomainModel {
         return item.getGuids() != null && !item.getGuids().isEmpty();
     }
 
+    /** Tests all Plex GUIDs against an external identifier scheme. */
+    protected boolean hasPlexGuidScheme(PlexMediaItem item, LibraryIdType type) {
+        return plexGuids(item).anyMatch(guid -> hasPlexGuidScheme(guid, type));
+    }
+
+    private Stream<String> plexGuids(PlexMediaItem item) {
+        Stream<String> guids = item.getGuids() == null
+                ? Stream.empty()
+                : item.getGuids().stream().filter(Objects::nonNull).map(guid -> guid.getId());
+        return Stream.concat(Stream.of(item.getGuid()), guids).filter(Objects::nonNull);
+    }
+
     /** Tests a direct Plex GUID against an external identifier scheme. */
     protected boolean hasPlexGuidScheme(String guid, LibraryIdType type) {
         String prefix = type.getValue() + "://";
-        return guid != null && guid.regionMatches(true, 0, prefix, 0, prefix.length());
+        return guid != null
+                && guid.regionMatches(true, 0, prefix, 0, prefix.length())
+                && !guid.substring(prefix.length()).isBlank();
     }
 
     /**
@@ -320,11 +324,6 @@ abstract class LibraryMediaItem extends DomainModel {
                 return this.tmdbId != null && id.equalsIgnoreCase(this.tmdbId);
             case IMDB:
                 return id.equalsIgnoreCase(this.imdbId);
-            case MBID:
-                return musicBrainzIds()
-                        .filter(Objects::nonNull)
-                        .filter(candidate -> !candidate.isBlank())
-                        .anyMatch(id::equalsIgnoreCase);
             case TVDB:
                 if (this.tvdbId == null) {
                     return false;

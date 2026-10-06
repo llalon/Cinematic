@@ -107,6 +107,13 @@ abstract class DomainModel {
                 "artist:" + artistId));
     }
 
+    protected Stream<TrackResource> lidarrTracksByArtist(Integer artistId) {
+        return StreamUtils.streamIterator(new CachingIterable<>(
+                () -> ctx.getLidarrClient().getTracksByArtist(artistId).iterator(),
+                getOrCreateCache(LIDARR_TRACK),
+                "artist:" + artistId));
+    }
+
     protected Stream<TrackResource> lidarrTracksByAlbum(Integer albumId) {
         return StreamUtils.streamIterator(new CachingIterable<>(
                 () -> ctx.getLidarrClient().getTracksByAlbum(albumId).iterator(),

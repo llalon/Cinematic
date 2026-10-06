@@ -72,8 +72,7 @@ public class Artist extends LibraryMediaItem {
     }
     /** Returns this artist's tracks. */
     public Iterable<Track> tracks() {
-        return () -> lidarrAlbumsByArtist(resource.getId())
-                .flatMap(a -> lidarrTracksByAlbum(a.getId()))
+        return () -> lidarrTracksByArtist(resource.getId())
                 .map(t -> new Track(ctx, t))
                 .iterator();
     }
@@ -122,8 +121,7 @@ public class Artist extends LibraryMediaItem {
         };
     }
 
-    @Override
-    protected Stream<String> musicBrainzIds() {
+    private Stream<String> musicBrainzIds() {
         return Stream.of(resource.getForeignArtistId(), resource.getMbId());
     }
 
@@ -138,8 +136,19 @@ public class Artist extends LibraryMediaItem {
     }
 
     @Override
+    protected boolean plexMatchesId(LibraryIdType prefix, String id) {
+        if (prefix == LibraryIdType.MBID) {
+            return musicBrainzIds()
+                    .filter(Objects::nonNull)
+                    .filter(candidate -> !candidate.isBlank())
+                    .anyMatch(id::equalsIgnoreCase);
+        }
+        return super.plexMatchesId(prefix, id);
+    }
+
+    @Override
     protected boolean hasExternalPlexIdentifiers(PlexMediaItem item) {
-        return hasPlexGuidScheme(item.getGuid(), LibraryIdType.MBID) || super.hasExternalPlexIdentifiers(item);
+        return hasPlexGuidScheme(item, LibraryIdType.MBID);
     }
 
     @Override

@@ -291,12 +291,16 @@ public class LidarrClient {
                 throw new LidarrApiException(
                         "Lidarr API request failed: HTTP " + response.code(), response.code(), body);
             }
-            if (type == null || body.isEmpty()) {
+            if (type == null) {
                 return null;
             }
             try {
                 JsonAdapter<T> adapter = moshi.adapter(type);
-                return adapter.fromJson(body);
+                T value = adapter.fromJson(body);
+                if (value == null) {
+                    throw new IllegalStateException("Lidarr returned null for a resource response");
+                }
+                return value;
             } catch (IOException | RuntimeException e) {
                 throw new LidarrClientException("Failed to parse Lidarr response: " + request.url(), e);
             }
