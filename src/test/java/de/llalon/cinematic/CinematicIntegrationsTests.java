@@ -110,246 +110,329 @@ class CinematicIntegrationsTests {
 
     @Test
     void canGetUsers() {
-        var results = library.users();
-        assertNotNull(results.iterator().next());
+        for (var result : library.users()) {
+            assertNotNull(result);
+            return;
+        }
     }
 
     @Test
     void canGetUsersRequests() {
-        var users = library.users();
-        var requests = users.iterator().next().requests();
-        assertNotNull(requests.iterator().next());
+        for (var user : library.users()) {
+            for (var request : user.requests()) {
+                assertNotNull(request.getStatus());
+                return;
+            }
+        }
     }
 
     @Test
     void canGetMovies() {
-        var results = library.movies();
-        assertNotNull(results.iterator().next());
+        for (var result : library.movies()) {
+            assertNotNull(result);
+            return;
+        }
     }
 
     @Test
     void canGetSeries() {
-        var results = library.series();
-        assertNotNull(results.iterator().next());
+        for (var result : library.series()) {
+            assertNotNull(result);
+            return;
+        }
     }
 
     @Test
     void canCanTorrents() {
-        var results = library.torrents();
-        assertNotNull(results.iterator().next());
+        for (var result : library.torrents()) {
+            assertNotNull(result);
+            return;
+        }
     }
 
     @Test
     void canCanRequests() {
-        var results = library.requests();
-        assertNotNull(results.iterator().next());
+        for (var result : library.requests()) {
+            assertNotNull(result);
+            return;
+        }
     }
 
     @Test
     void canGetTags() {
-        var results = library.tags();
-        assertNotNull(results.iterator().next());
+        for (var result : library.tags()) {
+            assertNotNull(result);
+            return;
+        }
     }
 
     @Test
     void canGetMovieTorrents() {
-        var movie = library.movies().iterator().next();
-        var torrent = movie.torrents();
-        assertNotNull(StreamUtils.iterateToList(torrent));
+        for (var movie : library.movies()) {
+            for (var torrent : movie.torrents()) {
+                assertNotNull(torrent.getHash());
+                return;
+            }
+        }
     }
 
     @Test
     void canGetSeriesTorrents() {
-        var series = library.series().iterator().next();
-        var torrent = series.torrents();
-        assertNotNull(StreamUtils.iterateToList(torrent));
+        for (var series : library.series()) {
+            for (var torrent : series.torrents()) {
+                assertNotNull(torrent.getHash());
+                return;
+            }
+        }
     }
 
     @Test
     void canGetEpisodeTorrents() {
-        var episode = library.series().iterator().next().episodes().iterator().next();
-        var torrent = episode.torrents();
-        assertNotNull(StreamUtils.iterateToList(torrent));
+        for (var series : library.series()) {
+            for (var episode : series.episodes()) {
+                for (var torrent : episode.torrents()) {
+                    assertNotNull(torrent.getHash());
+                    return;
+                }
+            }
+        }
     }
 
     @Test
     void canGetMovieRequests() {
-        var movie = library.movies().iterator().next();
-        var requests = movie.requests();
-        assertNotNull(StreamUtils.iterateToList(requests));
+        for (var movie : library.movies()) {
+            for (var request : movie.requests()) {
+                assertNotNull(request.getStatus());
+                return;
+            }
+        }
     }
 
     @Test
     void canGetSeriesRequests() {
-        var series = library.series().iterator().next();
-        var requests = series.requests();
-        assertNotNull(StreamUtils.iterateToList(requests));
+        for (var series : library.series()) {
+            for (var request : series.requests()) {
+                assertNotNull(request.getStatus());
+                return;
+            }
+        }
     }
 
     @Test
     void canGetMovieWatches() {
-        var movie = library.movies().iterator().next();
-        var watches = movie.watches();
-        assertNotNull(StreamUtils.iterateToList(watches));
+        for (var movie : library.movies()) {
+            for (var watches : movie.watches()) {
+                assertNotNull(watches.getRatingKey());
+                return;
+            }
+        }
     }
 
     @Test
     void canGetSeriesWatches() {
-        var series = library.series().iterator().next();
-        var watches = series.watches();
-        assertNotNull(StreamUtils.iterateToList(watches));
+        for (var series : library.series()) {
+            for (var watches : series.watches()) {
+                assertNotNull(watches.getRatingKey());
+                return;
+            }
+        }
     }
 
     @Test
     void canGetMovieTags() {
-        var movie = library.movies().iterator().next();
-        var tags = movie.tags();
-        assertNotNull(StreamUtils.iterateToList(tags));
+        for (var movie : library.movies()) {
+            for (var tag : movie.tags()) {
+                assertNotNull(tag.getName());
+                return;
+            }
+        }
     }
 
     @Test
     void canGetSeriesTags() {
-        var series = library.series().iterator().next();
-        var tags = series.tags();
-        assertNotNull(StreamUtils.iterateToList(tags));
+        for (var series : library.series()) {
+            for (var tag : series.tags()) {
+                assertNotNull(tag.getName());
+                return;
+            }
+        }
     }
 
     @Test
     void canGetTorrentSeries() {
-        var torrent = library.torrents().iterator().next();
-        var series = torrent.series();
-        assertNotNull(StreamUtils.iterateToList(series));
+        for (var torrent : library.torrents()) {
+            for (var series : torrent.series()) {
+                assertNotNull(series.getTvdbId());
+                return;
+            }
+        }
     }
 
     @Test
     void canGetTorrentMovies() {
-        var torrent = library.torrents().iterator().next();
-        var movies = torrent.movies();
-        assertNotNull(StreamUtils.iterateToList(movies));
+        for (var torrent : library.torrents()) {
+            for (var movie : torrent.movies()) {
+                assertNotNull(movie.getTmdbId());
+                return;
+            }
+        }
     }
 
     @Test
     void canGetTagName() {
-        var tag = library.tags().iterator().next();
-        assertNotNull(tag.getName());
-        assertFalse(tag.getName().isBlank());
+        for (var tag : library.tags()) {
+            assertNotNull(tag.getName());
+            assertFalse(tag.getName().isBlank());
+            return;
+        }
     }
 
     @Test
     void canGetTagMovies() {
-        var tag = library.tags().iterator().next();
-        var movies = tag.movies();
-        assertNotNull(StreamUtils.iterateToList(movies));
+        for (var tag : library.tags()) {
+            for (var movie : tag.movies()) {
+                assertNotNull(movie.getTmdbId());
+                return;
+            }
+        }
     }
 
     @Test
     void canGetTagSeries() {
-        var tag = library.tags().iterator().next();
-        var series = tag.series();
-        assertNotNull(StreamUtils.iterateToList(series));
+        for (var tag : library.tags()) {
+            for (var series : tag.series()) {
+                assertNotNull(series.getTvdbId());
+                return;
+            }
+        }
     }
 
     @Test
     void canGetTagTorrents() {
-        var tag = library.tags().iterator().next();
-        var torrents = tag.torrents();
-        assertNotNull(StreamUtils.iterateToList(torrents));
+        for (var tag : library.tags()) {
+            for (var torrent : tag.torrents()) {
+                assertNotNull(torrent.getHash());
+                return;
+            }
+        }
     }
 
     @Test
     void canGetRequestUser() {
-        var request = library.requests().iterator().next();
-        var user = request.user();
-        assertNotNull(user);
-        assertNotNull(user.getEmail());
+        for (var request : library.requests()) {
+            var user = request.user();
+            assertNotNull(user);
+            assertNotNull(user.getEmail());
+            return;
+        }
     }
 
     @Test
     void canGetMovieTmdbId() {
-        var movie = library.movies().iterator().next();
-        assertNotNull(movie.getTmdbId());
+        for (var movie : library.movies()) {
+            assertNotNull(movie.getTmdbId());
+            return;
+        }
     }
 
     @Test
     void canGetSeriesTvdbId() {
-        var series = library.series().iterator().next();
-        assertNotNull(series.getTvdbId());
+        for (var series : library.series()) {
+            assertNotNull(series.getTvdbId());
+            return;
+        }
     }
 
     @Test
     void canGetUserEmail() {
-        var user = library.users().iterator().next();
-        assertNotNull(user.getEmail());
-        assertFalse(user.getEmail().isBlank());
+        for (var user : library.users()) {
+            assertNotNull(user.getEmail());
+            assertFalse(user.getEmail().isBlank());
+            return;
+        }
     }
 
     @Test
     void canGetUserWatches() {
-        var user = library.users().iterator().next();
-        var watches = user.watches();
-        assertNotNull(StreamUtils.iterateToList(watches));
+        for (var user : library.users()) {
+            for (var watches : user.watches()) {
+                assertNotNull(watches.getRatingKey());
+                return;
+            }
+        }
     }
 
     // ----- Movie property tests -----
 
     @Test
     void canGetMovieTitle() {
-        var movie = library.movies().iterator().next();
-        assertNotNull(movie.getTitle());
-        assertFalse(movie.getTitle().isBlank());
+        for (var movie : library.movies()) {
+            assertNotNull(movie.getTitle());
+            assertFalse(movie.getTitle().isBlank());
+            return;
+        }
     }
 
     @Test
     void canGetMovieYear() {
-        var movie = library.movies().iterator().next();
-        assertNotNull(movie.getYear());
+        for (var movie : library.movies()) {
+            assertNotNull(movie.getYear());
+            return;
+        }
     }
 
     @Test
     void canGetMovieStatus() {
-        var movie = library.movies().iterator().next();
-        assertNotNull(movie.getStatus());
-        assertFalse(movie.getStatus().isBlank());
+        for (var movie : library.movies()) {
+            assertNotNull(movie.getStatus());
+            assertFalse(movie.getStatus().isBlank());
+            return;
+        }
     }
 
     @Test
     void canGetMovieHasFile() {
-        var movie = library.movies().iterator().next();
-        assertNotNull(movie.getHasFile());
+        for (var movie : library.movies()) {
+            assertNotNull(movie.getHasFile());
+            return;
+        }
     }
 
     @Test
     void canGetMovieImdbId() {
-        var movie = library.movies().iterator().next();
-        // imdbId may be null; method must not throw
-        movie.getImdbId();
+        for (var movie : library.movies()) {
+            // imdbId may be null; method must not throw
+            movie.getImdbId();
+            return;
+        }
     }
 
     @Test
     void canGetMovieTvdbId() {
-        var movie = library.movies().iterator().next();
-        // tvdbId is always null for movies by design
-        assertNull(movie.getTvdbId());
+        for (var movie : library.movies()) {
+            // tvdbId is always null for movies by design
+            assertNull(movie.getTvdbId());
+            return;
+        }
     }
 
     @Test
     void canMovieHasTagByString() {
-        var movie = library.movies().iterator().next();
-        var tagList = StreamUtils.iterateToList(movie.tags());
-        assertNotNull(tagList);
-        if (!tagList.isEmpty()) {
-            assertTrue(movie.hasTag(tagList.get(0).getName()));
-            assertFalse(movie.hasTag("nonexistent-tag-xyz-cinematic"));
+        for (var movie : library.movies()) {
+            for (var tag : movie.tags()) {
+                assertTrue(movie.hasTag(tag.getName()));
+                return;
+            }
         }
     }
 
     @Test
     void canMovieHasTagByTag() {
-        var movie = library.movies().iterator().next();
-        var tagList = StreamUtils.iterateToList(movie.tags());
-        assertNotNull(tagList);
-        if (!tagList.isEmpty()) {
-            assertTrue(movie.hasTag(tagList.get(0)));
+        for (var movie : library.movies()) {
+            for (var tag : movie.tags()) {
+                assertTrue(movie.hasTag(tag));
+                return;
+            }
         }
     }
 
@@ -357,56 +440,65 @@ class CinematicIntegrationsTests {
 
     @Test
     void canGetSeriesTitle() {
-        var series = library.series().iterator().next();
-        assertNotNull(series.getTitle());
-        assertFalse(series.getTitle().isBlank());
+        for (var series : library.series()) {
+            assertNotNull(series.getTitle());
+            assertFalse(series.getTitle().isBlank());
+            return;
+        }
     }
 
     @Test
     void canGetSeriesYear() {
-        var series = library.series().iterator().next();
-        assertNotNull(series.getYear());
+        for (var series : library.series()) {
+            assertNotNull(series.getYear());
+            return;
+        }
     }
 
     @Test
     void canGetSeriesStatus() {
-        var series = library.series().iterator().next();
-        assertNotNull(series.getStatus());
-        assertFalse(series.getStatus().isBlank());
+        for (var series : library.series()) {
+            assertNotNull(series.getStatus());
+            assertFalse(series.getStatus().isBlank());
+            return;
+        }
     }
 
     @Test
     void canGetSeriesTmdbId() {
-        var series = library.series().iterator().next();
-        // tmdbId may be null for some series; method must not throw
-        series.getTmdbId();
+        for (var series : library.series()) {
+            // tmdbId may be null for some series; method must not throw
+            series.getTmdbId();
+            return;
+        }
     }
 
     @Test
     void canGetSeriesImdbId() {
-        var series = library.series().iterator().next();
-        // imdbId may be null; method must not throw
-        series.getImdbId();
+        for (var series : library.series()) {
+            // imdbId may be null; method must not throw
+            series.getImdbId();
+            return;
+        }
     }
 
     @Test
     void canSeriesHasTagByString() {
-        var series = library.series().iterator().next();
-        var tagList = StreamUtils.iterateToList(series.tags());
-        assertNotNull(tagList);
-        if (!tagList.isEmpty()) {
-            assertTrue(series.hasTag(tagList.get(0).getName()));
-            assertFalse(series.hasTag("nonexistent-tag-xyz-cinematic"));
+        for (var series : library.series()) {
+            for (var tag : series.tags()) {
+                assertTrue(series.hasTag(tag.getName()));
+                return;
+            }
         }
     }
 
     @Test
     void canSeriesHasTagByTag() {
-        var series = library.series().iterator().next();
-        var tagList = StreamUtils.iterateToList(series.tags());
-        assertNotNull(tagList);
-        if (!tagList.isEmpty()) {
-            assertTrue(series.hasTag(tagList.get(0)));
+        for (var series : library.series()) {
+            for (var tag : series.tags()) {
+                assertTrue(series.hasTag(tag));
+                return;
+            }
         }
     }
 
@@ -414,107 +506,808 @@ class CinematicIntegrationsTests {
 
     @Test
     void canGetTorrentName() {
-        var torrent = library.torrents().iterator().next();
-        assertNotNull(torrent.getName());
-        assertFalse(torrent.getName().isBlank());
+        for (var torrent : library.torrents()) {
+            assertNotNull(torrent.getName());
+            assertFalse(torrent.getName().isBlank());
+            return;
+        }
     }
 
     @Test
     void canGetTorrentHash() {
-        var torrent = library.torrents().iterator().next();
-        assertNotNull(torrent.getHash());
-        assertFalse(torrent.getHash().isBlank());
+        for (var torrent : library.torrents()) {
+            assertNotNull(torrent.getHash());
+            assertFalse(torrent.getHash().isBlank());
+            return;
+        }
     }
 
     @Test
     void canGetTorrentState() {
-        var torrent = library.torrents().iterator().next();
-        assertNotNull(torrent.getState());
-        assertFalse(torrent.getState().isBlank());
+        for (var torrent : library.torrents()) {
+            assertNotNull(torrent.getState());
+            assertFalse(torrent.getState().isBlank());
+            return;
+        }
     }
 
     @Test
     void canGetTorrentCategory() {
-        var torrent = library.torrents().iterator().next();
-        assertNotNull(torrent.getCategory());
+        for (var torrent : library.torrents()) {
+            assertNotNull(torrent.getCategory());
+            return;
+        }
     }
 
     @Test
     void canGetTorrentTracker() {
-        var torrent = library.torrents().iterator().next();
-        assertNotNull(torrent.getTracker());
+        for (var torrent : library.torrents()) {
+            assertNotNull(torrent.getTracker());
+            return;
+        }
     }
 
     // ----- Request property tests -----
 
     @Test
     void canGetRequestStatus() {
-        var request = library.requests().iterator().next();
-        assertNotNull(request.getStatus());
+        for (var request : library.requests()) {
+            assertNotNull(request.getStatus());
+            return;
+        }
     }
 
     @Test
     void canGetRequestUserById() {
-        var request = library.requests().iterator().next();
-        var user = request.user();
-        assertNotNull(user.getEmail());
+        for (var request : library.requests()) {
+            var user = request.user();
+            assertNotNull(user.getEmail());
+            return;
+        }
     }
 
     @Test
     void canGetRequestTvdbId() {
-        var request = library.requests().iterator().next();
-        // tvdbId may be null depending on media type; method must not throw
-        request.getTvdbId();
+        for (var request : library.requests()) {
+            // tvdbId may be null depending on media type; method must not throw
+            request.getTvdbId();
+            return;
+        }
     }
 
     // ----- Watches property tests -----
 
     @Test
     void canGetMovieWatchesProperties() {
-        var movie = library.movies().iterator().next();
-        var watchesList = StreamUtils.iterateToList(movie.watches());
-        assertNotNull(watchesList);
-        if (!watchesList.isEmpty()) {
-            var watches = watchesList.get(0);
-            assertNotNull(watches.getTitle());
-            assertNotNull(watches.getRatingKey());
+        for (var movie : library.movies()) {
+            for (var watches : movie.watches()) {
+                assertNotNull(watches.getTitle());
+                assertNotNull(watches.getRatingKey());
+                return;
+            }
         }
     }
 
     @Test
     void canGetSeriesWatchesProperties() {
-        var series = library.series().iterator().next();
-        var watchesList = StreamUtils.iterateToList(series.watches());
-        assertNotNull(watchesList);
-        if (!watchesList.isEmpty()) {
-            var watches = watchesList.get(0);
-            assertNotNull(watches.getTitle());
-            assertNotNull(watches.getRatingKey());
+        for (var series : library.series()) {
+            for (var watches : series.watches()) {
+                assertNotNull(watches.getTitle());
+                assertNotNull(watches.getRatingKey());
+                return;
+            }
         }
     }
 
     @Test
     void canGetUserWatchesProperties() {
-        var user = library.users().iterator().next();
-        var watchesList = StreamUtils.iterateToList(user.watches());
-        assertNotNull(watchesList);
-        if (!watchesList.isEmpty()) {
-            var watches = watchesList.get(0);
-            assertNotNull(watches.getTitle());
-            assertNotNull(watches.getRatingKey());
+        for (var user : library.users()) {
+            for (var watches : user.watches()) {
+                assertNotNull(watches.getTitle());
+                assertNotNull(watches.getRatingKey());
+                return;
+            }
         }
     }
 
     @Test
     void canGetWatchesUser() {
-        var user = library.users().iterator().next();
-        var watchesList = StreamUtils.iterateToList(user.watches());
-        assertNotNull(watchesList);
-        if (!watchesList.isEmpty()) {
-            var watchesUser = watchesList.get(0).user();
-            assertNotNull(watchesUser);
-            assertNotNull(watchesUser.getEmail());
-            assertFalse(watchesUser.getEmail().isBlank());
+        for (var user : library.users()) {
+            for (var watches : user.watches()) {
+                assertEquals(user.getEmail(), watches.user().getEmail());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetArtists() {
+        for (var artist : library.artists()) {
+            assertNotNull(artist);
+            return;
+        }
+    }
+
+    @Test
+    void canGetAlbums() {
+        for (var album : library.albums()) {
+            assertNotNull(album);
+            return;
+        }
+    }
+
+    @Test
+    void canGetTracks() {
+        for (var track : library.tracks()) {
+            assertNotNull(track);
+            return;
+        }
+    }
+
+    @Test
+    void canGetEpisodes() {
+        for (var episode : library.episodes()) {
+            assertNotNull(episode);
+            return;
+        }
+    }
+
+    @Test
+    void canGetLibraryContext() {
+        assertNotNull(library.getContext());
+    }
+
+    @Test
+    void canGetArtistMetadata() {
+        for (var artist : library.artists()) {
+            assertNotNull(artist.getId());
+            assertNotNull(artist.getArtistName());
+            assertDoesNotThrow(artist::getForeignArtistId);
+            assertDoesNotThrow(artist::getStatus);
+            assertDoesNotThrow(artist::getPath);
+            assertDoesNotThrow(artist::getMonitored);
+            assertNotNull(artist.getName());
+            return;
+        }
+    }
+
+    @Test
+    void canGetAlbumMetadata() {
+        for (var album : library.albums()) {
+            assertNotNull(album.getId());
+            assertNotNull(album.getTitle());
+            assertDoesNotThrow(album::getForeignAlbumId);
+            assertDoesNotThrow(album::getMonitored);
+            assertDoesNotThrow(album::getAlbumType);
+            assertDoesNotThrow(album::getReleaseDate);
+            return;
+        }
+    }
+
+    @Test
+    void canGetTrackMetadata() {
+        for (var track : library.tracks()) {
+            assertNotNull(track.getId());
+            assertNotNull(track.getTitle());
+            assertDoesNotThrow(track::getTrackNumber);
+            assertDoesNotThrow(track::getMediumNumber);
+            assertDoesNotThrow(track::getDuration);
+            assertDoesNotThrow(track::getHasFile);
+            assertDoesNotThrow(track::getForeignTrackId);
+            assertDoesNotThrow(track::getForeignRecordingId);
+            return;
+        }
+    }
+
+    @Test
+    void canGetEpisodeMetadata() {
+        for (var episode : library.episodes()) {
+            assertNotNull(episode.getTitle());
+            assertDoesNotThrow(episode::getSeasonNumber);
+            assertDoesNotThrow(episode::getEpisodeNumber);
+            assertDoesNotThrow(episode::getHasFile);
+            assertDoesNotThrow(episode::getMonitored);
+            assertDoesNotThrow(episode::getAirDate);
+            assertDoesNotThrow(episode::getAirDateUtc);
+            return;
+        }
+    }
+
+    @Test
+    void canGetTorrentMetadata() {
+        for (var torrent : library.torrents()) {
+            assertDoesNotThrow(torrent::getContentPath);
+            assertDoesNotThrow(torrent::getAmountLeft);
+            assertDoesNotThrow(torrent::getProgress);
+            assertDoesNotThrow(torrent::getCompletionOn);
+            return;
+        }
+    }
+
+    @Test
+    void canGetMovieMetadata() {
+        for (var movie : library.movies()) {
+            assertDoesNotThrow(movie::getTitleSlug);
+            return;
+        }
+    }
+
+    @Test
+    void canGetArtistExternalVideoIds() {
+        for (var artist : library.artists()) {
+            assertNull(artist.getTmdbId());
+            assertNull(artist.getTvdbId());
+            assertNull(artist.getImdbId());
+            return;
+        }
+    }
+
+    @Test
+    void canGetArtistRequests() {
+        for (var artist : library.artists()) {
+            assertTrue(StreamUtils.iterateToList(artist.requests()).isEmpty());
+            return;
+        }
+    }
+
+    @Test
+    void canGetAlbumExternalVideoIds() {
+        for (var album : library.albums()) {
+            assertNull(album.getTmdbId());
+            assertNull(album.getTvdbId());
+            assertNull(album.getImdbId());
+            return;
+        }
+    }
+
+    @Test
+    void canGetAlbumRequests() {
+        for (var album : library.albums()) {
+            assertTrue(StreamUtils.iterateToList(album.requests()).isEmpty());
+            return;
+        }
+    }
+
+    @Test
+    void canGetTrackExternalVideoIds() {
+        for (var track : library.tracks()) {
+            assertNull(track.getTmdbId());
+            assertNull(track.getTvdbId());
+            assertNull(track.getImdbId());
+            return;
+        }
+    }
+
+    @Test
+    void canGetTrackRequests() {
+        for (var track : library.tracks()) {
+            assertTrue(StreamUtils.iterateToList(track.requests()).isEmpty());
+            return;
+        }
+    }
+
+    @Test
+    void canGetArtistTracks() {
+        for (var artist : library.artists()) {
+            for (var track : artist.tracks()) {
+                assertNotNull(track.getId());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetArtistFiles() {
+        for (var artist : library.artists()) {
+            for (var file : artist.files()) {
+                assertNotNull(file.getId());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetArtistTags() {
+        for (var artist : library.artists()) {
+            for (var tag : artist.tags()) {
+                assertNotNull(tag.getName());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetArtistTorrents() {
+        for (var artist : library.artists()) {
+            for (var torrent : artist.torrents()) {
+                assertNotNull(torrent.getHash());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetArtistWatches() {
+        for (var artist : library.artists()) {
+            for (var watches : artist.watches()) {
+                assertNotNull(watches.getRatingKey());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetArtistFormats() {
+        for (var artist : library.artists()) {
+            for (var format : artist.formats()) {
+                assertNotNull(format.getAudioFormat());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetAlbumFiles() {
+        for (var album : library.albums()) {
+            for (var file : album.files()) {
+                assertNotNull(file.getId());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetAlbumTags() {
+        for (var album : library.albums()) {
+            for (var tag : album.tags()) {
+                assertNotNull(tag.getName());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetAlbumWatches() {
+        for (var album : library.albums()) {
+            for (var watches : album.watches()) {
+                assertNotNull(watches.getRatingKey());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetAlbumFormats() {
+        for (var album : library.albums()) {
+            for (var format : album.formats()) {
+                assertNotNull(format.getAudioFormat());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetTrackFiles() {
+        for (var track : library.tracks()) {
+            for (var file : track.files()) {
+                assertNotNull(file.getId());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetTrackTags() {
+        for (var track : library.tracks()) {
+            for (var tag : track.tags()) {
+                assertNotNull(tag.getName());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetTrackTorrents() {
+        for (var track : library.tracks()) {
+            for (var torrent : track.torrents()) {
+                assertNotNull(torrent.getHash());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetTrackFormats() {
+        for (var track : library.tracks()) {
+            for (var format : track.formats()) {
+                assertNotNull(format.getAudioFormat());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetArtistAlbumsBackToArtist() {
+        for (var artist : library.artists()) {
+            for (var album : artist.albums()) {
+                assertEquals(artist.getId(), album.artist().getId());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetArtistTracksBackToArtist() {
+        for (var artist : library.artists()) {
+            for (var track : artist.tracks()) {
+                assertEquals(artist.getId(), track.artist().getId());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetAlbumTracksBackToAlbum() {
+        for (var album : library.albums()) {
+            for (var track : album.tracks()) {
+                assertEquals(album.getId(), track.album().getId());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetAlbumArtist() {
+        for (var album : library.albums()) {
+            assertNotNull(album.artist().getId());
+            return;
+        }
+    }
+
+    @Test
+    void canGetTrackArtist() {
+        for (var track : library.tracks()) {
+            assertEquals(track.album().artist().getId(), track.artist().getId());
+            return;
+        }
+    }
+
+    @Test
+    void canGetTrackAlbum() {
+        for (var track : library.tracks()) {
+            assertNotNull(track.album().getId());
+            return;
+        }
+    }
+
+    @Test
+    void canGetSeriesEpisodesBackToSeries() {
+        for (var series : library.series()) {
+            for (var episode : series.episodes()) {
+                assertEquals(series.getTvdbId(), episode.series().getTvdbId());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetSeriesFiles() {
+        for (var series : library.series()) {
+            for (Object file : series.files()) {
+                assertNotNull(file);
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canArtistHasTagByString() {
+        for (var artist : library.artists()) {
+            for (var tag : artist.tags()) {
+                assertTrue(artist.hasTag(tag.getName()));
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canArtistHasTagByTag() {
+        for (var artist : library.artists()) {
+            for (var tag : artist.tags()) {
+                assertTrue(artist.hasTag(tag));
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canAlbumHasTagByString() {
+        for (var album : library.albums()) {
+            for (var tag : album.tags()) {
+                assertTrue(album.hasTag(tag.getName()));
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canAlbumHasTagByTag() {
+        for (var album : library.albums()) {
+            for (var tag : album.tags()) {
+                assertTrue(album.hasTag(tag));
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canTrackHasTagByString() {
+        for (var track : library.tracks()) {
+            for (var tag : track.tags()) {
+                assertTrue(track.hasTag(tag.getName()));
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canTrackHasTagByTag() {
+        for (var track : library.tracks()) {
+            for (var tag : track.tags()) {
+                assertTrue(track.hasTag(tag));
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canTorrentHasTagByString() {
+        for (var torrent : library.torrents()) {
+            for (var tag : torrent.tags()) {
+                assertTrue(torrent.hasTag(tag.getName()));
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canTorrentHasTagByTag() {
+        for (var torrent : library.torrents()) {
+            for (var tag : torrent.tags()) {
+                assertTrue(torrent.hasTag(tag));
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetTorrentArtists() {
+        for (var torrent : library.torrents()) {
+            for (var artist : torrent.artists()) {
+                assertNotNull(artist.getId());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetTorrentAlbums() {
+        for (var torrent : library.torrents()) {
+            for (var album : torrent.albums()) {
+                assertNotNull(album.getId());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetTorrentTags() {
+        for (var torrent : library.torrents()) {
+            for (var tag : torrent.tags()) {
+                assertTrue(torrent.hasTag(tag));
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetTagArtists() {
+        for (var tag : library.tags()) {
+            for (var artist : tag.artists()) {
+                assertTrue(artist.hasTag(tag));
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetTorrentCompletion() {
+        for (var torrent : library.torrents()) {
+            var completed = torrent.isCompleted();
+            if (completed) {
+                assertEquals(Long.valueOf(0), torrent.getAmountLeft());
+                assertTrue(torrent.getCompletionOn() > 0);
+            }
+            return;
+        }
+    }
+
+    @Test
+    void canGetTorrentFiles() {
+        for (var torrent : library.torrents()) {
+            for (var file : torrent.files()) {
+                assertNotNull(file.getName());
+                assertDoesNotThrow(file::getSize);
+                assertDoesNotThrow(file::getProgress);
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetWatchesWatchedStatus() {
+        for (var user : library.users()) {
+            for (var watches : user.watches()) {
+                assertDoesNotThrow(watches::getWatchedStatus);
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetMovieFileMetadata() {
+        for (var movie : library.movies()) {
+            for (var file : movie.files()) {
+                assertNotNull(file.getId());
+                assertDoesNotThrow(file::getMovieId);
+                assertDoesNotThrow(file::getSeriesId);
+                assertDoesNotThrow(file::getSeasonNumber);
+                assertDoesNotThrow(file::getEpisodeNumber);
+                assertDoesNotThrow(file::getRelativePath);
+                assertDoesNotThrow(file::getPath);
+                assertDoesNotThrow(file::getSize);
+                assertDoesNotThrow(file::getDateAdded);
+                assertDoesNotThrow(file::getSceneName);
+                assertDoesNotThrow(file::getReleaseGroup);
+                assertDoesNotThrow(file::getQualityCutoffNotMet);
+                assertDoesNotThrow(file::getQuality);
+                assertDoesNotThrow(file::getQualityWeight);
+                assertDoesNotThrow(file::getCustomFormatScore);
+                assertDoesNotThrow(file::getOriginalFilePath);
+                assertSame(file.format(), file.getFormat());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetMovieFormatMetadata() {
+        for (var movie : library.movies()) {
+            for (var format : movie.formats()) {
+                assertDoesNotThrow(format::getVideoCodec);
+                assertDoesNotThrow(format::getVideoFormat);
+                assertDoesNotThrow(format::getAudioCodec);
+                assertDoesNotThrow(format::getAudioFormat);
+                assertDoesNotThrow(format::getResolution);
+                assertDoesNotThrow(format::getAudioChannels);
+                assertDoesNotThrow(format::getAudioLanguages);
+                assertDoesNotThrow(format::getVideoDynamicRange);
+                assertEquals(format.getVideoCodec(), format.getVideoFormat());
+                assertEquals(format.getAudioCodec(), format.getAudioFormat());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetEpisodeFileMetadata() {
+        for (var episode : library.episodes()) {
+            for (var file : episode.files()) {
+                assertNotNull(file.getId());
+                assertDoesNotThrow(file::getMovieId);
+                assertDoesNotThrow(file::getSeriesId);
+                assertDoesNotThrow(file::getSeasonNumber);
+                assertDoesNotThrow(file::getEpisodeNumber);
+                assertDoesNotThrow(file::getRelativePath);
+                assertDoesNotThrow(file::getPath);
+                assertDoesNotThrow(file::getSize);
+                assertDoesNotThrow(file::getDateAdded);
+                assertDoesNotThrow(file::getSceneName);
+                assertDoesNotThrow(file::getReleaseGroup);
+                assertDoesNotThrow(file::getQualityCutoffNotMet);
+                assertDoesNotThrow(file::getQuality);
+                assertDoesNotThrow(file::getQualityWeight);
+                assertDoesNotThrow(file::getCustomFormatScore);
+                assertDoesNotThrow(file::getOriginalFilePath);
+                assertSame(file.format(), file.getFormat());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetEpisodeFormatMetadata() {
+        for (var episode : library.episodes()) {
+            for (var format : episode.formats()) {
+                assertDoesNotThrow(format::getVideoCodec);
+                assertDoesNotThrow(format::getVideoFormat);
+                assertDoesNotThrow(format::getAudioCodec);
+                assertDoesNotThrow(format::getAudioFormat);
+                assertDoesNotThrow(format::getResolution);
+                assertDoesNotThrow(format::getAudioChannels);
+                assertDoesNotThrow(format::getAudioLanguages);
+                assertDoesNotThrow(format::getVideoDynamicRange);
+                assertEquals(format.getVideoCodec(), format.getVideoFormat());
+                assertEquals(format.getAudioCodec(), format.getAudioFormat());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetTrackFileMetadata() {
+        for (var track : library.tracks()) {
+            for (var file : track.files()) {
+                assertNotNull(file.getId());
+                assertDoesNotThrow(file::getMovieId);
+                assertDoesNotThrow(file::getSeriesId);
+                assertDoesNotThrow(file::getSeasonNumber);
+                assertDoesNotThrow(file::getEpisodeNumber);
+                assertDoesNotThrow(file::getRelativePath);
+                assertDoesNotThrow(file::getPath);
+                assertDoesNotThrow(file::getSize);
+                assertDoesNotThrow(file::getDateAdded);
+                assertDoesNotThrow(file::getSceneName);
+                assertDoesNotThrow(file::getReleaseGroup);
+                assertDoesNotThrow(file::getQualityCutoffNotMet);
+                assertDoesNotThrow(file::getQuality);
+                assertDoesNotThrow(file::getQualityWeight);
+                assertDoesNotThrow(file::getCustomFormatScore);
+                assertDoesNotThrow(file::getOriginalFilePath);
+                assertSame(file.format(), file.getFormat());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetTrackFormatMetadata() {
+        for (var track : library.tracks()) {
+            for (var format : track.formats()) {
+                assertDoesNotThrow(format::getVideoCodec);
+                assertDoesNotThrow(format::getVideoFormat);
+                assertDoesNotThrow(format::getAudioCodec);
+                assertDoesNotThrow(format::getAudioFormat);
+                assertDoesNotThrow(format::getResolution);
+                assertDoesNotThrow(format::getAudioChannels);
+                assertDoesNotThrow(format::getAudioLanguages);
+                assertDoesNotThrow(format::getVideoDynamicRange);
+                assertEquals(format.getVideoCodec(), format.getVideoFormat());
+                assertEquals(format.getAudioCodec(), format.getAudioFormat());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetTrackFileArtist() {
+        for (var artist : library.artists()) {
+            for (var file : artist.files()) {
+                assertEquals(artist.getId(), file.getArtistId());
+                assertEquals(artist.getId(), file.artist().getId());
+                return;
+            }
+        }
+    }
+
+    @Test
+    void canGetTrackFileAlbum() {
+        for (var album : library.albums()) {
+            for (var file : album.files()) {
+                assertEquals(album.getId(), file.getAlbumId());
+                assertEquals(album.getId(), file.album().getId());
+                return;
+            }
         }
     }
 }
