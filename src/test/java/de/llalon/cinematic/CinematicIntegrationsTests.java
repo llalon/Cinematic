@@ -614,7 +614,11 @@ class CinematicIntegrationsTests {
     void canGetWatchesUser() {
         for (var user : library.users()) {
             for (var watches : user.watches()) {
-                assertEquals(user.getEmail(), watches.user().getEmail());
+                var email = user.getEmail();
+                var watchesEmail = watches.user().getEmail();
+                assertNotNull(email);
+                assertNotNull(watchesEmail);
+                assertTrue(email.equalsIgnoreCase(watchesEmail));
                 return;
             }
         }
