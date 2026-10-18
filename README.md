@@ -13,6 +13,7 @@ It integrates:
 - Seerr
 - Sonarr
 - Radarr
+- Lidarr
 - qBittorrent
 
 ## Requirements
@@ -51,6 +52,9 @@ SONARR_API_KEY=your-sonarr-api-key
 RADARR_URL=http://localhost:7878
 RADARR_API_KEY=your-radarr-api-key
 
+LIDARR_URL=http://localhost:8686
+LIDARR_API_KEY=your-lidarr-api-key
+
 QBITTORRENT_URL=http://localhost:8080
 QBITTORRENT_USERNAME=admin
 QBITTORRENT_PASSWORD=your-qbittorrent-password
@@ -79,6 +83,10 @@ Library library = new Library(ClientContext.builder()
                 .url("http://localhost:7878")
                 .apiKey("test")
                 .build())
+        .lidarrProperties(LidarrProperties.builder()
+                .url("http://localhost:8686")
+                .apiKey("test")
+                .build())
         .qbittorrentProperties(QBittorrentProperties.builder()
                 .url("http://localhost:7878")
                 .username("user")
@@ -100,6 +108,9 @@ The Library is the root of the Cinematic domain model. It acts as the entry poin
 ```java
 Iterable<Movie> movies = library.movies();
 Iterable<Series> series = library.series();
+Iterable<Artist> artists = library.artists();
+Iterable<Album> albums = library.albums();
+Iterable<Track> tracks = library.tracks();
 ```
 
 From there, each object is self-referential: every Movie, Series, Request, etc knows how to access its related items. For example, a Movie can provide its associated torrents, requests, and watches directly.

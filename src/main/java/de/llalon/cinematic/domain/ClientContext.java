@@ -1,6 +1,8 @@
 package de.llalon.cinematic.domain;
 
 import com.squareup.moshi.Moshi;
+import de.llalon.cinematic.client.lidarr.LidarrClient;
+import de.llalon.cinematic.client.lidarr.config.LidarrProperties;
 import de.llalon.cinematic.client.plex.PlexClient;
 import de.llalon.cinematic.client.plex.config.PlexProperties;
 import de.llalon.cinematic.client.qbittorrent.QBittorrentClient;
@@ -37,8 +39,44 @@ import org.jspecify.annotations.Nullable;
  * <p>Instances are immutable after construction and safe for use across threads.</p>
  */
 @Slf4j
-@Builder
 public final class ClientContext {
+
+    /** Creates a context with the original service configuration. */
+    public ClientContext(
+            OkHttpClient httpClient,
+            Moshi moshi,
+            CacheManager cacheManager,
+            PlexProperties plexProperties,
+            RadarrProperties radarrProperties,
+            SonarrProperties sonarrProperties,
+            QBittorrentProperties qbittorrentProperties,
+            SeerrProperties seerrProperties,
+            TautulliProperties tautulliProperties,
+            PlexClient plexClient,
+            RadarrClient radarrClient,
+            SonarrClient sonarrClient,
+            QBittorrentClient qbittorrentClient,
+            SeerrClient seerrClient,
+            TautulliClient tautulliClient) {
+        this(
+                httpClient,
+                moshi,
+                cacheManager,
+                plexProperties,
+                radarrProperties,
+                sonarrProperties,
+                qbittorrentProperties,
+                seerrProperties,
+                tautulliProperties,
+                plexClient,
+                radarrClient,
+                sonarrClient,
+                qbittorrentClient,
+                seerrClient,
+                tautulliClient,
+                null,
+                null);
+    }
 
     /**
      * Creates a context with optional shared infrastructure, configuration, and prebuilt clients.
@@ -57,8 +95,11 @@ public final class ClientContext {
      * @param sonarrClient prebuilt Sonarr client, or {@code null} to create one from configuration
      * @param qbittorrentClient prebuilt qBittorrent client, or {@code null} to create one from configuration
      * @param seerrClient prebuilt Seerr client, or {@code null} to create one from configuration
+     * @param lidarrProperties Lidarr configuration, or null to load environment variables
+     * @param lidarrClient prebuilt Lidarr client, or null to create one from configuration
      * @param tautulliClient prebuilt Tautulli client, or {@code null} to create one from configuration
      */
+    @Builder
     public ClientContext(
             OkHttpClient httpClient,
             Moshi moshi,
@@ -74,7 +115,9 @@ public final class ClientContext {
             SonarrClient sonarrClient,
             QBittorrentClient qbittorrentClient,
             SeerrClient seerrClient,
-            TautulliClient tautulliClient) {
+            TautulliClient tautulliClient,
+            LidarrProperties lidarrProperties,
+            LidarrClient lidarrClient) {
         this.httpClient = httpClient == null ? new OkHttpClient() : httpClient;
         this.moshi = moshi == null
                 ? new Moshi.Builder()
@@ -114,6 +157,17 @@ public final class ClientContext {
             this.sonarrProperties = sonarrProperties != null ? sonarrProperties : SonarrProperties.fromEnvironment();
             this.sonarrClient = this.sonarrProperties.getUrl() != null
                     ? new SonarrClient(this.httpClient, this.sonarrProperties, this.moshi)
+                    : null;
+        }
+
+        // Lidarr
+        if (lidarrClient != null) {
+            this.lidarrClient = lidarrClient;
+            this.lidarrProperties = lidarrProperties;
+        } else {
+            this.lidarrProperties = lidarrProperties != null ? lidarrProperties : LidarrProperties.fromEnvironment();
+            this.lidarrClient = this.lidarrProperties.getUrl() != null
+                    ? new LidarrClient(this.httpClient, this.lidarrProperties, this.moshi)
                     : null;
         }
 
@@ -234,6 +288,9 @@ public final class ClientContext {
      * The Sonarr client instance.
      */
     private final SonarrClient sonarrClient;
+
+    private final LidarrClient lidarrClient;
+    private final LidarrProperties lidarrProperties;
 
     /**
      * The QBittorrent client instance.
@@ -421,5 +478,24 @@ public final class ClientContext {
             throw new ClientNotConfiguredException("Tautulli not configured");
         }
         return this.tautulliClient;
+    }
+    /** Returns the Lidarr configuration properties. */
+    @Nullable
+    public LidarrProperties getLidarrProperties() {
+        return lidarrProperties;
+    }
+
+    /** Returns whether Lidarr is configured, including a prebuilt client. */
+    public boolean isLidarrConfigured() {
+        return lidarrClient != null;
+    }
+
+    /** Returns the Lidarr client, or throws when Lidarr is not configured. */
+    @NonNull
+    public LidarrClient getLidarrClient() {
+        if (lidarrClient == null) {
+            throw new ClientNotConfiguredException("Lidarr not configured");
+        }
+        return lidarrClient;
     }
 }

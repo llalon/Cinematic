@@ -14,7 +14,7 @@ import org.jspecify.annotations.Nullable;
  * Domain representation of a torrent managed by qBittorrent.
  *
  * <p>Provides navigation to the {@link Series} and {@link Movie} objects
- * associated with this torrent via the Sonarr/Radarr download queues.
+ * associated with this torrent via the Sonarr/Radarr/Lidarr download queues.
  * Supports priority management and tag operations.</p>
  */
 @Slf4j
@@ -313,9 +313,9 @@ public class Torrent extends DomainModel {
     }
 
     /**
-     * Blacklists this torrent in the Sonarr/Radarr download queues.
+     * Blacklists this torrent in the Sonarr/Radarr/Lidarr download queues.
      *
-     * <p>Finds all Sonarr/Radarr queue items whose {@code downloadId} matches this torrent's hash
+     * <p>Finds all Sonarr/Radarr/Lidarr queue items whose {@code downloadId} matches this torrent's hash
      * and removes them with the blocklist flag set to {@code true}. The torrent is not
      * removed from the download client — handle that separately via {@link #remove}.
      * This will not trigger a replacement search ({@code skipRedownload=true}).</p>
@@ -327,7 +327,7 @@ public class Torrent extends DomainModel {
 
         log.debug("Blacklisting torrent: {}, hash: {}", this.qbittorrentInfo.getHash(), hash);
 
-        final Stream<Integer> sonarrResults = sonarrQueue()
+        final Stream<Integer> sonarrResults = configuredStream(ctx::getSonarrClient, this::sonarrQueue)
                 .filter(q -> q.getDownloadId() != null && q.getDownloadId().equalsIgnoreCase(hash))
                 .map(q -> {
                     log.debug("Blacklisting Sonarr queue item id={} for torrent {}", q.getId(), hash);
@@ -335,7 +335,7 @@ public class Torrent extends DomainModel {
                     return 1;
                 });
 
-        final Stream<Integer> radarrResults = radarrQueue()
+        final Stream<Integer> radarrResults = configuredStream(ctx::getRadarrClient, this::radarrQueue)
                 .filter(q -> q.getDownloadId() != null && q.getDownloadId().equalsIgnoreCase(hash))
                 .map(q -> {
                     log.debug("Blacklisting Radarr queue item id={} for torrent {}", q.getId(), hash);
@@ -343,10 +343,41 @@ public class Torrent extends DomainModel {
                     return 1;
                 });
 
-        final long count = Stream.concat(sonarrResults, radarrResults).count();
+        final Stream<Integer> lidarrResults = configuredStream(ctx::getLidarrClient, this::lidarrQueue)
+                .filter(q -> q.getDownloadId() != null && q.getDownloadId().equalsIgnoreCase(hash))
+                .map(q -> {
+                    ctx.getLidarrClient().deleteQueueItem(q.getId(), true, false, true);
+                    return 1;
+                });
+
+        final long count = Stream.of(sonarrResults, radarrResults, lidarrResults)
+                .flatMap(stream -> stream)
+                .count();
+        invalidateCache(Caches.SONARR_QUEUE, Caches.RADARR_QUEUE, Caches.LIDARR_QUEUE);
 
         if (count == 0) {
             log.warn("No queue items found for torrent hash: {}", hash);
         }
+    }
+    /** Returns Lidarr artists whose queue entries match this torrent's hash. */
+    public Iterable<Artist> artists() {
+        return () -> lidarrQueue()
+                .filter(q -> q.getDownloadId() != null && q.getDownloadId().equalsIgnoreCase(qbittorrentInfo.getHash()))
+                .map(q -> q.getArtistId())
+                .filter(Objects::nonNull)
+                .distinct()
+                .map(id -> new Artist(ctx, lidarrArtistById(id)))
+                .iterator();
+    }
+
+    /** Returns Lidarr albums whose queue entries match this torrent's hash. */
+    public Iterable<Album> albums() {
+        return () -> lidarrQueue()
+                .filter(q -> q.getDownloadId() != null && q.getDownloadId().equalsIgnoreCase(qbittorrentInfo.getHash()))
+                .map(q -> q.getAlbumId())
+                .filter(Objects::nonNull)
+                .distinct()
+                .map(id -> new Album(ctx, lidarrAlbumById(id)))
+                .iterator();
     }
 }

@@ -147,9 +147,34 @@ public class TautulliClient {
      * @return paginated history response
      */
     public TableResponse<History> getHistoryByRatingKey(String ratingKey, int start, int length) {
-        log.debug("Fetching history for rating key {}: start={}, length={}", ratingKey, start, length);
+        return getHistoryByKey("rating_key", ratingKey, start, length);
+    }
+
+    /**
+     * Gets playback history for children of a Plex item, such as tracks in an album.
+     * @param ratingKey the parent Plex rating key
+     * @param start zero-based starting row
+     * @param length number of rows to fetch
+     * @return paginated playback history
+     */
+    public TableResponse<History> getHistoryByParentRatingKey(String ratingKey, int start, int length) {
+        return getHistoryByKey("parent_rating_key", ratingKey, start, length);
+    }
+
+    /**
+     * Gets playback history for descendants of a Plex item, such as tracks by an artist.
+     * @param ratingKey the grandparent Plex rating key
+     * @param start zero-based starting row
+     * @param length number of rows to fetch
+     * @return paginated playback history
+     */
+    public TableResponse<History> getHistoryByGrandparentRatingKey(String ratingKey, int start, int length) {
+        return getHistoryByKey("grandparent_rating_key", ratingKey, start, length);
+    }
+
+    private TableResponse<History> getHistoryByKey(String key, String ratingKey, int start, int length) {
         Map<String, Object> params = new HashMap<>();
-        params.put("rating_key", ratingKey);
+        params.put(key, ratingKey);
         params.put("start", start);
         params.put("length", length);
         Type type = Types.newParameterizedType(TableResponse.class, History.class);

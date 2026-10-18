@@ -1,5 +1,6 @@
 package de.llalon.cinematic.domain;
 
+import de.llalon.cinematic.client.lidarr.dto.LidarrTag;
 import de.llalon.cinematic.client.radarr.dto.RadarrTag;
 import de.llalon.cinematic.client.seerr.dto.SeerrUser;
 import de.llalon.cinematic.client.sonarr.dto.SonarrTag;
@@ -40,6 +41,27 @@ public class Library extends DomainModel {
     @NonNull
     public ClientContext getContext() {
         return super.ctx;
+    }
+
+    /** Returns all Lidarr artists, fetched lazily and cached. */
+    @NonNull
+    public Iterable<Artist> artists() {
+        return () -> lidarrArtists().map(resource -> new Artist(ctx, resource)).iterator();
+    }
+
+    /** Returns all Lidarr albums, fetched lazily and cached. */
+    @NonNull
+    public Iterable<Album> albums() {
+        return () -> lidarrAlbums().map(resource -> new Album(ctx, resource)).iterator();
+    }
+
+    /** Returns all Lidarr tracks, fetched lazily and cached. */
+    @NonNull
+    public Iterable<Track> tracks() {
+        return () -> lidarrAlbums()
+                .flatMap(album -> lidarrTracksByAlbum(album.getId()))
+                .map(resource -> new Track(ctx, resource))
+                .iterator();
     }
 
     /**
@@ -88,17 +110,21 @@ public class Library extends DomainModel {
     }
 
     /**
-     * Returns an iterable of all tags from various clients (QBittorrent, Radarr, Sonarr).
+     * Returns an iterable of all tags from various clients (QBittorrent, Radarr, Sonarr, Lidarr).
      *
      * @return an iterable of Tag objects
      */
     @NonNull
     public Iterable<Tag> tags() {
-        return () -> Stream.concat(
-                        Stream.concat(
-                                super.radarrTags().map(RadarrTag::getLabel),
-                                super.sonarrTags().map(SonarrTag::getLabel)),
-                        super.qbittorrentTags())
+        return () -> Stream.of(
+                        configuredStream(
+                                ctx::getLidarrClient, () -> lidarrTags().map(LidarrTag::getLabel)),
+                        configuredStream(
+                                ctx::getRadarrClient, () -> radarrTags().map(RadarrTag::getLabel)),
+                        configuredStream(
+                                ctx::getSonarrClient, () -> sonarrTags().map(SonarrTag::getLabel)),
+                        configuredStream(ctx::getQbittorrentClient, this::qbittorrentTags))
+                .flatMap(stream -> stream)
                 .map(tag -> new Tag(ctx, tag))
                 .iterator();
     }

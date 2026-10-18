@@ -94,6 +94,21 @@ public class PlexClient {
         return get(url, type);
     }
 
+    /**
+     * Returns full metadata for a Plex item, including external identifiers when available.
+     * @param ratingKey the server-local Plex rating key
+     * @return the item's metadata container
+     */
+    public PlexMediaContainerWrapper<PlexMetadataContainer> getMetadata(String ratingKey) {
+        HttpUrl url = baseUrl.newBuilder()
+                .addPathSegments("library/metadata")
+                .addPathSegment(ratingKey)
+                .addQueryParameter("includeGuids", "1")
+                .build();
+        Type type = Types.newParameterizedType(PlexMediaContainerWrapper.class, PlexMetadataContainer.class);
+        return get(url, type);
+    }
+
     private <T> T get(HttpUrl url, Type responseType) {
         Request request = new Request.Builder()
                 .url(url)

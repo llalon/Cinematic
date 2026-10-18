@@ -17,7 +17,8 @@ abstract class MediaFile extends DomainModel {
      */
     protected enum Source {
         RADARR,
-        SONARR
+        SONARR,
+        LIDARR
     }
 
     /** Source application used when deleting or resolving this media file. */

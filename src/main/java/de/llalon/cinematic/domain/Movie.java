@@ -155,4 +155,9 @@ public class Movie extends LibraryMediaItem {
     public String getTitleSlug() {
         return this.radarrMovie.getTitleSlug();
     }
+
+    @Override
+    public Iterable<Request> requests() {
+        return seerrMediaRequests();
+    }
 }

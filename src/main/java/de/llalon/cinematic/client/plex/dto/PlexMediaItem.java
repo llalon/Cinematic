@@ -35,4 +35,21 @@ public class PlexMediaItem {
 
     @Json(name = "Guid")
     private final List<PlexId> guids;
+
+    /** Plex rating key of the parent item (artist for albums, album for tracks). */
+    @Json(name = "parentRatingKey")
+    private final String parentRatingKey;
+
+    /** Creates a media item without parent metadata, preserving the original constructor. */
+    public PlexMediaItem(
+            String ratingKey,
+            String key,
+            String guid,
+            String type,
+            String title,
+            Integer year,
+            String librarySectionTitle,
+            List<PlexId> guids) {
+        this(ratingKey, key, guid, type, title, year, librarySectionTitle, guids, null);
+    }
 }

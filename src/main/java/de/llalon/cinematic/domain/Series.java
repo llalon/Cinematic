@@ -2,9 +2,11 @@ package de.llalon.cinematic.domain;
 
 import de.llalon.cinematic.client.sonarr.dto.SeriesResource;
 import de.llalon.cinematic.client.sonarr.dto.SonarrTag;
+import de.llalon.cinematic.client.tautulli.dto.History;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
 
@@ -124,5 +126,15 @@ public class Series extends LibraryMediaItem {
         return () -> sonarrEpisodeFilesBySeries(sonarrSeries.getId())
                 .map(episodeFile -> (MediaFile) new EpisodeFile(ctx, episodeFile))
                 .iterator();
+    }
+
+    @Override
+    public Iterable<Request> requests() {
+        return seerrMediaRequests();
+    }
+
+    @Override
+    protected Stream<History> playbackHistory(String ratingKey) {
+        return tautulliHistoryByGrandparentRatingKey(ratingKey);
     }
 }
